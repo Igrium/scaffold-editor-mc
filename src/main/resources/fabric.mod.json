@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "scaffold",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Scaffold",
+  "description": "A Minecraft level editor",
   "authors": [
-    "Me!"
+    "Igrium"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "http://scaffoldeditor.org/",
+    "sources": "https://github.com/Sam54123/scaffold-editor-mc"
   },
 
-  "license": "CC0-1.0",
+  "license": "MIT",
   "icon": "assets/modid/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "org.scaffoldeditor.editormc.engine.ScaffoldEditor"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "scaffold.mixins.json"
   ],
 
   "depends": {
@@ -33,5 +33,7 @@
   },
   "suggests": {
     "another-mod": "*"
-  }
+  },
+
+  "accessWidener": "scaffold.accesswidener"
 }

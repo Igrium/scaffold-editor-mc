@@ -68,6 +68,10 @@ jar {
 	}
 }
 
+minecraft {
+	accessWidener = file("src/main/resources/scaffold.accesswidener")
+}
+
 // configure the maven publication
 publishing {
 	publications {
