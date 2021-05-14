@@ -1,7 +1,5 @@
 package org.scaffoldeditor.editormc.engine;
 
-import java.io.IOException;
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -9,13 +7,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
 
 public class ScaffoldEditor implements ModInitializer {
 	
 	private static ScaffoldEditor instance;
-	private static boolean isInEditor = false;
+	public boolean isInEditor = false;
 	private MinecraftClient client;
 
 	public void onInitialize() {
@@ -35,9 +31,6 @@ public class ScaffoldEditor implements ModInitializer {
 		ScaffoldEditor.instance = this;
 	}
 	
-	public boolean isInEditor() {
-		return isInEditor;
-	}
 	
 	/**
 	 * Launch the Scaffold editor.
@@ -47,7 +40,6 @@ public class ScaffoldEditor implements ModInitializer {
 			return;
 		}
 		
-		isInEditor = true;
 		client.startIntegratedServer("");
 	}
 	

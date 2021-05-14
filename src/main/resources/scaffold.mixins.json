@@ -4,6 +4,7 @@
   "package": "org.scaffoldeditor.editormc.engine.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MinecraftServerAccessor"
   ],
   "client": [
     "MixinMinecraftClient"
