@@ -29,6 +29,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	implementation(include ("org.scaffoldeditor:scaffold-core:0.1.0"))
+	implementation(include ("org.scaffoldeditor:scaffold-nbt:0.1.0"))
 }
 
 processResources {
