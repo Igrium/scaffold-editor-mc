@@ -13,6 +13,7 @@ public class ScaffoldEditor implements ModInitializer {
 	private static ScaffoldEditor instance;
 	public boolean isInEditor = false;
 	private MinecraftClient client;
+	private EditorServer server;
 
 	public void onInitialize() {
 		client = MinecraftClient.getInstance();
@@ -41,6 +42,11 @@ public class ScaffoldEditor implements ModInitializer {
 		}
 		
 		client.startIntegratedServer("");
+		server = (EditorServer) client.getServer();
+	}
+	
+	public EditorServer getServer() {
+		return server;
 	}
 	
 	public static ScaffoldEditor getInstance() {
