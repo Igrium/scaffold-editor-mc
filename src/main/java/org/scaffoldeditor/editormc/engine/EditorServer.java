@@ -19,14 +19,15 @@ import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.registry.DynamicRegistryManager.Impl;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeAccess;
+import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GeneratorOptions;
 import net.minecraft.world.gen.Spawner;
-import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.level.ServerWorldProperties;
 import net.minecraft.world.level.storage.LevelStorage.Session;
 
@@ -44,8 +45,12 @@ public class EditorServer extends IntegratedServer {
 		ServerWorldProperties serverWorldProperties = this.saveProperties.getMainWorldProperties();
 //		GeneratorOptions generatorOptions = this.saveProperties.getGeneratorOptions();
 		DimensionType dimensionType = this.registryManager.getDimensionTypes().getOrThrow(DimensionType.OVERWORLD_REGISTRY_KEY);
-		NoiseChunkGenerator chunkGen = GeneratorOptions.createOverworldGenerator(this.registryManager.get(Registry.BIOME_KEY),
-				this.registryManager.get(Registry.NOISE_SETTINGS_WORLDGEN), getTaskCount());
+		
+		GeneratorOptions generatorOptions = this.saveProperties.getGeneratorOptions();
+		SimpleRegistry<DimensionOptions> dimensionOptionRegistry = generatorOptions.getDimensions();
+		DimensionOptions dimensionOptions = (DimensionOptions) dimensionOptionRegistry.get(DimensionOptions.OVERWORLD);
+
+		ChunkGenerator chunkGen = dimensionOptions.getChunkGenerator();
 		
 		MinecraftServerAccessor accessor = (MinecraftServerAccessor) this;
 		ServerWorld world = new EditorServerWorld(this, accessor.getWorkerExecutor(), this.session, serverWorldProperties, World.OVERWORLD,
@@ -84,6 +89,10 @@ public class EditorServer extends IntegratedServer {
 		
 		try {
 			this.session.close();
+			FakeSession fakeSession = (FakeSession) this.session;
+			if (fakeSession != null) {
+				fakeSession.deleteWorldFolder();
+			}
 		} catch (IOException e) {
 			LOGGER.error("Failed to unlock level {}", this.session.getDirectoryName(), e);
 		}
