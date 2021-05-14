@@ -3,10 +3,12 @@ package org.scaffoldeditor.editormc.engine;
 import java.util.List;
 import java.util.concurrent.Executor;
 
+import net.minecraft.block.Block;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ProgressListener;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -19,6 +21,11 @@ public class EditorServerWorld extends ServerWorld {
 	
 	@Override
 	public void save(ProgressListener progressListener, boolean flush, boolean bl) {
+		return;
+	}
+	
+	@Override
+	public void updateNeighbors(BlockPos pos, Block block) {
 		return;
 	}
 
