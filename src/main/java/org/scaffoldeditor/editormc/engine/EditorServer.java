@@ -76,7 +76,7 @@ public class EditorServer extends IntegratedServer {
 			WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory) {
 		super(serverThread, client, registryManager, session, resourcePackManager, serverResourceManager, saveProperties,
 				minecraftSessionService, gameProfileRepository, userCache, worldGenerationProgressListenerFactory);
-		ScaffoldEditor.getInstance().isInEditor = true;
+		ScaffoldEditorMod.getInstance().isInEditor = true;
 		this.setPlayerManager(new FakePlayerManager(this, this.registryManager, this.saveHandler));
 		System.out.println("loaded editor server");
 	}
@@ -101,7 +101,7 @@ public class EditorServer extends IntegratedServer {
 			LOGGER.error("Failed to unlock level {}", this.session.getDirectoryName(), e);
 		}
 		
-		ScaffoldEditor.getInstance().isInEditor = false;
+		ScaffoldEditorMod.getInstance().isInEditor = false;
 	}
 
 }

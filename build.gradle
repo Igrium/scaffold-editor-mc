@@ -1,6 +1,7 @@
 plugins {
 	id 'fabric-loom' version '0.6-SNAPSHOT'
 	id 'maven-publish'
+	id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -17,6 +18,11 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 	mavenLocal()
+}
+
+javafx {
+    version = "15.0.1"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 dependencies {

@@ -2,7 +2,7 @@ package org.scaffoldeditor.editormc;
 
 import org.scaffoldeditor.editormc.engine.EditorServer;
 import org.scaffoldeditor.editormc.engine.EditorServerWorld;
-import org.scaffoldeditor.editormc.engine.ScaffoldEditor;
+import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.scaffold_interface.WorldInterface;
 import org.scaffoldeditor.scaffold.core.Project;
 import org.scaffoldeditor.scaffold.level.Level;
@@ -11,14 +11,21 @@ import org.scaffoldeditor.scaffold.math.Vector;
 
 import net.minecraft.client.MinecraftClient;
 
-public class Editor {
+public class ScaffoldEditor {
 	protected Level level;
-	private ScaffoldEditor mod;
+	private ScaffoldEditorMod mod;
 	
-	public Editor(Project project, Level level) {
-		this.mod = ScaffoldEditor.getInstance();
+	public ScaffoldEditor(Project project, Level level) {
+		this.mod = ScaffoldEditorMod.getInstance();
 		this.level = level;
-		loadLevel();
+	}
+	
+	/**
+	 * Launch the scaffold editor.
+	 * Should be called when Minecraft is NOT ingame.
+	 */
+	public void start() {
+		
 	}
 	
 	protected void loadLevel() {
@@ -33,7 +40,7 @@ public class Editor {
 		WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
 	}
 	
-	public static Editor startWithTestProject() {
+	public static ScaffoldEditor startWithTestProject() {
 		@SuppressWarnings("resource")
 		Project project = Project.init(MinecraftClient.getInstance().runDirectory.toPath().resolve("testProject").toString(), "testProject");
 		Level level = new Level(project, "Test Level");
@@ -44,6 +51,6 @@ public class Editor {
 		
 		
 		level.saveFile(project.getProjectFolder().resolve("maps/testlevel.mclevel").toFile());
-		return new Editor(project, level);
+		return new ScaffoldEditor(project, level);
 	}
 }

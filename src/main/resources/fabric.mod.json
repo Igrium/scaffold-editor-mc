@@ -19,7 +19,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "org.scaffoldeditor.editormc.engine.ScaffoldEditor"
+      "org.scaffoldeditor.editormc.engine.ScaffoldEditorMod"
     ]
   },
   "mixins": [
