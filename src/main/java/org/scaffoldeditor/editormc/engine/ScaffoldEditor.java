@@ -1,5 +1,7 @@
 package org.scaffoldeditor.editormc.engine;
 
+import org.scaffoldeditor.editormc.Editor;
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -14,6 +16,7 @@ public class ScaffoldEditor implements ModInitializer {
 	public boolean isInEditor = false;
 	private MinecraftClient client;
 	private EditorServer server;
+	protected Editor editor;
 
 	public void onInitialize() {
 		client = MinecraftClient.getInstance();
@@ -43,10 +46,17 @@ public class ScaffoldEditor implements ModInitializer {
 		
 		client.startIntegratedServer("");
 		server = (EditorServer) client.getServer();
+		editor = Editor.startWithTestProject();
+		
+		
 	}
 	
 	public EditorServer getServer() {
 		return server;
+	}
+	
+	public Editor getEditor() {
+		return editor;
 	}
 	
 	public static ScaffoldEditor getInstance() {

@@ -16,7 +16,6 @@ import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.registry.DynamicRegistryManager.Impl;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.storage.LevelStorage.Session;
 public class EditorServer extends IntegratedServer {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
+	private EditorServerWorld world;
 	
 	@Override
 	public boolean save(boolean suppressLogs, boolean bl, boolean bl2) {
@@ -53,7 +53,7 @@ public class EditorServer extends IntegratedServer {
 		ChunkGenerator chunkGen = dimensionOptions.getChunkGenerator();
 		
 		MinecraftServerAccessor accessor = (MinecraftServerAccessor) this;
-		ServerWorld world = new EditorServerWorld(this, accessor.getWorkerExecutor(), this.session, serverWorldProperties, World.OVERWORLD,
+		world = new EditorServerWorld(this, accessor.getWorkerExecutor(), this.session, serverWorldProperties, World.OVERWORLD,
 				dimensionType, worldGenerationProgressListener, chunkGen, false, BiomeAccess.hashSeed(1), new ArrayList<Spawner>(), true);
 		accessor.getWorldMap().put(World.OVERWORLD, world);
 		
@@ -63,6 +63,10 @@ public class EditorServer extends IntegratedServer {
 		
 		this.getPlayerManager().setMainWorld(world);
 		
+	}
+
+	public EditorServerWorld getEditorWorld() {
+		return this.world;
 	}
 
 	public EditorServer(Thread serverThread, MinecraftClient client, Impl registryManager, Session session,

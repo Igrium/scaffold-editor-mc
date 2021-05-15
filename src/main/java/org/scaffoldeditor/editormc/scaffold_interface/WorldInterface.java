@@ -32,6 +32,10 @@ public final class WorldInterface {
 	}
 	
 	private static void loadBlock(Block block, int x, int y, int z, World world, ChunkCoordinate offset) {
+		if (block == null) {
+			return;
+		}
+		
 		int x_final = x + offset.x() * Chunk.WIDTH;
 		int z_final = z + offset.z() * Chunk.LENGTH;
 		world.setBlockState(new BlockPos(x_final, y, z_final), BlockConverter.scaffoldToMinecraft(block), 2);

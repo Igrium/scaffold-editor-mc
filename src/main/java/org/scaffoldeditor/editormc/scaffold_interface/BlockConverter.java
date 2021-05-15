@@ -27,7 +27,7 @@ public final class BlockConverter {
 		}
 		
 		BlockState state;
-		if (in.getProperties().isEmpty()) {
+		if (in.getProperties() == null) {
 			state =  Registry.BLOCK.get(new Identifier(in.getName())).getDefaultState();
 		} else {
 			CompoundTag start = NBTConverter.scaffoldCompoundToMinecraft(in.toPaletteEntry());
