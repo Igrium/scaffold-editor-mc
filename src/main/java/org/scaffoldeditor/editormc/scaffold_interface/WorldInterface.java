@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc.scaffold_interface;
 
+import java.util.BitSet;
 import java.util.Map;
 
 import org.scaffoldeditor.nbt.block.Block;
@@ -15,6 +16,8 @@ import net.minecraft.world.World;
  * @author Igrium
  */
 public final class WorldInterface {
+	
+	protected static int UPDATE_FLAGS = 18; //10010
 	
 	/**
 	 * Load a Scaffold chunk into a Minecraft world.
@@ -38,7 +41,7 @@ public final class WorldInterface {
 		
 		int x_final = x + offset.x() * Chunk.WIDTH;
 		int z_final = z + offset.z() * Chunk.LENGTH;
-		world.setBlockState(new BlockPos(x_final, y, z_final), BlockConverter.scaffoldToMinecraft(block), 2);
+		world.setBlockState(new BlockPos(x_final, y, z_final), BlockConverter.scaffoldToMinecraft(block), UPDATE_FLAGS);
 	}
 	
 	public static void loadScaffoldWorld(BlockWorld in, World world) {
@@ -48,4 +51,14 @@ public final class WorldInterface {
 			loadScaffoldChunk(chunksMap.get(chunk), world, chunk);
 		}
 	}
+	
+
+   private static BitSet boolToBitSet(boolean[] bits) {
+	   int length = bits.length;
+       BitSet bitset = new BitSet(length);
+       for (int i = 0; i < length; i++)
+           bitset.set(i, bits[i]);
+
+       return bitset;
+   }
 }
