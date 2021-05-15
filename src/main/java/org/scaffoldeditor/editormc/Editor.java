@@ -22,6 +22,10 @@ public class Editor {
 	}
 	
 	protected void loadLevel() {
+		if (level == null) {
+			return;
+		}
+		
 		EditorServer server = mod.getServer();
 		EditorServerWorld world = server.getEditorWorld();
 		

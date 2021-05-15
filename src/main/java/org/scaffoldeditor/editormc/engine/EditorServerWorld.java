@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
@@ -27,6 +28,13 @@ public class EditorServerWorld extends ServerWorld {
 	@Override
 	public void updateNeighbors(BlockPos pos, Block block) {
 		return;
+	}
+	
+	public void forceBlockState(BlockPos pos, BlockState state) {
+		this.setBlockState(pos, state, 50); //110010
+	}
+	
+	public void clear() {
 	}
 
 	public EditorServerWorld(MinecraftServer server, Executor workerExecutor, Session session,
