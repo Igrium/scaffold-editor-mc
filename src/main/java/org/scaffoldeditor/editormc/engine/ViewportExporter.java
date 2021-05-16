@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc.engine;
 
+import java.awt.Dimension;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.opengl.GL11;

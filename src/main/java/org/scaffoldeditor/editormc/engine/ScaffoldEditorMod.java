@@ -1,11 +1,16 @@
 package org.scaffoldeditor.editormc.engine;
 
+import java.awt.Dimension;
+
 import org.scaffoldeditor.editormc.ScaffoldEditor;
+import org.scaffoldeditor.editormc.engine.mixins.MainWindowAccessor;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.TranslatableText;
@@ -33,6 +38,23 @@ public class ScaffoldEditorMod implements ModInitializer {
 		});
 		
 		ScaffoldEditorMod.instance = this;
+		
+		ClientTickEvents.START_WORLD_TICK.register(e -> {
+			if (isInEditor) {
+				Dimension res = editor.getUI().getViewport().getDesiredResolution();
+				Framebuffer fb = client.getFramebuffer();
+				if (fb.viewportWidth != res.width || fb.viewportHeight != res.height) {
+					fb.resize(res.width, res.height, false);
+					
+					MainWindowAccessor window = (MainWindowAccessor) (Object) client.getWindow();
+					window.setFramebufferWidth(res.width);
+					window.setFramebufferHeight(res.height);
+					
+					client.gameRenderer.onResized(res.width, res.height);
+				}
+				
+			}
+		});
 	}
 	
 	
