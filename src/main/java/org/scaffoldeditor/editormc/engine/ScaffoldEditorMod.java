@@ -28,7 +28,6 @@ public class ScaffoldEditorMod implements ModInitializer {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			client = MinecraftClient.getInstance();
 			if (screen instanceof TitleScreen) {
-				System.out.println("test");
 				Screens.getButtons(screen).add(
 						new ButtonWidget(0, 0, 20, 20, new TranslatableText("menu.scaffoldeditor"), (buttonWidget) -> {
 							System.out.println("Launching editor!");
@@ -55,6 +54,7 @@ public class ScaffoldEditorMod implements ModInitializer {
 				
 			}
 		});
+		
 	}
 	
 	

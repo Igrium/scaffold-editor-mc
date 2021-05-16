@@ -83,6 +83,11 @@ public class EditorServer extends IntegratedServer {
 	
 	@Override
 	public void shutdown() {
+		ScaffoldEditorMod mod = ScaffoldEditorMod.getInstance();
+		if (mod.isInEditor) {
+			mod.editor.forceExit();
+		}
+		
 		MinecraftServerAccessor accessor = (MinecraftServerAccessor) this;
 		
 		LOGGER.info("Stopping editor server");

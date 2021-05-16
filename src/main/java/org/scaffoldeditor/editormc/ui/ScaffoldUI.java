@@ -1,10 +1,13 @@
 package org.scaffoldeditor.editormc.ui;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
+import org.jetbrains.annotations.Nullable;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -26,6 +29,7 @@ public class ScaffoldUI extends Application {
 	protected Scene mainScene;
 	protected Viewport viewport;
 	
+	
 	public ScaffoldUI() {
 		instance = this;
 		latch.countDown();
@@ -33,9 +37,19 @@ public class ScaffoldUI extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		this.stage = primaryStage;
-		
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/scaffold/ui/scaffold.fxml"));
+		Platform.setImplicitExit(false);
+		initUI(primaryStage);
+	}
+	
+	protected void initUI(Stage stage) {
+		this.stage = stage;
+		Parent root;
+		try {
+			root = FXMLLoader.load(getClass().getResource("/assets/scaffold/ui/scaffold.fxml"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
 		mainScene = new Scene(root, 1280, 800);
 		
 		stage.setTitle("Scaffold Editor");
@@ -46,8 +60,17 @@ public class ScaffoldUI extends Application {
 		stage.show();
 	}
 	
+	/**
+	 * Get the Scaffold Editor instance this ui is tied to.
+	 * @return The editor, or null if the editor is closed.
+	 */
+	@Nullable
 	public ScaffoldEditor getEditor() {
 		return editor;
+	}
+	
+	public void setEditor(ScaffoldEditor editor) {
+		this.editor = editor;
 	}
 	
 	public Viewport getViewport() {
@@ -67,6 +90,40 @@ public class ScaffoldUI extends Application {
 			e.printStackTrace();
 		}
 		return instance;
+	}
+	
+	@Nullable
+	public static ScaffoldUI getInstance() {
+		return instance;
+	}
+	
+	/**
+	 * Exit the editor.
+	 */
+	public void exit() {
+		Platform.runLater(() -> {
+			editor = null;
+			stage.hide();
+		});
+	}
+	
+	/**
+	 * Open the editor UI. If the UI has been opened already,
+	 * this method returns the original instance. Otherwise,
+	 * it launches a new instance and holds the thread until
+	 * it has initialized.
+	 * @return Scaffold UI instance.
+	 */
+	public static ScaffoldUI open() {
+		if (instance != null) {
+			Platform.runLater(() -> instance.initUI(instance.stage));
+			return instance;
+		} else {
+			new Thread(() -> {
+				Application.launch(ScaffoldUI.class, new String[] {});
+			}).start();
+			return ScaffoldUI.waitForinit();
+		}
 	}
 	
 }
