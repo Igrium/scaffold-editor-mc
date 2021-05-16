@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Config>
+    <Page id="viewport">
+        <Group id="controls">
+            <KeyBinding id="forward" value="W" />
+            <KeyBinding id="left" value="A" />
+            <KeyBinding id="backward" value="S" />
+            <KeyBinding id="right" value="D" />
+            <KeyBinding id="up" value="Space" />
+            <KeyBinding id="down" value="Shift" />
+        </Group>
+    </Page>
+</Config>

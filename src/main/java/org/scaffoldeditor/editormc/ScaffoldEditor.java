@@ -42,6 +42,10 @@ public class ScaffoldEditor {
 		ui = ScaffoldUI.open();
 		
 		ScaffoldEditorMod.getInstance().isInEditor = true;
+		
+		if (level != null) {
+			this.level = level;
+		}
 		loadLevel();
 	}
 	

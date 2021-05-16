@@ -2,6 +2,7 @@ package org.scaffoldeditor.editormc.engine;
 
 import java.awt.Dimension;
 
+import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.mixins.MainWindowAccessor;
 
@@ -24,6 +25,8 @@ public class ScaffoldEditorMod implements ModInitializer {
 
 	public void onInitialize() {
 		client = MinecraftClient.getInstance();
+		
+		Config.init();
 
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			client = MinecraftClient.getInstance();
