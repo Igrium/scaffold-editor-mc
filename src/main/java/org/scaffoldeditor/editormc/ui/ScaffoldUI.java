@@ -11,6 +11,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -75,6 +76,11 @@ public class ScaffoldUI extends Application {
 	
 	public Viewport getViewport() {
 		return viewport;
+	}
+	
+	public void setFPSIndicator(int value) {
+		Label fps = (Label) mainScene.lookup("#fps_indicator");
+		fps.setText("fps: "+value);
 	}
 	
 	// INITIALIZATION

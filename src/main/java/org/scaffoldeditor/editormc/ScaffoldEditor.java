@@ -18,6 +18,8 @@ public class ScaffoldEditor {
 	protected EditorServer server;
 	protected ScaffoldUI ui;
 	
+	private boolean pauseCache = true;
+	
 	public ScaffoldEditor() {
 
 	}
@@ -31,6 +33,9 @@ public class ScaffoldEditor {
 			System.out.print("Warning: Scaffold Editor can only be launched when not ingame");
 			return;
 		}
+		pauseCache = client.options.pauseOnLostFocus;
+		client.options.pauseOnLostFocus = false;
+		
 		client.startIntegratedServer("");
 		server = (EditorServer) client.getServer();
 		
@@ -47,7 +52,7 @@ public class ScaffoldEditor {
 		ui.exit();
 		ScaffoldEditorMod.getInstance().isInEditor = false;
 		client.disconnect();
-		client.onResolutionChanged();
+		onClose();
 	}
 	
 	/**
@@ -57,7 +62,12 @@ public class ScaffoldEditor {
 	public void forceExit() {
 		ui.exit();
 		ScaffoldEditorMod.getInstance().isInEditor = false;
+		onClose();
+	}
+	
+	protected void onClose() {
 		client.onResolutionChanged();
+		client.options.pauseOnLostFocus = pauseCache;
 	}
 	
 	public void setLevel(Level level) {

@@ -9,7 +9,8 @@
   "client": [
     "MixinMinecraftClient",
     "MixinGameRenderer",
-    "MainWindowAccessor"
+    "MainWindowAccessor",
+    "MinecraftClientAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

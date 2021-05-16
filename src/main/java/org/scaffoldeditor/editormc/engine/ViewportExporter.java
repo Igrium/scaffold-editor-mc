@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.system.MemoryUtil;
+import org.scaffoldeditor.editormc.engine.mixins.MinecraftClientAccessor;
+import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.editormc.ui.Viewport;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -41,6 +43,7 @@ public class ViewportExporter {
 		
 		Platform.runLater(() -> {
 			viewport.updateViewport(buffer, x, y);
+			ScaffoldUI.getInstance().setFPSIndicator(MinecraftClientAccessor.getFPS());
 		});
 	}
 	
