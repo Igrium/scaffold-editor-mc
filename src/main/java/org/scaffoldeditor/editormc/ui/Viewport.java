@@ -26,7 +26,7 @@ public class Viewport {
 	public void updateViewport(ByteBuffer buffer, int x, int y) {
 		WritableImage image = new WritableImage(x, y);
 		if (x > 0 && y > 0) {
-			image.getPixelWriter().setPixels(0, 0, x, y, PIXEL_FORMAT, buffer, 0);
+			image.getPixelWriter().setPixels(0, 0, x, y, PIXEL_FORMAT, buffer, x * 4);
 			imageView.setImage(image);
 		}
 	}
