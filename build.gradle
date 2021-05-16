@@ -18,11 +18,14 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 	mavenLocal()
+	maven {
+		url 'https://repo.eclipse.org/content/groups/efxclipse'
+	}
 }
 
 javafx {
     version = "15.0.1"
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics	' ]
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics' ]
 }
 
 dependencies {

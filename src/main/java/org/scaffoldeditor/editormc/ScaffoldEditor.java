@@ -43,7 +43,7 @@ public class ScaffoldEditor {
 			}
 		}.start();
 		ui = ScaffoldUI.waitForinit();
-		
+		ScaffoldEditorMod.getInstance().isInEditor = true;
 		loadLevel();
 	}
 	
@@ -75,5 +75,9 @@ public class ScaffoldEditor {
 	
 	public EditorServer getServer() {
 		return server;
+	}
+	
+	public ScaffoldUI getUI() {
+		return ui;
 	}
 }

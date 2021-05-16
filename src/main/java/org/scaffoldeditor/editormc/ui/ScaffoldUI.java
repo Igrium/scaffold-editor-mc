@@ -8,8 +8,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import net.minecraft.client.MinecraftClient;
 
 /**
  * The main JavaFX application for Scaffold's UI.
@@ -23,6 +23,7 @@ public class ScaffoldUI extends Application {
 	private ScaffoldEditor editor;
 	protected Stage stage;
 	protected Scene mainScene;
+	protected Viewport viewport;
 	
 	public ScaffoldUI() {
 		instance = this;
@@ -38,12 +39,18 @@ public class ScaffoldUI extends Application {
 		
 		stage.setTitle("Scaffold Editor");
 		stage.setScene(mainScene);
+		
+		viewport = new Viewport((ImageView) mainScene.lookup("#viewport"));
+		
 		stage.show();
-		MinecraftClient.getInstance().getFramebuffer();
 	}
 	
 	public ScaffoldEditor getEditor() {
 		return editor;
+	}
+	
+	public Viewport getViewport() {
+		return viewport;
 	}
 	
 	// INITIALIZATION

@@ -19,6 +19,7 @@ public class ScaffoldEditorMod implements ModInitializer {
 
 	public void onInitialize() {
 		client = MinecraftClient.getInstance();
+
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			client = MinecraftClient.getInstance();
 			if (screen instanceof TitleScreen) {
