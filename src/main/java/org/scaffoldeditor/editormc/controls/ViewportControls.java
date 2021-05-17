@@ -60,7 +60,7 @@ public class ViewportControls {
 	
 	public void onUpdate() {
 		// TESTING ONLY
-//		System.out.println("Keyboard Update!");
+		System.out.println("Keyboard Update!");
 
 		// TODO: Make this directly call the client player entity.
 //		client.options.keyForward.setPressed(bindingsPressed.get("forward"));

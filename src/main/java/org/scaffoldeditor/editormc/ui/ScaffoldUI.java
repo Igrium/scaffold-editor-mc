@@ -61,7 +61,7 @@ public class ScaffoldUI extends Application {
 		viewport = new Viewport((ImageView) mainScene.lookup("#viewport"), (Pane) mainScene.lookup("#viewport_pane"));
 		
 		stage.show();
-//		viewportControls.init(this);
+		viewportControls.init(this);
 	}
 	
 	/**
