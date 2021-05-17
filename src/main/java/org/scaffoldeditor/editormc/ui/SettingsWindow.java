@@ -9,6 +9,7 @@ import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ui.setting_types.ChangeSettingEvent;
 import org.scaffoldeditor.editormc.ui.setting_types.ISettingType;
 import org.scaffoldeditor.editormc.ui.setting_types.KeyBinding;
+import org.scaffoldeditor.editormc.ui.setting_types.StringSetting;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -34,7 +35,6 @@ public class SettingsWindow {
 	protected final Map<String, String[]> cache = new HashMap<>();
 	
 	public SettingsWindow(Stage parent) {
-		settingTypes.put("KeyBinding", new KeyBinding());
 		stage = new Stage();
 		Parent root;
 		try {
@@ -57,6 +57,10 @@ public class SettingsWindow {
 		});
 		
 		stage.setOnCloseRequest(e -> save());
+		
+		// Init setting types;
+		settingTypes.put("KeyBinding", new KeyBinding());
+		settingTypes.put("StringSetting", new StringSetting());
 	}
 	
 	public void show() {

@@ -2,6 +2,8 @@ package org.scaffoldeditor.editormc.ui.setting_types;
 
 import org.w3c.dom.Element;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -13,12 +15,30 @@ public class KeyBinding implements ISettingType {
 	public Node createSetter(Element element, String path, String defaultValue, Scene scene) {
 		TextField field = new TextField();
 		field.setText(defaultValue);
-		field.focusedProperty().addListener(e -> {
-			if (!field.getText().matches(defaultValue)) {
-				ChangeSettingEvent event = new ChangeSettingEvent(ChangeSettingEvent.SETTING_CHANGED, field.getText(), path, getName());
-				field.fireEvent(event);	
-			}
+		field.setEditable(false);
+		
+		field.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			
+			private String text = field.getText();
 
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (field.isFocused()) {
+					text = field.getText();
+					field.setText("Press a key");
+				} else {
+					if (field.getText().equals("Press a key")) {
+						field.setText(text);
+					}
+				}
+			}
+			
+		});
+		
+		field.setOnKeyPressed(e -> {
+			field.setText(e.getCode().getName());
+			ChangeSettingEvent event = new ChangeSettingEvent(getEventType(), field.getText(), path, getName());
+			field.fireEvent(event);
 		});
 		
 		return field;
