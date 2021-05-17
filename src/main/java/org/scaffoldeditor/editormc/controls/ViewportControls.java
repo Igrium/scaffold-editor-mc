@@ -1,5 +1,7 @@
 package org.scaffoldeditor.editormc.controls;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,9 +17,17 @@ import org.w3c.dom.NodeList;
 
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import javafx.event.EventHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec2f;
 
+/**
+ * Handles manipulation of the 3D viewport.
+ * @author Igrium
+ */
 public class ViewportControls {
 	protected ScaffoldEditor editor;
 	protected ScaffoldUI ui;
@@ -28,6 +38,16 @@ public class ViewportControls {
 	public final Map<String, Boolean> bindingsPressed = new HashMap<String, Boolean>();
 	private MinecraftClient client = MinecraftClient.getInstance();
 	protected CameraController camera;
+	
+	public boolean enableControls = true;
+	
+	public boolean captureMouse = true;
+	private boolean ignoreMouse = false;
+	private double mouseX = 0;
+	private double mouseY = 0;
+	
+	private Robot mouseMover;
+
 	
 	public ViewportControls() {
 		Config.onSave(() -> initControls());
@@ -55,20 +75,29 @@ public class ViewportControls {
 			}
 		});
 		
+		scene.addEventHandler(MouseEvent.MOUSE_MOVED, new MouseListener());
+		
+		Entity cameraEntity = client.getCameraEntity();
+		if (!(cameraEntity instanceof CameraController)) {
+			System.out.println("ERROR: Camera entity is not a camera controller! Viewport controls will not work!");
+			return;
+		}
+		
+		camera = (EditorCameraEntity) client.getCameraEntity();
+		
+		try {
+			mouseMover = new Robot();
+		} catch (AWTException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		initControls();
 	}
 	
-	public void onUpdate() {
-		// TESTING ONLY
-		System.out.println("Keyboard Update!");
-
-		// TODO: Make this directly call the client player entity.
-//		client.options.keyForward.setPressed(bindingsPressed.get("forward"));
-//		client.options.keyBack.setPressed(bindingsPressed.get("backward"));
-//		client.options.keyLeft.setPressed(bindingsPressed.get("left"));
-//		client.options.keyRight.setPressed(bindingsPressed.get("right"));
-//		client.options.keySneak.setPressed(bindingsPressed.get("down"));
-//		client.options.keyJump.setPressed(bindingsPressed.get("up"));
+	protected void onUpdate() {
+		if (!enableControls) {
+			return;
+		}
 		
 		double forwardBackward = 0;
 		double leftRight = 0;
@@ -107,12 +136,70 @@ public class ViewportControls {
 			bindingsPressed.put(b, false);
 		}
 		
-		Entity cameraEntity = client.getCameraEntity();
-		if (!(cameraEntity instanceof CameraController)) {
-			System.out.println("ERROR: Camera entity is not a camera controller! Viewport controls will not work!");
-			return;
+	}
+	
+	protected void handleMoveMouse(double dx, double dy) {
+		if (camera != null) {
+			Vec2f oldRotation = camera.getRot();
+			camera.setRot(oldRotation.x + (float) dx, oldRotation.y + (float) dy);
+		}
+	}
+	
+	protected class MouseListener implements EventHandler<MouseEvent> {
+
+		@Override
+		public void handle(MouseEvent event) {
+		    if(ignoreMouse) {
+		    	ignoreMouse = false;
+		        return;
+		    }
+		    Stage stage = ui.getStage();
+		    
+		    double centerX = stage.getX() + stage.getWidth() / 2;
+		    double centerY = stage.getY() + stage.getHeight() / 2;
+		    		    
+		    double dx = (event.getSceneX() - mouseX) / 10;
+		    double dy = (event.getSceneY() - mouseY) / 10;
+		    mouseX = event.getSceneX();
+		    mouseY = event.getSceneY();
+		    
+		    System.out.println("("+dx+","+dy+")");
+		    
+		    ignoreMouse = true;
+//		    moveCursor((int) centerX, (int) centerY);
+		    handleMoveMouse(dx, dy);
 		}
 		
-		camera = (EditorCameraEntity) client.getCameraEntity();
+//		@Override
+//		public void handle(MouseEvent event) {
+//			if (ignoreMouse || !captureMouse) {
+//				ignoreMouse = false;
+//				return;
+//			}
+//			Stage stage = ui.getStage();
+//			
+//		    moveCursor((int) (stage.getX() + (stage.getWidth() / 2.0)), (int) (stage.getY() + (stage.getHeight() / 2.0)));
+//		
+//			ignoreMouse = true;
+//			
+//			double dx = mouseX - event.getSceneX();
+//			double dy = mouseY - event.getSceneY();
+//			mouseX = event.getSceneX();
+//			mouseY = event.getSceneY();
+//		    
+//		    
+//		    handleMoveMouse(dx, dy);
+//		}
+		
+	}
+	
+	/**
+	 * Move the mouse to the specific screen position
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	public void moveCursor(int screenX, int screenY) {
+		mouseMover.mouseMove(screenX, screenY);
 	}
 }

@@ -43,4 +43,12 @@ public class Viewport {
 		return new Dimension((int) parent.getWidth(), (int) parent.getHeight());
 	}
 	
+	public ImageView getImage() {
+		return imageView;
+	}
+	
+	public Pane getParent() {
+		return parent;
+	}
+	
 }

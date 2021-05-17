@@ -60,6 +60,7 @@ public class ScaffoldUI extends Application {
 		
 		viewport = new Viewport((ImageView) mainScene.lookup("#viewport"), (Pane) mainScene.lookup("#viewport_pane"));
 		
+		System.setProperty("java.awt.headless", "false");
 		stage.show();
 		viewportControls.init(this);
 	}
