@@ -184,15 +184,17 @@ public final class Config {
 	 * @param value Value to set.
 	 */
 	public static void setValue(String path, String type, String value) {
-		String[] splitPath = value.split("\\.");
+		String[] splitPath = path.split("\\.");
 		
 		Element element = getElement(splitPath);
 		if (element != null) {
 			element.setAttribute("value", value);
 		} else {
 			Element parent = getElement(Arrays.copyOfRange(splitPath, 0, splitPath.length - 1));
+			System.out.println(parent);
 			Element newElement = document.createElement(type);
 			newElement.setAttribute("value", value);
+			newElement.setAttribute("id", splitPath[splitPath.length-1]);
 			parent.appendChild(newElement);
 		}
 		

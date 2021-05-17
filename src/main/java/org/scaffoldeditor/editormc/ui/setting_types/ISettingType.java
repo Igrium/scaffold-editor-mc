@@ -10,4 +10,6 @@ public interface ISettingType {
 	public Node createSetter(Element element, String path, String defaultValue, Scene scene);
 	
 	public EventType<? extends ChangeSettingEvent> getEventType();
+	
+	public String getName();
 }

@@ -12,11 +12,13 @@ public class ChangeSettingEvent extends Event {
 	
 	private final String newValue;
 	private final String path;
+	private final String type;
 
-	public ChangeSettingEvent(EventType<? extends ChangeSettingEvent> eventType, String newValue, String path) {
+	public ChangeSettingEvent(EventType<? extends ChangeSettingEvent> eventType, String newValue, String path, String type) {
 		super(eventType);
 		this.newValue = newValue;
 		this.path = path;
+		this.type = type;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -32,6 +34,14 @@ public class ChangeSettingEvent extends Event {
 	
 	public String getPath() {
 		return path;
+	}
+	
+	/**
+	 * Get the type of setting.
+	 * @return The XML class of the setting in the config.
+	 */
+	public String getType() {
+		return type;
 	}
 	
 	@Override

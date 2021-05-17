@@ -26,7 +26,6 @@ public class MainFXMLController {
 	
 	@FXML
 	private void showSettings() {
-		System.out.println("Showing");
 		SettingsWindow window = new SettingsWindow((Stage) viewport_pane.getScene().getWindow());
 		window.show();
 	}

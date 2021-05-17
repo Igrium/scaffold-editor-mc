@@ -2,7 +2,6 @@ package org.scaffoldeditor.editormc.ui.setting_types;
 
 import org.w3c.dom.Element;
 
-import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -14,9 +13,12 @@ public class KeyBinding implements ISettingType {
 	public Node createSetter(Element element, String path, String defaultValue, Scene scene) {
 		TextField field = new TextField();
 		field.setText(defaultValue);
-		field.onActionProperty().addListener(e -> {
-			ChangeSettingEvent event = new ChangeSettingEvent(ChangeSettingEvent.SETTING_CHANGED, path, field.getText());
-			Event.fireEvent(scene, event);
+		field.focusedProperty().addListener(e -> {
+			if (!field.getText().matches(defaultValue)) {
+				ChangeSettingEvent event = new ChangeSettingEvent(ChangeSettingEvent.SETTING_CHANGED, field.getText(), path, getName());
+				field.fireEvent(event);	
+			}
+
 		});
 		
 		return field;
@@ -27,6 +29,11 @@ public class KeyBinding implements ISettingType {
 		return ChangeSettingEvent.SETTING_CHANGED;
 	}
 
+	@Override
+	public String getName() {
+		return "KeyBinding";
+	}
 
+	
 
 }

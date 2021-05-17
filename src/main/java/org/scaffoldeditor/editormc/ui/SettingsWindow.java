@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.scaffoldeditor.editormc.Config;
+import org.scaffoldeditor.editormc.ui.setting_types.ChangeSettingEvent;
 import org.scaffoldeditor.editormc.ui.setting_types.ISettingType;
 import org.scaffoldeditor.editormc.ui.setting_types.KeyBinding;
 import org.w3c.dom.Element;
@@ -21,17 +22,16 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class SettingsWindow {
 
-	private Map<String, ISettingType> settingTypes = new HashMap<>();
+	public final Map<String, ISettingType> settingTypes = new HashMap<>();
 	protected TabPane tabPane;
 	protected Stage stage;
 	protected Scene scene;
+	protected final Map<String, String[]> cache = new HashMap<>();
 	
 	public SettingsWindow(Stage parent) {
 		settingTypes.put("KeyBinding", new KeyBinding());
@@ -51,6 +51,12 @@ public class SettingsWindow {
 		stage.initOwner(parent);
 		
 		tabPane = (TabPane) scene.lookup("#tabPane");
+		
+		scene.addEventHandler(ChangeSettingEvent.SETTING_CHANGED, (e) -> {
+			cache.put(e.getPath(), new String[] {e.getType(), e.getNewValue()});
+		});
+		
+		stage.setOnCloseRequest(e -> save());
 	}
 	
 	public void show() {
@@ -64,6 +70,21 @@ public class SettingsWindow {
 	
 	public void reload() {
 		generateSettings(Config.getConfig());
+	}
+	
+	public void save() {
+		if (cache.size() > 0) {
+			for (String path : cache.keySet()) {
+				String[] setting = cache.get(path);
+				Config.setValue(path, setting[0], setting[1]);
+			}
+			try {
+				Config.save();
+			} catch (IOException e) {
+				System.err.println("Unable to save Scaffold config!");
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private void generateSettings(Element config) {
