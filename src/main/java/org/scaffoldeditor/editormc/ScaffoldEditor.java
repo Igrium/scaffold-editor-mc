@@ -40,6 +40,7 @@ public class ScaffoldEditor {
 		server = (EditorServer) client.getServer();
 		
 		ui = ScaffoldUI.open();
+		ui.setEditor(this);
 		
 		ScaffoldEditorMod.getInstance().isInEditor = true;
 		
@@ -53,10 +54,7 @@ public class ScaffoldEditor {
 	 * Gracefully exit from the editor.
 	 */
 	public void exit() {
-		ui.exit();
-		ScaffoldEditorMod.getInstance().isInEditor = false;
-		client.disconnect();
-		onClose();
+		client.getServer().stop(true);
 	}
 	
 	/**

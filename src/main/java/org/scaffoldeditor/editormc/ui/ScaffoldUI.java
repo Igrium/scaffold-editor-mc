@@ -9,6 +9,7 @@ import org.scaffoldeditor.editormc.controls.ViewportControls;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * The main JavaFX application for Scaffold's UI.
@@ -31,6 +33,8 @@ public class ScaffoldUI extends Application {
 	protected Scene mainScene;
 	protected Viewport viewport;
 	protected ViewportControls viewportControls = new ViewportControls();
+	
+	private boolean isExiting = false;
 	
 	
 	public ScaffoldUI() {
@@ -63,6 +67,19 @@ public class ScaffoldUI extends Application {
 		System.setProperty("java.awt.headless", "false");
 		stage.show();
 		viewportControls.init(this);
+		
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			
+			@Override
+			public void handle(WindowEvent event) {
+				if (isExiting) {
+					isExiting = false;
+				} else {
+					event.consume();
+					editor.exit();
+				}
+			}
+		});
 	}
 	
 	/**
@@ -117,6 +134,7 @@ public class ScaffoldUI extends Application {
 	public void exit() {
 		Platform.runLater(() -> {
 			editor = null;
+			isExiting = true;
 			stage.hide();
 		});
 	}

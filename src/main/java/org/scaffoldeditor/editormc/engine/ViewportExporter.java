@@ -28,6 +28,16 @@ public class ViewportExporter {
 			return;
 		};
 		
+		Viewport viewport;
+		try {
+			viewport = ScaffoldEditorMod.getInstance().editor.getUI().getViewport();	
+			if (viewport == null) {
+				return;
+			}
+		} catch (NullPointerException e) {
+			return;
+		}
+		
 		Framebuffer frameBuffer = MinecraftClient.getInstance().getFramebuffer();
 		int x = frameBuffer.textureWidth; int y = frameBuffer.textureHeight;
 		
@@ -39,7 +49,6 @@ public class ViewportExporter {
 		
 		buffer.rewind();
 		
-		Viewport viewport = ScaffoldEditorMod.getInstance().editor.getUI().getViewport();
 		
 		Platform.runLater(() -> {
 			viewport.updateViewport(buffer, x, y);
