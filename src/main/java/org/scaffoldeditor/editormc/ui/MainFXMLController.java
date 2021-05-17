@@ -10,6 +10,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import javafx.stage.Stage;
+
 
 public class MainFXMLController {
 	
@@ -20,6 +22,13 @@ public class MainFXMLController {
 	public void initialize() {
 		addPressAndHoldHandler(viewport_pane, ViewportControls.HOLD_TIME, e -> handleViewportMousePressed(e));
 		viewport_pane.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> handleViewportMouseReleased(e));
+	}
+	
+	@FXML
+	private void showSettings() {
+		System.out.println("Showing");
+		SettingsWindow window = new SettingsWindow((Stage) viewport_pane.getScene().getWindow());
+		window.show();
 	}
 	
 	// VIEWPORT

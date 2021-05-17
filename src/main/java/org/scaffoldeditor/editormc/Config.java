@@ -124,13 +124,17 @@ public final class Config {
 		return document;
 	}
 	
+	public static Element getConfig() {
+		return (Element) document.getElementsByTagName("Config").item(0);
+	}
+	
 	public static File getFile() {
 		return gameDir.resolve(FILENAME).toFile();
 	}
 	
 	
 	public static Element getElement(String path) {
-		String[] splitPath = path.split(".");
+		String[] splitPath = path.split("\\.");
 		return getElement(splitPath);
 		
 	}
@@ -155,7 +159,7 @@ public final class Config {
 	}
 	
 	private static String id (String id) {
-		return "*[#id='"+id+"']";
+		return "*[@id='"+id+"']";
 	}
 	
 	/**
@@ -168,6 +172,7 @@ public final class Config {
 		if (element != null) {
 			return element.getAttribute("value");
 		} else {
+			System.out.println("No config value: "+path);
 			return null;
 		}
 	}
@@ -179,7 +184,7 @@ public final class Config {
 	 * @param value Value to set.
 	 */
 	public static void setValue(String path, String type, String value) {
-		String[] splitPath = value.split(".");
+		String[] splitPath = value.split("\\.");
 		
 		Element element = getElement(splitPath);
 		if (element != null) {
