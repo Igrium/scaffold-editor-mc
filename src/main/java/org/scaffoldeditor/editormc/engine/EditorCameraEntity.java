@@ -93,6 +93,11 @@ public class EditorCameraEntity extends ClientPlayerEntity implements CameraCont
 	public void setRot(float yaw, float pitch) {
 		this.setRotation(yaw, pitch);
 	}
+	
+	@Override
+	public void addRot(double yaw, double pitch) {
+		this.changeLookDirection(yaw, pitch);
+	}
 
 	@Override
 	public Vec2f getRot() {

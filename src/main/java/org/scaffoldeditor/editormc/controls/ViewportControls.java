@@ -15,20 +15,26 @@ import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.event.EventHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec2f;
 
 /**
  * Handles manipulation of the 3D viewport.
  * @author Igrium
  */
 public class ViewportControls {
+	/**
+	 * The amount of time it takes for a right click to activate the viewport controls.
+	 */
+	public static final Duration HOLD_TIME = new Duration(100);
+	
 	protected ScaffoldEditor editor;
 	protected ScaffoldUI ui;
 	/**
@@ -39,9 +45,9 @@ public class ViewportControls {
 	private MinecraftClient client = MinecraftClient.getInstance();
 	protected CameraController camera;
 	
-	public boolean enableControls = true;
+	protected boolean enableControls = false;
 	
-	public boolean captureMouse = true;
+	protected boolean captureMouse = false;
 	private boolean ignoreMouse = false;
 	private double mouseX = 0;
 	private double mouseY = 0;
@@ -75,7 +81,9 @@ public class ViewportControls {
 			}
 		});
 		
+		scene.addEventHandler(MouseEvent.MOUSE_DRAGGED, new MouseListener());
 		scene.addEventHandler(MouseEvent.MOUSE_MOVED, new MouseListener());
+
 		
 		Entity cameraEntity = client.getCameraEntity();
 		if (!(cameraEntity instanceof CameraController)) {
@@ -94,6 +102,20 @@ public class ViewportControls {
 		initControls();
 	}
 	
+	public void setEnableControls(boolean enable) {
+		enableControls = enable;
+		setCaptureMouse(enable);
+		
+		if (!enable && camera != null) {
+			camera.setFrontBack(0);
+			camera.setLeftRight(0);
+			camera.setUpDown(0);
+		}
+	}
+	
+	public boolean getEnableControls() { return enableControls; }
+	
+
 	protected void onUpdate() {
 		if (!enableControls) {
 			return;
@@ -140,17 +162,37 @@ public class ViewportControls {
 	
 	protected void handleMoveMouse(double dx, double dy) {
 		if (camera != null) {
-			Vec2f oldRotation = camera.getRot();
-			camera.setRot(oldRotation.x + (float) dx, oldRotation.y + (float) dy);
+			camera.addRot(dx, dy);
 		}
+	}
+	
+	public void setCaptureMouse(boolean captureMouse) {
+		if (captureMouse) { 
+			if (this.captureMouse) return;
+			ignoreMouse = true;
+			ui.getStage().getScene().setCursor(Cursor.NONE);
+		} else {
+			ui.getStage().getScene().setCursor(Cursor.DEFAULT);
+		}
+		this.captureMouse = captureMouse;
+	}
+	
+	public boolean getCaptureMouse() {
+		return captureMouse;
 	}
 	
 	protected class MouseListener implements EventHandler<MouseEvent> {
 
 		@Override
 		public void handle(MouseEvent event) {
+			if (!captureMouse) {
+				return;
+			}
+			
 		    if(ignoreMouse) {
 		    	ignoreMouse = false;
+		    	mouseX = event.getSceneX();
+			    mouseY = event.getSceneY();
 		        return;
 		    }
 		    Stage stage = ui.getStage();
@@ -158,15 +200,13 @@ public class ViewportControls {
 		    double centerX = stage.getX() + stage.getWidth() / 2;
 		    double centerY = stage.getY() + stage.getHeight() / 2;
 		    		    
-		    double dx = (event.getSceneX() - mouseX) / 10;
-		    double dy = (event.getSceneY() - mouseY) / 10;
+		    double dx = (event.getSceneX() - mouseX);
+		    double dy = (event.getSceneY() - mouseY);
 		    mouseX = event.getSceneX();
 		    mouseY = event.getSceneY();
-		    
-		    System.out.println("("+dx+","+dy+")");
-		    
+		    		    
 		    ignoreMouse = true;
-//		    moveCursor((int) centerX, (int) centerY);
+		    moveCursor((int) centerX, (int) centerY);
 		    handleMoveMouse(dx, dy);
 		}
 		

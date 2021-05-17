@@ -51,6 +51,11 @@ public interface CameraController {
 	
 	public Vec2f getRot();
 	
+	public default void addRot(double yaw, double pitch) {
+		Vec2f rot = getRot();
+		setRot((float) (rot.x + yaw), (float) (rot.y + pitch));
+	}
+	
 	/**
 	 * Set this camera's field of view.
 	 * @param fov New FOV in degrees.
