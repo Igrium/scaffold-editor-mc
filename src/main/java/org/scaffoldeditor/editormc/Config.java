@@ -43,9 +43,9 @@ public final class Config {
 	private static DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
 	private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	private static XPathFactory xPathFactory = XPathFactory.newInstance();
-	private static Transformer transformer;
-	private static DocumentBuilder builder;
-	private static XPath xPath = xPathFactory.newXPath();
+	public static Transformer transformer;
+	public static DocumentBuilder builder;
+	public static XPath xPath = xPathFactory.newXPath();
 	
 	private static List<Runnable> saveListeners = new ArrayList<Runnable>();
 	
@@ -118,6 +118,10 @@ public final class Config {
 				r.run();
 			}
 		}
+	}
+	
+	public static Document getDocument() {
+		return document;
 	}
 	
 	public static File getFile() {

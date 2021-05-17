@@ -5,6 +5,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.jetbrains.annotations.Nullable;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
+import org.scaffoldeditor.editormc.controls.ViewportControls;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -29,6 +30,7 @@ public class ScaffoldUI extends Application {
 	protected Stage stage;
 	protected Scene mainScene;
 	protected Viewport viewport;
+	protected ViewportControls viewportControls = new ViewportControls();
 	
 	
 	public ScaffoldUI() {
@@ -59,6 +61,7 @@ public class ScaffoldUI extends Application {
 		viewport = new Viewport((ImageView) mainScene.lookup("#viewport"), (Pane) mainScene.lookup("#viewport_pane"));
 		
 		stage.show();
+//		viewportControls.init(this);
 	}
 	
 	/**
@@ -81,6 +84,10 @@ public class ScaffoldUI extends Application {
 	public void setFPSIndicator(int value) {
 		Label fps = (Label) mainScene.lookup("#fps_indicator");
 		fps.setText("fps: "+value);
+	}
+	
+	public Stage getStage() {
+		return stage;
 	}
 	
 	// INITIALIZATION
