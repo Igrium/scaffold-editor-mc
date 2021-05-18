@@ -41,5 +41,6 @@ public class FXMLSplashScreenController {
 	private void open() {
 		((Stage) textField.getScene().getWindow()).close();
 		ScaffoldUI.getInstance().getEditor().openProject(Paths.get(textField.getText()));
+		ScaffoldUI.getInstance().openLevel();
 	}
 }

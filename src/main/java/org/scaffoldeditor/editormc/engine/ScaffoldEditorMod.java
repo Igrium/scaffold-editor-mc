@@ -72,7 +72,6 @@ public class ScaffoldEditorMod implements ModInitializer {
 		editor = new ScaffoldEditor();
 		editor.start(null);
 		
-		
 	}
 	
 	public ScaffoldEditor getEditor() {

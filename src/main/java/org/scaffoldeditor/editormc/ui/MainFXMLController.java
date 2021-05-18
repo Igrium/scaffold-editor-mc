@@ -30,6 +30,11 @@ public class MainFXMLController {
 		window.show();
 	}
 	
+	@FXML
+	private void openLevel() {
+		ScaffoldUI.getInstance().openLevel();
+	}
+	
 	// VIEWPORT
 	private void addPressAndHoldHandler(Node node, Duration holdTime, EventHandler<MouseEvent> handler) {
 

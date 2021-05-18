@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc;
 
+import java.io.File;
 import java.nio.file.Path;
 
 import org.jetbrains.annotations.Nullable;
@@ -150,5 +151,16 @@ public class ScaffoldEditor {
 			this.project = Project.init(folder.toString(), folder.getFileName().toString());
 		}
 		return project;
+	}
+	
+	/**
+	 * Open a level file.
+	 * @param file File to load.
+	 * @return Loaded level.
+	 */
+	public Level openLevelFile(File file) {
+		Level level = Level.loadFile(project, file.toPath());
+		setLevel(level);
+		return level;
 	}
 }

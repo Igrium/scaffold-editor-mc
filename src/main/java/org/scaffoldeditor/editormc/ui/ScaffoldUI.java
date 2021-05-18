@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc.ui;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
@@ -16,6 +17,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -88,9 +91,6 @@ public class ScaffoldUI extends Application {
 	}
 	
 	public void openSplashScreen() {
-//		if (!stage.isShowing()) {
-//			return;
-//		}
 		
 		Parent root;
 		try {
@@ -108,6 +108,24 @@ public class ScaffoldUI extends Application {
 		stage.initOwner(this.stage);
 		
 		stage.show();
+	}
+	
+	/**
+	 * Launch the open level screen.
+	 */
+	public void openLevel() {
+		if (editor.getProject() == null) {
+			return;
+		}
+		
+		FileChooser chooser = new FileChooser();
+		chooser.setInitialDirectory(editor.getProject().getProjectFolder().toFile());
+		chooser.getExtensionFilters().add(new ExtensionFilter("Scaffold Level Files", "*.mclevel"));
+		
+		File level = chooser.showOpenDialog(stage);
+		if (level != null) {
+			editor.openLevelFile(level);
+		}
 	}
 	
 	/**
