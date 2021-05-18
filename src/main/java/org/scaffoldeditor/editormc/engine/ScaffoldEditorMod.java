@@ -69,7 +69,7 @@ public class ScaffoldEditorMod implements ModInitializer {
 			return;
 		}
 		
-		editor = new ScaffoldEditor();
+		if (editor == null) editor = new ScaffoldEditor();
 		editor.start(null);
 		
 	}

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Config>
-    <Page id="general">
+    <Page id="technical" hidden="true">
         <Group id="project">
-            <StringSetting id="default project" value="" />
+            <StringSetting id="defaultProject" value="" />
         </Group>
     </Page>
     <Page id="viewport">

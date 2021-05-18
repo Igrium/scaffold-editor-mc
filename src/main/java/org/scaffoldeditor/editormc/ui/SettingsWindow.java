@@ -98,7 +98,7 @@ public class SettingsWindow {
 			Node child = children.item(i);
 			if (child instanceof Element) {
 				Element page = (Element) child;
-				if (page.getTagName().equals("Page")) {
+				if (page.getTagName().equals("Page") && !"true".equals(page.getAttribute("hidden"))) {
 					addTab(generatePage(page));
 				}
 			}	
@@ -114,7 +114,7 @@ public class SettingsWindow {
 			Node node = children.item(i);
 			if (node instanceof Element) {
 				Element group = (Element) node;
-				if (group.getTagName().equals("Group")) {
+				if (group.getTagName().equals("Group") && !"true".equals(group.getAttribute("hidden"))) {
 					int index = -1;
 					TitledPane oldPane = getPane(accordion, page.getAttribute("id"));
 					if (oldPane != null) {
@@ -137,7 +137,7 @@ public class SettingsWindow {
 			if (child instanceof Element) {
 				Element setting = (Element) child;
 				String name = setting.getTagName();
-				if (settingTypes.containsKey(name)) {
+				if (settingTypes.containsKey(name) && !"true".equals(setting.getAttribute("hidden"))) {
 					String id = setting.getAttribute("id");
 					ISettingType settingType = settingTypes.get(name);
 					String path = String.join(".", pageName, group.getAttribute("id"), id);
