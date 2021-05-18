@@ -1,8 +1,10 @@
 package org.scaffoldeditor.editormc.ui.controllers;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 
+import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 
 import javafx.fxml.FXML;
@@ -17,6 +19,12 @@ public class FXMLSplashScreenController {
 	
 	@FXML
 	private TextField textField;
+	
+	@FXML
+	private void initialize() {
+		textField.setText(Config.getValue("technical.project.defaultProject"));
+		updateText();
+	}
 	
 	@FXML
 	private void browse() {
@@ -39,6 +47,14 @@ public class FXMLSplashScreenController {
 	
 	@FXML
 	private void open() {
+		Config.setValue("technical.project.defaultProject", "StringSetting", textField.getText());
+		
+		try {
+			Config.save(false);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		((Stage) textField.getScene().getWindow()).close();
 		ScaffoldUI.getInstance().getEditor().openProject(Paths.get(textField.getText()));
 		ScaffoldUI.getInstance().openLevel();

@@ -119,9 +119,9 @@ public class ScaffoldUI extends Application {
 		}
 		
 		FileChooser chooser = new FileChooser();
-		chooser.setInitialDirectory(editor.getProject().getProjectFolder().toFile());
+		chooser.setInitialDirectory(editor.getProject().getProjectFolder().resolve("maps").toFile());
 		chooser.getExtensionFilters().add(new ExtensionFilter("Scaffold Level Files", "*.mclevel"));
-		
+			
 		File level = chooser.showOpenDialog(stage);
 		if (level != null) {
 			editor.openLevelFile(level);
