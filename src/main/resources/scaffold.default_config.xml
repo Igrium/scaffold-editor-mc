@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Config>
+    <Page id="general">
+        <Group id="project">
+            <StringSetting id="default project" value="" />
+        </Group>
+    </Page>
     <Page id="viewport">
         <Group id="controls">
             <KeyBinding id="forward" value="W" />

@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -80,6 +81,33 @@ public class ScaffoldUI extends Application {
 				}
 			}
 		});
+		
+		if (getEditor().getProject() == null) {
+			openSplashScreen();
+		}
+	}
+	
+	public void openSplashScreen() {
+//		if (!stage.isShowing()) {
+//			return;
+//		}
+		
+		Parent root;
+		try {
+			root = FXMLLoader.load(getClass().getResource("/assets/scaffold/ui/splash_screen.fxml"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		Scene scene = new Scene(root, 600, 400);
+		Stage stage = new Stage();
+		stage.setTitle("Scaffold Editor");
+		stage.setScene(scene);
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.initOwner(this.stage);
+		
+		stage.show();
 	}
 	
 	/**
@@ -107,6 +135,7 @@ public class ScaffoldUI extends Application {
 	public Stage getStage() {
 		return stage;
 	}
+	
 	
 	// INITIALIZATION
 	
@@ -138,6 +167,7 @@ public class ScaffoldUI extends Application {
 			stage.hide();
 		});
 	}
+	
 	
 	/**
 	 * Open the editor UI. If the UI has been opened already,

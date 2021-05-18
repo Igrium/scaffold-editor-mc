@@ -69,8 +69,8 @@ public class ScaffoldEditorMod implements ModInitializer {
 			return;
 		}
 		
-		editor = ScaffoldEditor.startWithTestProject();
-		
+		editor = new ScaffoldEditor();
+		editor.start(null);
 		
 		
 	}

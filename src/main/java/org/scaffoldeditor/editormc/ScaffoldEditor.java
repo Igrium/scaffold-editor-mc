@@ -1,5 +1,8 @@
 package org.scaffoldeditor.editormc;
 
+import java.nio.file.Path;
+
+import org.jetbrains.annotations.Nullable;
 import org.scaffoldeditor.editormc.engine.EditorServer;
 import org.scaffoldeditor.editormc.engine.EditorServerWorld;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
@@ -13,10 +16,11 @@ import org.scaffoldeditor.scaffold.math.Vector;
 import net.minecraft.client.MinecraftClient;
 
 public class ScaffoldEditor {
-	protected Level level;
+	private Level level;
 	protected MinecraftClient client = MinecraftClient.getInstance();
 	protected EditorServer server;
 	protected ScaffoldUI ui;
+	private Project project;
 	
 	private boolean pauseCache = true;
 	
@@ -28,7 +32,7 @@ public class ScaffoldEditor {
 	 * Launch the scaffold editor.
 	 * Should be called when Minecraft is NOT ingame.
 	 */
-	public void start(Level level) {
+	public void start(@Nullable Level level) {
 		if (client.world != null) {
 			System.out.print("Warning: Scaffold Editor can only be launched when not ingame");
 			return;
@@ -39,15 +43,17 @@ public class ScaffoldEditor {
 		client.startIntegratedServer("");
 		server = (EditorServer) client.getServer();
 		
+		if (level != null) {
+			this.level = level;
+			this.setProject(level.getProject());
+			loadLevel();
+		}
+		
 		ui = ScaffoldUI.open();
 		ui.setEditor(this);
 		
 		ScaffoldEditorMod.getInstance().isInEditor = true;
 		
-		if (level != null) {
-			this.level = level;
-		}
-		loadLevel();
 	}
 	
 	/**
@@ -75,6 +81,7 @@ public class ScaffoldEditor {
 	public void setLevel(Level level) {
 		if (level != null) {
 			this.level = level;
+			this.setProject(level.getProject());
 			loadLevel();
 		}
 	}
@@ -89,7 +96,7 @@ public class ScaffoldEditor {
 		}
 		
 		EditorServerWorld world = server.getEditorWorld();
-		
+		world.clear();
 		level.compileBlockWorld(false);
 		WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
 	}
@@ -115,5 +122,33 @@ public class ScaffoldEditor {
 	
 	public ScaffoldUI getUI() {
 		return ui;
+	}
+
+	public Project getProject() {
+		return project;
+	}
+
+	public void setProject(Project project) {
+		this.project = project;
+	}
+	
+	/**
+	 * Open a project, or create one if it doesn't exist.
+	 * @param folder Project folder.
+	 * @return Opened project.
+	 */
+	public Project openProject(Path folder) {
+		System.out.println("Opening project: "+folder.toString());
+		if (!folder.toFile().isDirectory()) {
+			System.err.println(folder.toString()+" is not a directory!");
+			return null;
+		}
+		
+		if (folder.resolve("gameInfo.json").toFile().isFile()) {
+			this.project = Project.loadProject(folder.toString());
+		} else {
+			this.project = Project.init(folder.toString(), folder.getFileName().toString());
+		}
+		return project;
 	}
 }
