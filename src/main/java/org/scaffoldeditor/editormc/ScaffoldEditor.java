@@ -104,14 +104,15 @@ public class ScaffoldEditor {
 			return;
 		}
 		
-		if (compile) {
-			level.compileBlockWorld(false);
-		} else {
-			// World automatically loads on compile
-			EditorServerWorld world = server.getEditorWorld();
-			WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
-		}		
-		
+		getServer().execute(() -> {
+			if (compile) {
+				level.compileBlockWorld(false);
+			} else {
+				// World automatically loads on compile
+				EditorServerWorld world = server.getEditorWorld();
+				WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
+			}	
+		});		
 	}
 	
 	public EditorServer getServer() {
