@@ -11,9 +11,6 @@ import org.scaffoldeditor.editormc.scaffold_interface.WorldInterface;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.scaffold.core.Project;
 import org.scaffoldeditor.scaffold.level.Level;
-import org.scaffoldeditor.scaffold.level.entity.world.PropStatic;
-import org.scaffoldeditor.scaffold.math.Vector;
-
 import net.minecraft.client.MinecraftClient;
 
 public class ScaffoldEditor {
@@ -102,21 +99,6 @@ public class ScaffoldEditor {
 		WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
 	}
 	
-	public static ScaffoldEditor startWithTestProject() {
-		@SuppressWarnings("resource")
-		Project project = Project.init(MinecraftClient.getInstance().runDirectory.toPath().resolve("testProject").toString(), "testProject");
-		Level level = new Level(project, "Test Level");
-		level.setName("testLevel");
-		
-		PropStatic prop = (PropStatic) level.newEntity(PropStatic.class, "propStatic", new Vector(5, 5, 5));
-		prop.setAttribute("model", "schematics/smiley.nbt");
-		
-		level.saveFile(project.getProjectFolder().resolve("maps/testlevel.mclevel").toFile());
-		ScaffoldEditor editor = new ScaffoldEditor();
-		editor.start(level);
-		return editor;
-	}
-	
 	public EditorServer getServer() {
 		return server;
 	}
@@ -159,8 +141,23 @@ public class ScaffoldEditor {
 	 * @return Loaded level.
 	 */
 	public Level openLevelFile(File file) {
-		Level level = Level.loadFile(project, file.toPath());
+		Level level = Level.loadFile(project, file);
 		setLevel(level);
 		return level;
 	}
+	
+//	public static ScaffoldEditor startWithTestProject() {
+//		@SuppressWarnings("resource")
+//		Project project = Project.init(MinecraftClient.getInstance().runDirectory.toPath().resolve("testProject").toString(), "testProject");
+//		Level level = new Level(project, "Test Level");
+//		level.setName("testLevel");
+//		
+//		WorldStatic prop = (WorldStatic) level.newEntity("world_static", "propStatic", new Vector(5, 5, 5));
+//		prop.setAttribute("model", new StringAttribute("schematics/smiley.nbt"));
+//		
+//		level.saveFile(project.getProjectFolder().resolve("maps/testlevel.mclevel").toFile());
+//		ScaffoldEditor editor = new ScaffoldEditor();
+//		editor.start(level);
+//		return editor;
+//	}
 }
