@@ -1,15 +1,19 @@
 package org.scaffoldeditor.editormc.engine;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executor;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ProgressListener;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -20,21 +24,47 @@ import net.minecraft.world.level.storage.LevelStorage.Session;
 
 public class EditorServerWorld extends ServerWorld {
 	
+	/**
+	 * Keeps track of the chunks that may have blocks in them.
+	 */
+	public final Set<ChunkPos> occupiedChunks = new HashSet<>();
+
 	@Override
 	public void save(ProgressListener progressListener, boolean flush, boolean bl) {
 		return;
 	}
-	
+
 	@Override
 	public void updateNeighbors(BlockPos pos, Block block) {
 		return;
 	}
 	
-	public void forceBlockState(BlockPos pos, BlockState state) {
-		this.setBlockState(pos, state, 50); //110010
+	@Override
+	public boolean setBlockState(BlockPos pos, BlockState state, int flags, int maxUpdateDepth) {
+		occupiedChunks.add(new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4));
+		return super.setBlockState(pos, state, flags, maxUpdateDepth);
 	}
-	
+
+	public void forceBlockState(BlockPos pos, BlockState state) {
+		this.setBlockState(pos, state, 50); // 110010
+	}
+
 	public void clear() {
+		for (ChunkPos c : occupiedChunks) {
+			clearChunk(c);
+		}
+	}
+
+	public void clearChunk(ChunkPos pos) {
+		BlockPos pos1 = new BlockPos(pos.getStartX(), 0, pos.getStartZ());
+		BlockPos pos2 = new BlockPos(pos.getEndX(), 256, pos.getEndZ());
+		
+		Iterable<BlockPos> iterator = BlockPos.iterate(pos1, pos2);
+		
+		for (BlockPos b : iterator) {
+			forceBlockState(b, Blocks.AIR.getDefaultState());
+		}
+		occupiedChunks.remove(pos);
 	}
 
 	public EditorServerWorld(MinecraftServer server, Executor workerExecutor, Session session,

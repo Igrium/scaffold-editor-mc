@@ -9,6 +9,7 @@ import org.scaffoldeditor.nbt.block.Chunk;
 import org.scaffoldeditor.nbt.block.BlockWorld.ChunkCoordinate;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 
 /**
  * Handles the parsing of Scaffold BlockWorlds.
@@ -22,6 +23,11 @@ public final class WorldInterface {
 	 * @param world World to load into.
 	 */
 	public static void loadScaffoldChunk(Chunk chunk, EditorServerWorld world, ChunkCoordinate offset) {
+		ChunkPos chunkPos = new ChunkPos(offset.x(), offset.z());
+		if (world.occupiedChunks.contains(chunkPos)) {
+			world.clearChunk(chunkPos);
+		}
+		
 		for (int y = 0; y < Chunk.HEIGHT; y++) {
 			for (int z = 0; z < Chunk.LENGTH; z++) {
 				for (int x = 0; x < Chunk.WIDTH; x++) {

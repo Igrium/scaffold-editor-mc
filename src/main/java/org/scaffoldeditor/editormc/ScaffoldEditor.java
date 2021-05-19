@@ -9,6 +9,7 @@ import org.scaffoldeditor.editormc.engine.EditorServerWorld;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.scaffold_interface.WorldInterface;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
+import org.scaffoldeditor.nbt.block.BlockWorld.ChunkCoordinate;
 import org.scaffoldeditor.scaffold.core.Project;
 import org.scaffoldeditor.scaffold.level.Level;
 import net.minecraft.client.MinecraftClient;
@@ -42,9 +43,7 @@ public class ScaffoldEditor {
 		server = (EditorServer) client.getServer();
 		
 		if (level != null) {
-			this.level = level;
-			this.setProject(level.getProject());
-			loadLevel();
+			setLevel(level);
 		}
 		
 		ui = ScaffoldUI.open();
@@ -75,12 +74,24 @@ public class ScaffoldEditor {
 		client.onResolutionChanged();
 		client.options.pauseOnLostFocus = pauseCache;
 	}
-	
+
 	public void setLevel(Level level) {
 		if (level != null) {
 			this.level = level;
 			this.setProject(level.getProject());
-			loadLevel();
+			
+			level.onWorldUpdate(e -> {
+				if (e.updatedChunks.isEmpty()) {
+					loadLevel(false);
+				} else {
+					EditorServerWorld world = server.getEditorWorld();
+					for (ChunkCoordinate c : e.updatedChunks) {
+						WorldInterface.loadScaffoldChunk(level.getBlockWorld().getChunks().get(c), world, c);
+					}
+				}
+			});
+			
+			loadLevel(true);
 		}
 	}
 	
@@ -88,15 +99,19 @@ public class ScaffoldEditor {
 		return level;
 	}
 	
-	protected void loadLevel() {
+	protected void loadLevel(boolean compile) {
 		if (level == null) {
 			return;
 		}
 		
-		EditorServerWorld world = server.getEditorWorld();
-		world.clear();
-		level.compileBlockWorld(false);
-		WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
+		if (compile) {
+			level.compileBlockWorld(false);
+		} else {
+			// World automatically loads on compile
+			EditorServerWorld world = server.getEditorWorld();
+			WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
+		}		
+		
 	}
 	
 	public EditorServer getServer() {
