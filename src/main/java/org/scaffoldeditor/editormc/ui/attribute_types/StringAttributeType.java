@@ -19,12 +19,9 @@ public class StringAttributeType implements IRenderAttributeType {
 		field.setText(attribute.getValue());
 		
 		field.focusedProperty().addListener(e -> {
-			if (!field.getText().matches(attribute.getValue())) {
-				field.fireEvent(new ChangeAttributeEvent(ChangeAttributeEvent.ATTRIBUTE_CHANGED, name,
-						new StringAttribute(field.getText())));
-			}
+			field.fireEvent(new ChangeAttributeEvent(ChangeAttributeEvent.ATTRIBUTE_CHANGED, name,
+					new StringAttribute(field.getText())));
 		});
-
 		return field;
 	}
 

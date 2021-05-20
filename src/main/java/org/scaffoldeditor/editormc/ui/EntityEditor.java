@@ -4,13 +4,23 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.scaffoldeditor.editormc.ui.attribute_types.BooleanAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
 import org.scaffoldeditor.editormc.ui.attribute_types.DefaultAttributeType;
+import org.scaffoldeditor.editormc.ui.attribute_types.DoubleAttributeType;
+import org.scaffoldeditor.editormc.ui.attribute_types.FloatAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.IRenderAttributeType;
+import org.scaffoldeditor.editormc.ui.attribute_types.IntAttributeType;
+import org.scaffoldeditor.editormc.ui.attribute_types.LongAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.StringAttributeType;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLEntityEditorController;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.BooleanAttribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.DoubleAttribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.FloatAttribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.IntAttribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.LongAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.StringAttribute;
 import org.scaffoldeditor.scaffold.operation.ChangeAttributesOperation;
 
@@ -81,6 +91,11 @@ public class EntityEditor {
 	
 	protected void initDefaultAttributeTypes() {
 		attributeTypes.put(StringAttribute.REGISTRY_NAME, new StringAttributeType());
+		attributeTypes.put(BooleanAttribute.REGISTRY_NAME, new BooleanAttributeType());
+		attributeTypes.put(IntAttribute.REGISTRY_NAME, new IntAttributeType());
+		attributeTypes.put(LongAttribute.REGISTRY_NAME, new LongAttributeType());
+		attributeTypes.put(FloatAttribute.REGISTRY_NAME, new FloatAttributeType());
+		attributeTypes.put(DoubleAttribute.REGISTRY_NAME, new DoubleAttributeType());
 	}
 	
 	protected void loadAttributes() {

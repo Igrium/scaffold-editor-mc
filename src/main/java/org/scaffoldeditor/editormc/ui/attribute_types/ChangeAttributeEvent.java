@@ -14,7 +14,13 @@ public class ChangeAttributeEvent extends Event {
 	
 	public final String name;
 	public final Attribute<?> newValue;
-
+	
+	/**
+	 * Create a change attribute event.
+	 * @param eventType The event type.
+	 * @param name Name of the attribute changed.
+	 * @param newValue Value it was changed to.
+	 */
 	public ChangeAttributeEvent(EventType<? extends ChangeAttributeEvent> eventType, String name, Attribute<?> newValue) {
 		super(eventType);
 		this.name = name;
