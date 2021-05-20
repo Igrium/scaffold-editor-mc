@@ -40,6 +40,16 @@ public class MainFXMLController {
 		ScaffoldUI.getInstance().getEditor().save();
 	}
 	
+	@FXML
+	private void undo() {
+		ScaffoldUI.getInstance().getEditor().getLevel().getOperationManager().undo();
+	}
+	
+	@FXML
+	private void redo() {
+		ScaffoldUI.getInstance().getEditor().getLevel().getOperationManager().redo();
+	}
+	
 	// VIEWPORT
 	private void addPressAndHoldHandler(Node node, Duration holdTime, EventHandler<MouseEvent> handler) {
 
