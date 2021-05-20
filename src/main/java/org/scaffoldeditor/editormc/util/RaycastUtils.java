@@ -14,18 +14,22 @@ import net.minecraft.world.RaycastContext;
 public class RaycastUtils {
 	
 	/**
-	 * Raycast a specific pixel on the screen.
-	 * @param x Pixel X.
-	 * @param y Pixel Y.
+	 * Raycast a specific spot on the screen.
+	 * @param x Percentage accross the screen (0-1).
+	 * @param y Percentage down the screen (0-1)
 	 * @return Hit result.
 	 */
-	public static HitResult raycastPixel(int x, int y) {
+	public static HitResult raycastPixel(double x, double y) {
+		if (x < 0 || x > 1 || y < 0 || y > 1) {
+			throw new IllegalArgumentException("X and Y values must be between 0 and 1!");
+		}
+		
 		MinecraftClient client = MinecraftClient.getInstance();
-		int width = client.getWindow().getScaledWidth();
-		int height = client.getWindow().getScaledHeight();
+		int width = 1;
+		int height = 1;
 		Vec3d cameraDirection = client.cameraEntity.getRotationVec(client.getTickDelta());
 		double fov = client.options.fov;
-		double angleSize = fov / height;
+		double angleSize = fov / 1;
 
 		Vector3f verticalRotationAxis = new Vector3f(cameraDirection);
 		verticalRotationAxis.cross(Vector3f.POSITIVE_Y);
@@ -48,10 +52,10 @@ public class RaycastUtils {
 		return raycastInDirection(client.getCameraEntity(), client.getTickDelta(), direction, 100);
 	}
 
-	private static Vec3d map(float anglePerPixel, Vec3d center, Vector3f horizontalRotationAxis,
-			Vector3f verticalRotationAxis, int x, int y, int width, int height) {
-		float horizontalRotation = (x - width / 2f) * anglePerPixel;
-		float verticalRotation = (y - height / 2f) * anglePerPixel;
+	private static Vec3d map(float anglePerIncriment, Vec3d center, Vector3f horizontalRotationAxis,
+			Vector3f verticalRotationAxis, double x, double y, int width, int height) {
+		float horizontalRotation = (float) (x - width / 2d) * anglePerIncriment;
+		float verticalRotation = (float) (y - height / 2d) * anglePerIncriment;
 
 		final Vector3f temp = new Vector3f(center);
 		temp.rotate(verticalRotationAxis.getDegreesQuaternion(verticalRotation));
