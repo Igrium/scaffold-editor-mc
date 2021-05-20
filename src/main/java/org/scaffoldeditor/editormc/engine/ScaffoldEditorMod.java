@@ -43,18 +43,19 @@ public class ScaffoldEditorMod implements ModInitializer {
 		
 		ClientTickEvents.START_WORLD_TICK.register(e -> {
 			if (isInEditor) {
-				Dimension res = editor.getUI().getViewport().getDesiredResolution();
-				Framebuffer fb = client.getFramebuffer();
-				if (fb.viewportWidth != res.width || fb.viewportHeight != res.height) {
-					fb.resize(res.width, res.height, false);
-					
-					MainWindowAccessor window = (MainWindowAccessor) (Object) client.getWindow();
-					window.setFramebufferWidth(res.width);
-					window.setFramebufferHeight(res.height);
-					
-					client.gameRenderer.onResized(res.width, res.height);
-				}
-				
+				try {
+					Dimension res = editor.getUI().getViewport().getDesiredResolution();
+					Framebuffer fb = client.getFramebuffer();
+					if (fb.viewportWidth != res.width || fb.viewportHeight != res.height) {
+						fb.resize(res.width, res.height, false);
+						
+						MainWindowAccessor window = (MainWindowAccessor) (Object) client.getWindow();
+						window.setFramebufferWidth(res.width);
+						window.setFramebufferHeight(res.height);
+						
+						client.gameRenderer.onResized(res.width, res.height);
+					}
+				} catch (Exception ex) {}			
 			}
 		});
 		
