@@ -2,11 +2,14 @@ package org.scaffoldeditor.editormc.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.jetbrains.annotations.Nullable;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
+import org.scaffoldeditor.scaffold.level.Level;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -14,8 +17,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -205,5 +213,49 @@ public class ScaffoldUI extends Application {
 			return ScaffoldUI.waitForinit();
 		}
 	}
+
+	public void updateEntityList() {
+		Platform.runLater(() -> {
+			GridPane entityList = (GridPane) mainScene.lookup("#entityList");
+			entityList.getChildren().clear();
+			Level level = ScaffoldUI.getInstance().getEditor().getLevel();
+			List<String> entityStack = level.getEntityStack();
+			for (int i = 0; i < entityStack.size(); i++) {
+				Entity entity = level.getEntity(entityStack.get(i));
+				generateEntityListing(entityList, i, entity, false, false);
+			}
+		});
+	}
 	
+	private void generateEntityListing(GridPane entityList, int index, Entity entity, boolean enableUp, boolean enableDown) {
+		Label label = new Label(entity.getName());
+		label.setStyle("entity-label");
+		
+		label.setOnMouseClicked(e -> {
+			if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() == 2) {
+				openEntityEditor(entity);
+			}
+		});
+		
+		MenuItem edit = new MenuItem("Edit Entity");
+		edit.setOnAction(e -> {
+			openEntityEditor(entity);
+		});
+		
+		ContextMenu contextMenu = new ContextMenu(edit);
+		label.setContextMenu(contextMenu);
+		
+		Button upButton = new Button("↑");
+		upButton.setDisable(!enableUp);
+		
+		Button downButton = new Button("↓");
+		downButton.setDisable(!enableDown);
+		
+		entityList.addRow(index, label, upButton, downButton);
+	}
+	
+	public void openEntityEditor(Entity entity) {
+		EntityEditor editor = new EntityEditor(stage, entity);
+		editor.show();
+	}
 }

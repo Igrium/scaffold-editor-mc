@@ -20,6 +20,7 @@ public class ScaffoldEditor {
 	protected EditorServer server;
 	protected ScaffoldUI ui;
 	private Project project;
+	protected File levelFile;
 	
 	private boolean pauseCache = true;
 	
@@ -91,7 +92,11 @@ public class ScaffoldEditor {
 				}
 			});
 			
-			loadLevel(true);
+			level.onUpdateEntityStack(() -> {
+				ui.updateEntityList();
+			});
+			ui.updateEntityList();		
+			loadLevel(true);		
 		}
 	}
 	
@@ -112,7 +117,8 @@ public class ScaffoldEditor {
 				EditorServerWorld world = server.getEditorWorld();
 				WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
 			}	
-		});		
+		});
+		
 	}
 	
 	public EditorServer getServer() {
@@ -158,8 +164,15 @@ public class ScaffoldEditor {
 	 */
 	public Level openLevelFile(File file) {
 		Level level = Level.loadFile(project, file);
+		levelFile = file;
 		setLevel(level);
 		return level;
+	}
+	
+	public void save() {
+		if (level != null && levelFile != null) {
+			level.saveFile(levelFile);
+		}
 	}
 	
 //	public static ScaffoldEditor startWithTestProject() {
