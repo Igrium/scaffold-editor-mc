@@ -6,6 +6,8 @@ import org.scaffoldeditor.editormc.engine.EditorServerWorld;
 import org.scaffoldeditor.nbt.block.Block;
 import org.scaffoldeditor.nbt.block.BlockWorld;
 import org.scaffoldeditor.nbt.block.Chunk;
+import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
+import org.scaffoldeditor.nbt.block.Section;
 import org.scaffoldeditor.nbt.block.BlockWorld.ChunkCoordinate;
 
 import net.minecraft.util.math.BlockPos;
@@ -31,20 +33,40 @@ public final class WorldInterface {
 		for (int y = 0; y < Chunk.HEIGHT; y++) {
 			for (int z = 0; z < Chunk.LENGTH; z++) {
 				for (int x = 0; x < Chunk.WIDTH; x++) {
-					loadBlock(chunk.blockAt(x, y, z), x, y, z, world, offset);
+					loadBlock(chunk.blockAt(x, y, z), x, y, z, world,
+							new BlockPos(offset.x() * Chunk.WIDTH, 0, offset.z() * Chunk.LENGTH));
 				}
 			}
 		}
 	}
 	
-	private static void loadBlock(Block block, int x, int y, int z, EditorServerWorld world, ChunkCoordinate offset) {
+	/**
+	 * Load a Scaffold section into the world.
+	 * @param section Scaffold section.
+	 * @param world World to load into.
+	 * @param offset Coordinates of the section.
+	 */
+	public static void loadScaffoldSection(Section section, EditorServerWorld world, SectionCoordinate offset) {
+		if (world.occupiedSections.contains(offset)) {
+			world.clearSection(offset);
+		}
+		
+		for (int y = 0; y < Section.HEIGHT; y++) {
+			for (int z = 0; z < Chunk.LENGTH; z++) {
+				for (int x = 0; x < Chunk.WIDTH; x++) {
+					loadBlock(section.blockAt(x, y, z), x, y, z, world,
+							new BlockPos(offset.x * Chunk.WIDTH, offset.y * Section.HEIGHT, offset.z * Chunk.LENGTH));
+				}
+			}
+		}
+	}
+	
+	private static void loadBlock(Block block, int x, int y, int z, EditorServerWorld world, BlockPos offset) {
 		if (block == null) {
 			return;
 		}
 		
-		int x_final = x + offset.x() * Chunk.WIDTH;
-		int z_final = z + offset.z() * Chunk.LENGTH;
-		world.forceBlockState(new BlockPos(x_final, y, z_final), BlockConverter.scaffoldToMinecraft(block));
+		world.forceBlockState(new BlockPos(offset.getX() + x, offset.getY() + y, offset.getZ() + z), BlockConverter.scaffoldToMinecraft(block));
 	}
 	
 	public static void loadScaffoldWorld(BlockWorld in, EditorServerWorld world) {

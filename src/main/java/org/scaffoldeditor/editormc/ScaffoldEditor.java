@@ -10,6 +10,7 @@ import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.scaffold_interface.WorldInterface;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.nbt.block.BlockWorld.ChunkCoordinate;
+import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
 import org.scaffoldeditor.scaffold.core.Project;
 import org.scaffoldeditor.scaffold.level.Level;
 import net.minecraft.client.MinecraftClient;
@@ -82,12 +83,13 @@ public class ScaffoldEditor {
 			this.setProject(level.getProject());
 			
 			level.onWorldUpdate(e -> {
-				if (e.updatedChunks.isEmpty()) {
+				if (e.updatedSections.isEmpty()) {
 					loadLevel(false);
 				} else {
 					EditorServerWorld world = server.getEditorWorld();
-					for (ChunkCoordinate c : e.updatedChunks) {
-						WorldInterface.loadScaffoldChunk(level.getBlockWorld().getChunks().get(c), world, c);
+					for (SectionCoordinate c : e.updatedSections) {
+						WorldInterface.loadScaffoldSection(
+								level.getBlockWorld().getChunks().get(new ChunkCoordinate(c)).sections[c.y], world, c);
 					}
 				}
 			});

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
+import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -28,6 +30,8 @@ public class EditorServerWorld extends ServerWorld {
 	 * Keeps track of the chunks that may have blocks in them.
 	 */
 	public final Set<ChunkPos> occupiedChunks = new HashSet<>();
+	
+	public final Set<SectionCoordinate> occupiedSections = new HashSet<>();
 
 	@Override
 	public void save(ProgressListener progressListener, boolean flush, boolean bl) {
@@ -42,6 +46,7 @@ public class EditorServerWorld extends ServerWorld {
 	@Override
 	public boolean setBlockState(BlockPos pos, BlockState state, int flags, int maxUpdateDepth) {
 		occupiedChunks.add(new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4));
+		occupiedSections.add(new SectionCoordinate(pos.getX() >> 4, pos.getY() >> 4, pos.getZ() >> 4));
 		return super.setBlockState(pos, state, flags, maxUpdateDepth);
 	}
 
@@ -65,6 +70,18 @@ public class EditorServerWorld extends ServerWorld {
 			forceBlockState(b, Blocks.AIR.getDefaultState());
 		}
 		occupiedChunks.remove(pos);
+	}
+	
+	public void clearSection(SectionCoordinate pos) {
+		BlockPos pos1 = new BlockPos(pos.x, pos.y, pos.z);
+		BlockPos pos2 = new BlockPos(pos.getEndX(), pos.getEndY(), pos.getEndZ());
+		
+		Iterable<BlockPos> iterator = BlockPos.iterate(pos1, pos2);
+		
+		for (BlockPos b : iterator) {
+			forceBlockState(b, Blocks.AIR.getDefaultState());
+		}
+		occupiedSections.remove(pos);
 	}
 
 	public EditorServerWorld(MinecraftServer server, Executor workerExecutor, Session session,
