@@ -3,12 +3,19 @@ package org.scaffoldeditor.editormc.ui;
 import java.awt.Dimension;
 import java.nio.ByteBuffer;
 
+import org.scaffoldeditor.editormc.ScaffoldEditor;
+import org.scaffoldeditor.editormc.util.RaycastUtils;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
 import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.layout.Pane;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.hit.HitResult.Type;
+import net.minecraft.util.math.BlockPos;
 
 public class Viewport {
 	protected ImageView imageView;
@@ -49,6 +56,29 @@ public class Viewport {
 	
 	public Pane getParent() {
 		return parent;
+	}
+	
+	public void select(int x, int y, boolean multiple) {
+		ScaffoldEditor editor = ScaffoldUI.getInstance().getEditor();
+		if (!multiple) {
+			editor.getSelectedEntities().clear();
+		}
+		
+		int width = (int) parent.getWidth();
+		int height = (int) parent.getHeight();
+		
+		HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height);
+		
+		if (hitResult.getType() == Type.MISS) {
+		} else if (hitResult.getType() == Type.BLOCK) {
+			BlockHitResult blockHit = (BlockHitResult) hitResult;
+			BlockPos pos = blockHit.getBlockPos();
+			Object owner = editor.getLevel().getBlockWorld().getBlockOwner(pos.getX(), pos.getY(), pos.getZ());
+			if (owner instanceof Entity) {
+				editor.getSelectedEntities().add((Entity) owner);
+			}
+		}
+		editor.updateSelection();
 	}
 	
 }

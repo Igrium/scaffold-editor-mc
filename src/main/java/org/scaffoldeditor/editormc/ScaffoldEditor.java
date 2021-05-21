@@ -2,6 +2,8 @@ package org.scaffoldeditor.editormc;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 import org.scaffoldeditor.editormc.engine.EditorServer;
@@ -13,6 +15,8 @@ import org.scaffoldeditor.nbt.block.BlockWorld.ChunkCoordinate;
 import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
 import org.scaffoldeditor.scaffold.core.Project;
 import org.scaffoldeditor.scaffold.level.Level;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
+
 import net.minecraft.client.MinecraftClient;
 
 public class ScaffoldEditor {
@@ -22,6 +26,7 @@ public class ScaffoldEditor {
 	protected ScaffoldUI ui;
 	private Project project;
 	protected File levelFile;
+	private final Set<Entity> selectedEntities = new HashSet<>(); 
 	
 	private boolean pauseCache = true;
 	
@@ -130,7 +135,31 @@ public class ScaffoldEditor {
 	public ScaffoldUI getUI() {
 		return ui;
 	}
-
+	
+	/**
+	 * Get the set of selected entities.
+	 * 
+	 * @return Selected entities. Make sure to call <code>updateSelection()</code>
+	 *         after modifying.
+	 */
+	public Set<Entity> getSelectedEntities() {
+		return selectedEntities;
+	}
+	
+	public void selectEntity(Entity entity) {
+		selectedEntities.add(entity);
+		updateSelection();
+	}
+	
+	public void deselectEntity(Entity entity) {
+		selectedEntities.remove(entity);
+		updateSelection();
+	}
+	
+	public void updateSelection() {
+		System.out.println("Selection: "+selectedEntities.toString());
+	}
+	
 	public Project getProject() {
 		return project;
 	}
