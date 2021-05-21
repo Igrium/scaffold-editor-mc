@@ -4,22 +4,42 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 
 // Derived from (well, basically copied from) https://fabricmc.net/wiki/tutorial:pixel_raycast
 public class RaycastUtils {
+	
+	/**
+	 * Raycast a specific pixel on the screen.
+	 * @param x Pixel X.
+	 * @param y Pixel Y
+	 * @param width Width of the viewport.
+	 * @param height Height of the viewport.
+	 * @param distance Maximum distance of the raycast.
+	 * @return Hit result.
+	 */
+	public static HitResult raycastPixel(int x, int y, int width, int height, double distance) {
+		return raycastPixel(x, y, width, height, distance, true);
+	}
 
 	/**
 	 * Raycast a specific pixel on the screen.
 	 * @param x Pixel X.
 	 * @param y Pixel Y.
+	 * @param width Width of the viewport.
+	 * @param height Height of the viewport.
+	 * @param distance Maximum distance of the raycast.
+	 * @param collide Whether to collide with stuff.
 	 * @return Hit result.
 	 */
-	public static HitResult raycastPixel(int x, int y, int width, int height, double distance) {
+	public static HitResult raycastPixel(int x, int y, int width, int height, double distance, boolean collide) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		Vec3d cameraDirection = client.cameraEntity.getRotationVec(client.getTickDelta());
 		double fov = client.options.fov;
@@ -43,7 +63,7 @@ public class RaycastUtils {
 		Vec3d direction = map((float) angleSize, cameraDirection, horizontalRotationAxis, verticalRotationAxis, x, y,
 				width, height);
 		
-		return raycastInDirection(client.getCameraEntity(), client.getTickDelta(), direction, 100);
+		return raycastInDirection(client.getCameraEntity(), client.getTickDelta(), direction, 100, true);
 	}
 
 	private static Vec3d map(float anglePerPixel, Vec3d center, Vector3f horizontalRotationAxis,
@@ -58,10 +78,15 @@ public class RaycastUtils {
 
 	}
 
-	public static HitResult raycastInDirection(Entity entity, float tickDelta, Vec3d direction,
-			double distance) {
+	private static HitResult raycastInDirection(Entity entity, float tickDelta, Vec3d direction,
+			double distance, boolean collide) {
 		if (entity == null || entity.getEntityWorld() == null) {
 			return null;
+		}
+		
+		if (!collide) {
+			Vec3d end = entity.getCameraPosVec(tickDelta).add(direction.multiply(distance));
+			return BlockHitResult.createMissed(end, Direction.UP, new BlockPos(end));
 		}
 
 		HitResult target = raycast(entity, distance, tickDelta, false, direction);

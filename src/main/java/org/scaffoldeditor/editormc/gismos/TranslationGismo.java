@@ -69,7 +69,7 @@ public class TranslationGismo implements TransformationGismo {
 	}
 	
 	private HitResult performRaycast(int x, int y) {
-		return RaycastUtils.raycastPixel(x, y, (int) pane.getWidth(), (int) pane.getHeight(), Math.sqrt(distanceSquared));
+		return RaycastUtils.raycastPixel(x, y, (int) pane.getWidth(), (int) pane.getHeight(), Math.sqrt(distanceSquared), false);
 	}
 	
 	private Vector parseVector(Vec3d in) {

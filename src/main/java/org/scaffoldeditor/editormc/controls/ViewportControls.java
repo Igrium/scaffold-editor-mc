@@ -122,10 +122,10 @@ public class ViewportControls {
 	
 
 	protected void onUpdate() {
-		if (isBindingPressed("grab") && editor.getSelectedEntities().size() > 0) {
-			ui.getViewport().beginTransformation("translate", editor.getSelectedEntities().iterator().next());
-		} else if (isBindingPressed("cancel_transformation")) ui.getViewport().cancelTransformation();
-		else if (isBindingPressed("apply_transformation")) ui.getViewport().applyTransformation();
+//		if (isBindingPressed("grab") && editor.getSelectedEntities().size() > 0) {
+//			ui.getViewport().beginTransformation("translate", editor.getSelectedEntities().iterator().next());
+//		} else if (isBindingPressed("cancel_transformation")) ui.getViewport().cancelTransformation();
+//		else if (isBindingPressed("apply_transformation")) ui.getViewport().applyTransformation();
 		
 		if (enableControls) {
 			double forwardBackward = 0;

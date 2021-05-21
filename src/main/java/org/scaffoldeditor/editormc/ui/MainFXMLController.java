@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc.ui;
 
+import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
 
 import javafx.animation.PauseTransition;
@@ -66,6 +67,11 @@ public class MainFXMLController {
 	@FXML
 	private void redo() {
 		ScaffoldUI.getInstance().getEditor().getLevel().getOperationManager().redo();
+	}
+	
+	@FXML
+	private void recompileWorld() {
+		ScaffoldEditor.getInstance().getLevel().compileBlockWorld(false);
 	}
 	
 	@FXML

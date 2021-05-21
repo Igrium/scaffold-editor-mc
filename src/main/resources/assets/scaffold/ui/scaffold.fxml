@@ -58,6 +58,8 @@
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Select All" />
             <MenuItem mnemonicParsing="false" text="Unselect All" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#recompileWorld" text="Recompile World" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
