@@ -27,11 +27,16 @@ public class ScaffoldEditor {
 	private Project project;
 	protected File levelFile;
 	private final Set<Entity> selectedEntities = new HashSet<>(); 
+	private static ScaffoldEditor instance;
 	
 	private boolean pauseCache = true;
 	
 	public ScaffoldEditor() {
 
+	}
+	
+	public static ScaffoldEditor getInstance() {
+		return instance;
 	}
 	
 	/**
@@ -43,6 +48,7 @@ public class ScaffoldEditor {
 			System.out.print("Warning: Scaffold Editor can only be launched when not ingame");
 			return;
 		}
+		instance = this;
 		pauseCache = client.options.pauseOnLostFocus;
 		client.options.pauseOnLostFocus = false;
 		
@@ -80,6 +86,7 @@ public class ScaffoldEditor {
 	protected void onClose() {
 		client.onResolutionChanged();
 		client.options.pauseOnLostFocus = pauseCache;
+		instance = null;
 	}
 
 	public void setLevel(Level level) {

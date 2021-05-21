@@ -115,29 +115,38 @@ public class ViewportControls {
 	
 	public boolean getEnableControls() { return enableControls; }
 	
+	public boolean isBindingPressed(String name) {
+		Boolean value = bindingsPressed.get(name);
+		return (value != null && value);
+	}
+	
 
 	protected void onUpdate() {
-		if (!enableControls) {
-			return;
-		}
+		if (isBindingPressed("grab") && editor.getSelectedEntities().size() > 0) {
+			ui.getViewport().beginTransformation("translate", editor.getSelectedEntities().iterator().next());
+		} else if (isBindingPressed("cancel_transformation")) ui.getViewport().cancelTransformation();
+		else if (isBindingPressed("apply_transformation")) ui.getViewport().applyTransformation();
 		
-		double forwardBackward = 0;
-		double leftRight = 0;
-		double upDown = 0;
-		
-		if (bindingsPressed.get("forward")) forwardBackward += 1;
-		if (bindingsPressed.get("backward")) forwardBackward -= 1;
-		if (bindingsPressed.get("left")) leftRight -= 1;
-		if (bindingsPressed.get("right")) leftRight += 1;
-		if (bindingsPressed.get("up")) upDown += 1;
-		if (bindingsPressed.get("down")) upDown -= 1;
-		
-		if (camera != null) {
-			camera.setFrontBack(forwardBackward);
-			camera.setLeftRight(leftRight);
-			camera.setUpDown(upDown);
+		if (enableControls) {
+			double forwardBackward = 0;
+			double leftRight = 0;
+			double upDown = 0;
+			
+			if (bindingsPressed.get("forward")) forwardBackward += 1;
+			if (bindingsPressed.get("backward")) forwardBackward -= 1;
+			if (bindingsPressed.get("left")) leftRight -= 1;
+			if (bindingsPressed.get("right")) leftRight += 1;
+			if (bindingsPressed.get("up")) upDown += 1;
+			if (bindingsPressed.get("down")) upDown -= 1;
+			
+			if (camera != null) {
+				camera.setFrontBack(forwardBackward);
+				camera.setLeftRight(leftRight);
+				camera.setUpDown(upDown);
+			}
 		}
 	}
+
 	
 	protected void initControls() {
 		NodeList nodes;

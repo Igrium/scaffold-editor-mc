@@ -35,7 +35,11 @@ public class MainFXMLController {
 			if (e.getCode().equals(KeyCode.SHIFT)) {
 				isShiftPressed = false;
 			}
-		});		
+		});
+		
+		viewport_pane.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
+			ScaffoldUI.getInstance().viewport.updateMouse((int) e.getX(), (int) e.getY());
+		});
 	}
 	
 	@FXML

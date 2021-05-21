@@ -14,6 +14,9 @@
             <KeyBinding id="right" value="D" />
             <KeyBinding id="up" value="Space" />
             <KeyBinding id="down" value="Shift" />
+            <KeyBinding id="grab" value="G" />
+            <KeyBinding id="apply_transformation" value="Enter" />
+            <KeyBinding id="cancel_transformation" value="Esc" />
         </Group>
     </Page>
 </Config>

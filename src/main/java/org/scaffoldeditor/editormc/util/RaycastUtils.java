@@ -19,7 +19,7 @@ public class RaycastUtils {
 	 * @param y Pixel Y.
 	 * @return Hit result.
 	 */
-	public static HitResult raycastPixel(int x, int y, int width, int height) {
+	public static HitResult raycastPixel(int x, int y, int width, int height, double distance) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		Vec3d cameraDirection = client.cameraEntity.getRotationVec(client.getTickDelta());
 		double fov = client.options.fov;
