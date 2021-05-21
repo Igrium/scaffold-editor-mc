@@ -101,7 +101,7 @@ public class ScaffoldEditor {
 					EditorServerWorld world = server.getEditorWorld();
 					for (SectionCoordinate c : e.updatedSections) {
 						WorldInterface.loadScaffoldSection(
-								level.getBlockWorld().getChunks().get(new ChunkCoordinate(c)).sections[c.y], world, c);
+								level.getBlockWorld().getChunks().get(new ChunkCoordinate(c.x, c.z)).sections[c.y], world, c);
 					}
 				}
 			});

@@ -59,6 +59,7 @@ public final class WorldInterface {
 				}
 			}
 		}
+		world.occupiedSections.add(offset);
 	}
 	
 	private static void loadBlock(Block block, int x, int y, int z, EditorServerWorld world, BlockPos offset) {

@@ -73,7 +73,7 @@ public class EditorServerWorld extends ServerWorld {
 	}
 	
 	public void clearSection(SectionCoordinate pos) {
-		BlockPos pos1 = new BlockPos(pos.x, pos.y, pos.z);
+		BlockPos pos1 = new BlockPos(pos.getStartX(), pos.getStartY(), pos.getStartZ());
 		BlockPos pos2 = new BlockPos(pos.getEndX(), pos.getEndY(), pos.getEndZ());
 		
 		Iterable<BlockPos> iterator = BlockPos.iterate(pos1, pos2);
