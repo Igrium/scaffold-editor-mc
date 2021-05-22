@@ -8,6 +8,7 @@ import java.util.concurrent.CountDownLatch;
 import org.jetbrains.annotations.Nullable;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
+import org.scaffoldeditor.editormc.ui.controllers.FXMLCompileController;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 
@@ -160,6 +161,14 @@ public class ScaffoldUI extends Application {
 	
 	public Stage getStage() {
 		return stage;
+	}
+	
+	public void openCompiler() {
+		try {
+			FXMLCompileController.open(stage);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
