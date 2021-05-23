@@ -1,33 +1,19 @@
 package org.scaffoldeditor.editormc.scaffold_interface;
 
-import com.github.mryurihi.tbnbt.TagType;
-import com.github.mryurihi.tbnbt.tag.NBTTag;
-import com.github.mryurihi.tbnbt.tag.NBTTagByte;
-import com.github.mryurihi.tbnbt.tag.NBTTagByteArray;
-import com.github.mryurihi.tbnbt.tag.NBTTagCompound;
-import com.github.mryurihi.tbnbt.tag.NBTTagDouble;
-import com.github.mryurihi.tbnbt.tag.NBTTagFloat;
-import com.github.mryurihi.tbnbt.tag.NBTTagInt;
-import com.github.mryurihi.tbnbt.tag.NBTTagIntArray;
-import com.github.mryurihi.tbnbt.tag.NBTTagList;
-import com.github.mryurihi.tbnbt.tag.NBTTagLong;
-import com.github.mryurihi.tbnbt.tag.NBTTagLongArray;
-import com.github.mryurihi.tbnbt.tag.NBTTagShort;
-import com.github.mryurihi.tbnbt.tag.NBTTagString;
+import net.querz.nbt.tag.ByteArrayTag;
+import net.querz.nbt.tag.ByteTag;
+import net.querz.nbt.tag.CompoundTag;
+import net.querz.nbt.tag.DoubleTag;
+import net.querz.nbt.tag.FloatTag;
+import net.querz.nbt.tag.IntArrayTag;
+import net.querz.nbt.tag.IntTag;
+import net.querz.nbt.tag.ListTag;
+import net.querz.nbt.tag.LongArrayTag;
+import net.querz.nbt.tag.LongTag;
+import net.querz.nbt.tag.ShortTag;
+import net.querz.nbt.tag.StringTag;
+import net.querz.nbt.tag.Tag;
 
-import net.minecraft.nbt.ByteArrayTag;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.FloatTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongArrayTag;
-import net.minecraft.nbt.LongTag;
-import net.minecraft.nbt.ShortTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 
 /**
  * Converts between Scaffold NBT tags and Minecraft NBT tags.
@@ -40,91 +26,90 @@ public final class NBTConverter {
 	 * @param in Scaffold tag.
 	 * @return Minecraft tag.
 	 */
-	public static Tag scaffoldToMinecraft(NBTTag in) {
-		if (in.getTagType() == TagType.BYTE) {
-			return scaffoldByteToMinecraft(in.getAsTagByte());
-		} else if (in.getTagType() == TagType.SHORT) {
-			return scaffoldShortToMinecraft(in.getAsTagShort());
-		} else if (in.getTagType() == TagType.INT) {
-			return scaffoldIntToMinecraft(in.getAsTagInt());
-		} else if (in.getTagType() == TagType.LONG) {
-			return scaffoldLongToMinecraft(in.getAsTagLong());
-		} else if (in.getTagType() == TagType.FLOAT) {
-			return scaffoldFloatToMinecraft(in.getAsTagFloat());
-		} else if (in.getTagType() == TagType.DOUBLE) {
-			return scaffoldDoubleToMinecraft(in.getAsTagDouble());
-		} else if (in.getTagType() == TagType.BYTE_ARRAY) {
-			return scaffoldByteArrayToMinecraft(in.getAsTagByteArray());
-		} else if (in.getTagType() == TagType.STRING) {
-			return scaffoldStringToMinecraft(in.getAsTagString());
-		} else if (in.getTagType() == TagType.LIST) {
-			return scaffoldListToMinecraft(in.getAsTagList());
-		} else if (in.getTagType() == TagType.COMPOUND) {
-			return scaffoldCompoundToMinecraft(in.getAsTagCompound());
-		} else if (in.getTagType() == TagType.INT_ARRAY) {
-			return scaffoldIntArrayToMinecraft(in.getAsTagIntArray());
-		} else if (in.getTagType() == TagType.LONG_ARRAY) {
-			return scaffoldLongArrayToMinecraft(in.getAsTagLongArray());
-		} else {
-			throw new IllegalArgumentException("Unknown tag type: "+in.getTagType().toString());
+	public static net.minecraft.nbt.Tag scaffoldToMinecraft(Tag<?> in) {
+		if (in instanceof ByteTag) {
+			return scaffoldByteToMinecraft((ByteTag) in);
+		} else if (in instanceof ShortTag) {
+			return scaffoldShortToMinecraft((ShortTag) in);
+		} else if (in instanceof IntTag) {
+			return scaffoldIntToMinecraft((IntTag) in);
+		} else if (in instanceof LongTag) {
+			return scaffoldLongToMinecraft((LongTag) in);
+		} else if (in instanceof FloatTag) {
+			return scaffoldFloatToMinecraft((FloatTag) in);
+		} else if (in instanceof DoubleTag) {
+			return scaffoldDoubleToMinecraft((DoubleTag) in);
+		} else if (in instanceof ByteArrayTag) {
+			return scaffoldByteArrayToMinecraft((ByteArrayTag) in);
+		} else if (in instanceof StringTag) {
+			return scaffoldStringToMinecraft((StringTag) in);
+		} else if (in instanceof ListTag<?>) {
+			return scaffoldListToMinecraft((ListTag<?>) in);
+		} else if (in instanceof CompoundTag) {
+			return scaffoldCompoundToMinecraft((CompoundTag) in);
+		} else if (in instanceof IntArrayTag) {
+			return scaffoldIntArrayToMinecraft((IntArrayTag) in);
+		} else if (in instanceof LongArrayTag) {
+			return scaffoldLongArrayToMinecraft((LongArrayTag) in);
 		}
+		throw new IllegalArgumentException("Unknown tag type: "+in.getClass().getName());
 	}
 	
-	public static ByteTag scaffoldByteToMinecraft(NBTTagByte in) {
-		return ByteTag.of(in.getValue());
+	public static net.minecraft.nbt.ByteTag scaffoldByteToMinecraft(ByteTag in) {
+		return net.minecraft.nbt.ByteTag.of(in.asByte());
 	}
 	
-	public static ShortTag scaffoldShortToMinecraft(NBTTagShort in) {
-		return ShortTag.of(in.getValue());
+	public static net.minecraft.nbt.ShortTag scaffoldShortToMinecraft(ShortTag in) {
+		return net.minecraft.nbt.ShortTag.of(in.asShort());
 	}
 
-	public static IntTag scaffoldIntToMinecraft(NBTTagInt in) {
-		return IntTag.of(in.getValue());
+	public static net.minecraft.nbt.IntTag scaffoldIntToMinecraft(IntTag in) {
+		return net.minecraft.nbt.IntTag.of(in.asInt());
 	}
 	
-	public static LongTag scaffoldLongToMinecraft(NBTTagLong in) {
-		return LongTag.of(in.getValue());
+	public static net.minecraft.nbt.LongTag scaffoldLongToMinecraft(LongTag in) {
+		return net.minecraft.nbt.LongTag.of(in.asLong());
 	}
 	
-	public static FloatTag scaffoldFloatToMinecraft(NBTTagFloat in) {
-		return FloatTag.of(in.getValue());
+	public static net.minecraft.nbt.FloatTag scaffoldFloatToMinecraft(FloatTag in) {
+		return net.minecraft.nbt.FloatTag.of(in.asFloat());
 	}
 	
-	public static DoubleTag scaffoldDoubleToMinecraft(NBTTagDouble in) {
-		return DoubleTag.of(in.getValue());
+	public static net.minecraft.nbt.DoubleTag scaffoldDoubleToMinecraft(DoubleTag in) {
+		return net.minecraft.nbt.DoubleTag.of(in.asDouble());
 	}
 	
-	public static ByteArrayTag scaffoldByteArrayToMinecraft(NBTTagByteArray in) {
-		return new ByteArrayTag(in.getValue());
+	public static net.minecraft.nbt.ByteArrayTag scaffoldByteArrayToMinecraft(ByteArrayTag in) {
+		return new net.minecraft.nbt.ByteArrayTag(in.getValue());
 	}
 	
-	public static StringTag scaffoldStringToMinecraft(NBTTagString in) {
-		return StringTag.of(in.getValue());
+	public static net.minecraft.nbt.StringTag scaffoldStringToMinecraft(StringTag in) {
+		return net.minecraft.nbt.StringTag.of(in.getValue());
 	}
 	
-	public static ListTag scaffoldListToMinecraft(NBTTagList in) {
-		ListTag list = new ListTag();
-		for (NBTTag tag : in.getValue()) {
+	public static net.minecraft.nbt.ListTag scaffoldListToMinecraft(ListTag<?> in) {
+		net.minecraft.nbt.ListTag list = new net.minecraft.nbt.ListTag();
+		for (Tag<?> tag : in) {
 			list.add(scaffoldToMinecraft(tag));
 		}
 		
 		return list;
 	}
 	
-	public static CompoundTag scaffoldCompoundToMinecraft(NBTTagCompound in) {
-		CompoundTag tag = new CompoundTag();
-		for (String key : in.getValue().keySet()) {
+	public static net.minecraft.nbt.CompoundTag scaffoldCompoundToMinecraft(CompoundTag in) {
+		net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+		for (String key : in.keySet()) {
 			tag.put(key, scaffoldToMinecraft(in.get(key)));
 		}
 		return tag;
 	}
 	
-	public static IntArrayTag scaffoldIntArrayToMinecraft(NBTTagIntArray in) {
-		return new IntArrayTag(in.getValue());
+	public static net.minecraft.nbt.IntArrayTag scaffoldIntArrayToMinecraft(IntArrayTag in) {
+		return new net.minecraft.nbt.IntArrayTag(in.getValue());
 	}
 	
-	public static LongArrayTag scaffoldLongArrayToMinecraft(NBTTagLongArray in) {
-		return new LongArrayTag(in.getValue());
+	public static net.minecraft.nbt.LongArrayTag scaffoldLongArrayToMinecraft(LongArrayTag in) {
+		return new net.minecraft.nbt.LongArrayTag(in.getValue());
 	}
 	
 }

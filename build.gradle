@@ -20,6 +20,7 @@ repositories {
 	mavenLocal()
 	maven {
 		url 'https://repo.eclipse.org/content/groups/efxclipse'
+		url 'https://jitpack.io/'
 	}
 }
 
@@ -37,8 +38,9 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	implementation(include ("org.scaffoldeditor:scaffold-core:0.2.0"))
-	implementation(include ("org.scaffoldeditor:scaffold-nbt:0.1.0"))
+	implementation(include ("org.scaffoldeditor:scaffold-core:0.3.0"))
+	implementation(include ("org.scaffoldeditor:scaffold-nbt:0.3.0"))
+	implementation(include ("com.github.Querz:NBT:6.1"))
 }
 
 processResources {
