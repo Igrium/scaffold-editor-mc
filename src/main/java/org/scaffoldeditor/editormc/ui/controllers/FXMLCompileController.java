@@ -101,7 +101,6 @@ public class FXMLCompileController {
 	public void compile() {
 		if (isCompiling) return;
 		
-
 		FXMLCompileProgressController controller;
 		
 		try {
@@ -122,6 +121,8 @@ public class FXMLCompileController {
 					Alert a = new Alert(AlertType.INFORMATION, "Compile finished!");
 					a.show();
 				}
+				
+				editor.worldpath_cache = compilePathField.getText();
 				updateButton();
 			}
 		});

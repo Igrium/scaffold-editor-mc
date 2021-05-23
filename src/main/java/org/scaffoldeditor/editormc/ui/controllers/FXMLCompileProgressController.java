@@ -92,7 +92,7 @@ public class FXMLCompileProgressController {
 	
 	@FXML
 	public void cancel() {
-		println("Cancel not implemented yet!");
+		ScaffoldEditor.getInstance().getProject().getCompiler().cancel();
 	}
 	
 	public static FXMLCompileProgressController open(Window parent) throws IOException {
