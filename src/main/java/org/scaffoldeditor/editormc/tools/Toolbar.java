@@ -1,0 +1,45 @@
+package org.scaffoldeditor.editormc.tools;
+
+import org.scaffoldeditor.editormc.ui.ScaffoldUI;
+
+import javafx.geometry.Insets;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+
+public class Toolbar {
+	
+	class ToolEntry {
+		public final ViewportTool tool;
+		public final ImageView image;
+		
+		public ToolEntry(ViewportTool tool) {
+			this.tool = tool;
+			this.image = new ImageView(tool.getIcon());		
+			ImageView view = new ImageView(tool.getIcon());
+			view.setOnMouseClicked(e -> {
+				setTool(tool);
+			});
+		}
+	}
+	
+	/**
+	 * The root node of the toolbar.
+	 */
+	public final HBox root = new HBox();
+	
+	public Toolbar() {
+		root.setSpacing(5);
+		BorderPane.setMargin(root, new Insets(3, 20, 3, 20));
+
+	}
+	
+	public void addTool(ViewportTool tool) {
+		ToolEntry entry = new ToolEntry(tool);
+		root.getChildren().add(entry.image);
+	}
+	
+	private void setTool(ViewportTool tool) {
+		ScaffoldUI.getInstance().getViewport().setActiveTool(tool);
+	}
+}

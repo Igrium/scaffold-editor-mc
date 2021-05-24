@@ -8,14 +8,18 @@ import java.util.Map;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.gismos.TransformationGismo;
 import org.scaffoldeditor.editormc.gismos.TranslationGismo;
+import org.scaffoldeditor.editormc.tools.ViewportTool;
 import org.scaffoldeditor.editormc.util.RaycastUtils;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.math.Vector;
 
+import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
 import javafx.scene.image.WritablePixelFormat;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.hit.BlockHitResult;
@@ -32,6 +36,8 @@ public class Viewport {
 	private TransformationGismo activeGismo;
 	private int mouseX = 0;
 	private int mouseY = 0;
+	private ViewportTool activeTool;
+	private boolean isMouseOverViewport;
 	
 	private final WritablePixelFormat<ByteBuffer> PIXEL_FORMAT = PixelFormat.getByteBgraInstance();
 	
@@ -40,6 +46,18 @@ public class Viewport {
 		this.parent = parent;
 		
 		gismos.put("translate", new TranslationGismo(this));
+		parent.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+			isMouseOverViewport = true;
+			if (activeTool != null) {
+				parent.getScene().setCursor(activeTool.getCursor());
+			}
+		});
+		parent.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+			isMouseOverViewport = false;
+			if (activeTool != null) {
+				parent.getScene().setCursor(Cursor.DEFAULT);
+			}
+		});
 	}
 	
 	/**
@@ -101,11 +119,50 @@ public class Viewport {
 		editor.updateSelection();
 	}
 	
-	public void updateMouse(int x, int y) {
+	public void handleMousePressed(MouseEvent e) {
+		if (activeTool != null) {
+			activeTool.onMousePressed(e);
+		}
+	}
+	
+	public void handleMouseReleased(MouseEvent e) {
+		if (activeTool != null) {
+			activeTool.onMouseReleased(e);
+		}
+	}
+	
+	public void handleMouseMoved(int x, int y) {
 		mouseX = x;
 		mouseY = y;
+		if (activeTool != null) {
+			activeTool.onMouseMoved(x, y);
+		}
 		if (activeGismo != null) {
 			activeGismo.mouseMoved(x, y);
+		}
+	}
+	
+	public void handleMouseDragged(MouseEvent e) {
+		if (activeTool != null) {
+			activeTool.onMouseDragged(e);
+		}
+	}
+	
+	public void handleKeyPressed(KeyEvent e) {
+		if (activeTool != null) {
+			activeTool.onKeyPressed(e);
+		}
+	}
+	
+	public void handleKeyReleased(KeyEvent e) {
+		if (activeTool != null) {
+			activeTool.onKeyReleased(e);
+		}
+	}
+	
+	public void handleKeyTyped(KeyEvent e) {
+		if (activeTool != null) {
+			activeTool.onKeyTyped(e);
 		}
 	}
 	
@@ -135,6 +192,27 @@ public class Viewport {
 
 	public TransformationGismo getActiveGismo() {
 		return activeGismo;
+	}
+
+	public ViewportTool getActiveTool() {
+		return activeTool;
+	}
+
+	public void setActiveTool(ViewportTool activeTool) {
+		if (this.activeTool != null) {
+			this.activeTool.onDeactivate();
+		}
+		this.activeTool = activeTool;
+		if (activeTool != null) {
+			activeTool.onActivate();
+		}
+		if (isMouseOverViewport) {
+			if (activeTool != null && activeTool.overrideCursor()) {
+				parent.getScene().setCursor(activeTool.getCursor());	
+			} else {
+				parent.getScene().setCursor(Cursor.DEFAULT);
+			}
+		}
 	}
 	
 }

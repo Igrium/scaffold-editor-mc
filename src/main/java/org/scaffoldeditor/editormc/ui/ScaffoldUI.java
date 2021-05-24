@@ -8,6 +8,8 @@ import java.util.concurrent.CountDownLatch;
 import org.jetbrains.annotations.Nullable;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
+import org.scaffoldeditor.editormc.tools.SelectTool;
+import org.scaffoldeditor.editormc.tools.Toolbar;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLCompileController;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
@@ -42,10 +44,12 @@ public class ScaffoldUI extends Application {
 	private static ScaffoldUI instance;
 	
 	private ScaffoldEditor editor;
+	private MainFXMLController controller;
 	protected Stage stage;
 	protected Scene mainScene;
 	protected Viewport viewport;
 	protected ViewportControls viewportControls = new ViewportControls();
+	protected Toolbar toolbar = new Toolbar();
 	
 	private boolean isExiting = false;
 	
@@ -65,7 +69,9 @@ public class ScaffoldUI extends Application {
 		this.stage = stage;
 		Parent root;
 		try {
-			root = FXMLLoader.load(getClass().getResource("/assets/scaffold/ui/scaffold.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/assets/scaffold/ui/scaffold.fxml"));
+			root = loader.load();
+			controller = loader.getController();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
@@ -77,9 +83,18 @@ public class ScaffoldUI extends Application {
 		
 		viewport = new Viewport((ImageView) mainScene.lookup("#viewport"), (Pane) mainScene.lookup("#viewport_pane"));
 		
+		try {
+			toolbar.addTool(new SelectTool());
+			controller.getMainPanel().setTop(toolbar.root);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		
 		System.setProperty("java.awt.headless", "false");
 		stage.show();
 		viewportControls.init(this);
+		
 		
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			
