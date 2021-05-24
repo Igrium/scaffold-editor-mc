@@ -5,11 +5,9 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.gismos.TransformationGismo;
 import org.scaffoldeditor.editormc.gismos.TranslationGismo;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
-import org.scaffoldeditor.editormc.util.RaycastUtils;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.math.Vector;
 
@@ -22,10 +20,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.hit.HitResult.Type;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class Viewport {
@@ -96,29 +90,6 @@ public class Viewport {
 		return new Vector((float) entityPos.x, (float) entityPos.y, (float) entityPos.z);
 	}
 	
-	public void select(int x, int y, boolean multiple) {
-		ScaffoldEditor editor = ScaffoldUI.getInstance().getEditor();
-		if (!multiple) {
-			editor.getSelectedEntities().clear();
-		}
-		
-		int width = (int) parent.getWidth();
-		int height = (int) parent.getHeight();
-		
-		HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height, 100);
-		
-		if (hitResult.getType() == Type.MISS) {
-		} else if (hitResult.getType() == Type.BLOCK) {
-			BlockHitResult blockHit = (BlockHitResult) hitResult;
-			BlockPos pos = blockHit.getBlockPos();
-			Object owner = editor.getLevel().getBlockWorld().getBlockOwner(pos.getX(), pos.getY(), pos.getZ());
-			if (owner instanceof Entity) {
-				editor.getSelectedEntities().add((Entity) owner);
-			}
-		}
-		editor.updateSelection();
-	}
-	
 	public void handleMousePressed(MouseEvent e) {
 		if (activeTool != null) {
 			activeTool.onMousePressed(e);
@@ -128,6 +99,12 @@ public class Viewport {
 	public void handleMouseReleased(MouseEvent e) {
 		if (activeTool != null) {
 			activeTool.onMouseReleased(e);
+		}
+	}
+	
+	public void handleMouseClicked(MouseEvent e) {
+		if (activeTool != null) {
+			activeTool.onMouseClicked(e);
 		}
 	}
 	
@@ -204,6 +181,7 @@ public class Viewport {
 		}
 		this.activeTool = activeTool;
 		if (activeTool != null) {
+			System.out.println("Activating tool: "+activeTool.getClass().getName());
 			activeTool.onActivate();
 		}
 		if (isMouseOverViewport) {

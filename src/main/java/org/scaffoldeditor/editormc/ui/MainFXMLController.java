@@ -31,6 +31,9 @@ public class MainFXMLController {
 		
 		addPressAndHoldHandler(viewport_pane, ViewportControls.HOLD_TIME, e -> handleViewportMousePressed(e));
 		viewport_pane.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> handleViewportMouseReleased(e));
+		viewport_pane.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+			ScaffoldUI.getInstance().viewport.handleMouseClicked(e);
+		});
 		viewport_pane.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			ScaffoldUI.getInstance().viewport.handleKeyReleased(e);
 			if (e.getCode().equals(KeyCode.SHIFT)) {
@@ -90,14 +93,6 @@ public class MainFXMLController {
 	@FXML
 	private void recompileWorld() {
 		ScaffoldEditor.getInstance().getLevel().compileBlockWorld(false);
-	}
-	
-	@FXML
-	private void select(MouseEvent e) {
-		int x = (int) e.getX();
-		int y = (int) e.getY();
-
-		ScaffoldUI.getInstance().getViewport().select(x, y, isShiftPressed);
 	}
 	
 	// VIEWPORT

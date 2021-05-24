@@ -24,6 +24,11 @@ public interface ViewportTool {
 	void onMousePressed(MouseEvent e);
 	
 	/**
+	 * Called when the tool is active and the mouse is clicked.
+	 */
+	void onMouseClicked(MouseEvent e);
+	
+	/**
 	 * Called when the tool is active and a mouse button (other than right click) is released.
 	 */
 	void onMouseReleased(MouseEvent e);

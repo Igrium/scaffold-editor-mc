@@ -66,52 +66,52 @@ public class ScaffoldUI extends Application {
 	}
 	
 	protected void initUI(Stage stage) {
-		this.stage = stage;
-		Parent root;
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/assets/scaffold/ui/scaffold.fxml"));
-			root = loader.load();
-			controller = loader.getController();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		mainScene = new Scene(root, 1280, 800);
-		
-		stage.setTitle("Scaffold Editor");
-		stage.setScene(mainScene);
-		
-		viewport = new Viewport((ImageView) mainScene.lookup("#viewport"), (Pane) mainScene.lookup("#viewport_pane"));
-		
-		try {
-			toolbar.addTool(new SelectTool());
+			this.stage = stage;
+			Parent root;
+			try {
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/assets/scaffold/ui/scaffold.fxml"));
+				root = loader.load();
+				controller = loader.getController();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
+			}
+			mainScene = new Scene(root, 1280, 800);
+			
+			stage.setTitle("Scaffold Editor");
+			stage.setScene(mainScene);
+			
+			viewport = new Viewport((ImageView) mainScene.lookup("#viewport"), (Pane) mainScene.lookup("#viewport_pane"));
+			
+			System.setProperty("java.awt.headless", "false");
+			stage.show();
+			viewportControls.init(this);
+			
+			toolbar.addTool(new SelectTool(viewport));
 			controller.getMainPanel().setTop(toolbar.root);
+			
+			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+				
+				@Override
+				public void handle(WindowEvent event) {
+					if (isExiting) {
+						isExiting = false;
+					} else {
+						event.consume();
+						editor.exit();
+					}
+				}
+			});
+			
+			if (getEditor().getProject() == null) {
+				openSplashScreen();
+			}
 		} catch (Exception e) {
+			System.err.println("Unable to initialize scaffold ui!");
 			e.printStackTrace();
 		}
 
-		
-		System.setProperty("java.awt.headless", "false");
-		stage.show();
-		viewportControls.init(this);
-		
-		
-		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			
-			@Override
-			public void handle(WindowEvent event) {
-				if (isExiting) {
-					isExiting = false;
-				} else {
-					event.consume();
-					editor.exit();
-				}
-			}
-		});
-		
-		if (getEditor().getProject() == null) {
-			openSplashScreen();
-		}
 	}
 	
 	public void openSplashScreen() {
