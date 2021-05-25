@@ -1,7 +1,14 @@
 package org.scaffoldeditor.editormc.ui;
 
+import java.util.List;
+import java.util.Set;
+
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
+import org.scaffoldeditor.scaffold.level.Level;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
+
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.event.EventHandler;
@@ -102,6 +109,12 @@ public class MainFXMLController {
 		ScaffoldEditor.getInstance().getLevel().compileBlockWorld(false);
 	}
 	
+	@FXML
+	private void delete() {
+		Set<Entity> entities = ScaffoldEditor.getInstance().getSelectedEntities();
+		getLevel().getOperationManager().execute(new DeleteEntityOperation(getLevel(), entities));
+	}
+	
 	// VIEWPORT
 	private void addPressAndHoldHandler(Node node, Duration holdTime, EventHandler<MouseEvent> handler) {
 
@@ -146,6 +159,10 @@ public class MainFXMLController {
 	
 	public Label getToolPropertiesLabel() {
 		return toolPropertiesLabel;
+	}
+	
+	public Level getLevel() {
+		return ScaffoldUI.getInstance().getEditor().getLevel();
 	}
 }
 	
