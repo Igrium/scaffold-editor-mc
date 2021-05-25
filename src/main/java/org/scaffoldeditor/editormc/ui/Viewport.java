@@ -42,7 +42,7 @@ public class Viewport {
 		gismos.put("translate", new TranslationGismo(this));
 		parent.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
 			isMouseOverViewport = true;
-			if (activeTool != null) {
+			if (activeTool != null && activeTool.overrideCursor()) {
 				parent.getScene().setCursor(activeTool.getCursor());
 			}
 		});
@@ -183,6 +183,7 @@ public class Viewport {
 		if (activeTool != null) {
 			System.out.println("Activating tool: "+activeTool.getClass().getName());
 			activeTool.onActivate();
+			ScaffoldUI.getInstance().setToolVisual(activeTool);
 		}
 		if (isMouseOverViewport) {
 			if (activeTool != null && activeTool.overrideCursor()) {

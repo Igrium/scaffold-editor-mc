@@ -8,10 +8,12 @@
     -fx-focused-mark-color: -fx-focused-text-base-color;
 }
 
-
-
 .text-input:focused {
     -fx-highlight-text-fill: ladder( -fx-highlight-fill, -fx-light-text-color 45%, -fx-dark-text-color 46%, -fx-dark-text-color 59%, -fx-mid-text-color 60%);
+}
+
+.warning-text {
+    -fx-text-fill: rgb(228, 191, 69);
 }
 
 /* .entity-list {

@@ -2,65 +2,68 @@ package org.scaffoldeditor.editormc.tools;
 
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 
 public interface ViewportTool {
 	
 	/**
 	 * Called when the tool is selected from the toolbar.
+	 * @return 
 	 */
-	void onActivate();
+	default void onActivate() {}
 	
 	/**
 	 * Called when the tool is deselected.
 	 */
-	void onDeactivate();
+	default void onDeactivate() {};
 	
 	/**
 	 * Called when the tool is active and a mouse button (other than right click) is pressed.
 	 */
-	void onMousePressed(MouseEvent e);
+	default void onMousePressed(MouseEvent event) {};
 	
 	/**
 	 * Called when the tool is active and the mouse is clicked.
 	 */
-	void onMouseClicked(MouseEvent e);
+	default void onMouseClicked(MouseEvent event) {};
 	
 	/**
 	 * Called when the tool is active and a mouse button (other than right click) is released.
 	 */
-	void onMouseReleased(MouseEvent e);
+	default void onMouseReleased(MouseEvent event) {};
 	
 	/**
 	 * Called when the tool is active and the mouse is moved.
 	 * @param x New x coordinate of the mouse (relative to the viewport)
 	 * @param y New y cooddinate of the mouse (relative to the viewport)
 	 */
-	void onMouseMoved(int x, int y);
+	default void onMouseMoved(int x, int y) {};
 	
 	/**
 	 * Called when the tool is active and the mouse is dragged.
 	 * <br>
 	 * <b>Note:</b> See JavaFX documentation for the difference between moving and dragging.
 	 */
-	void onMouseDragged(MouseEvent e);
+	default void onMouseDragged(MouseEvent event) {};
 	
 	/**
 	 * Called when the tool is active and a key is pressed.
 	 */
-	void onKeyPressed(KeyEvent e);
+	default void onKeyPressed(KeyEvent event) {};
 	
 	/**
 	 * Called when the tool is active and a key is released.
 	 */
-	void onKeyReleased(KeyEvent e);
+	default void onKeyReleased(KeyEvent event) {};
 	
 	/**
 	 * Called when the tool is active and a key is typed.
 	 */
-	void onKeyTyped(KeyEvent e);
+	default void onKeyTyped(KeyEvent event) {};
 	
 	/**
 	 * Get the icon this tool should use.
@@ -81,4 +84,17 @@ public interface ViewportTool {
 	default Cursor getCursor() {
 		return new ImageCursor(getIcon());
 	}
+	
+	/**
+	 * Get the tool properties UI.
+	 * @return Root node of the tool properties UI.
+	 */
+	default Node getPropertiesPane() {
+		return new Pane();
+	}
+	
+	/**
+	 * Get the friendly name of this tool.
+	 */
+	String getName();
 }

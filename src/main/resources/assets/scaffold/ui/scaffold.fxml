@@ -6,6 +6,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
@@ -114,6 +115,25 @@
                </content>
             </ScrollPane>
          </right>
+         <left>
+            <BorderPane fx:id="toolPropertiesPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <top>
+                  <VBox BorderPane.alignment="CENTER">
+                     <children>
+                        <Label fx:id="toolPropertiesLabel" alignment="CENTER" text="Tool Properties: [tool_name]">
+                           <padding>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <Separator prefWidth="200.0" />
+                     </children>
+                  </VBox>
+               </top>
+            </BorderPane>
+         </left>
       </BorderPane>
   </children>
 </VBox>

@@ -97,5 +97,8 @@ public class SelectTool implements ViewportTool {
 		return icon;
 	}
 
-
+	@Override
+	public String getName() {
+		return "Selection Tool";
+	}
 }

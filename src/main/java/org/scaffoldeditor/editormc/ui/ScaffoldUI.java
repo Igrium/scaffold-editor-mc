@@ -8,8 +8,10 @@ import java.util.concurrent.CountDownLatch;
 import org.jetbrains.annotations.Nullable;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
+import org.scaffoldeditor.editormc.tools.EntityTool;
 import org.scaffoldeditor.editormc.tools.SelectTool;
 import org.scaffoldeditor.editormc.tools.Toolbar;
+import org.scaffoldeditor.editormc.tools.ViewportTool;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLCompileController;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
@@ -89,6 +91,7 @@ public class ScaffoldUI extends Application {
 			viewportControls.init(this);
 			
 			toolbar.addTool(new SelectTool(viewport));
+			toolbar.addTool(new EntityTool());
 			controller.getMainPanel().setTop(toolbar.root);
 			
 			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -281,5 +284,15 @@ public class ScaffoldUI extends Application {
 	public void openEntityEditor(Entity entity) {
 		EntityEditor editor = new EntityEditor(stage, entity);
 		editor.show();
+	}
+	
+	public void setToolVisual(ViewportTool tool) {
+		if (tool != null) {
+			controller.getToolPropertiesLabel().setText("Tool Properties: "+tool.getName());
+			controller.getToolPropertiesPane().setCenter(tool.getPropertiesPane());
+		} else {
+			controller.getToolPropertiesLabel().setText("[No tool selected]");
+			controller.getToolPropertiesPane().setCenter(null);
+		}		
 	}
 }

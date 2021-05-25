@@ -4,6 +4,7 @@ import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -21,6 +22,8 @@ public class Toolbar {
 			image.setOnAction(e -> {
 				setTool(tool);
 			});
+			Tooltip t = new Tooltip(tool.getName());
+			Tooltip.install(image, t);
 		}
 	}
 	

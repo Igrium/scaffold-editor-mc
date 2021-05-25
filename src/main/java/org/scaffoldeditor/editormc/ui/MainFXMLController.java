@@ -6,6 +6,7 @@ import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -25,6 +26,12 @@ public class MainFXMLController {
 	
 	@FXML
 	private BorderPane mainPanel;
+	
+	@FXML
+	private BorderPane toolPropertiesPane;
+	
+	@FXML
+	private Label toolPropertiesLabel;
 	
 	@FXML
 	public void initialize() {
@@ -131,6 +138,14 @@ public class MainFXMLController {
 	
 	public BorderPane getMainPanel() {
 		return mainPanel;
+	}
+	
+	public BorderPane getToolPropertiesPane() {
+		return toolPropertiesPane;
+	}
+	
+	public Label getToolPropertiesLabel() {
+		return toolPropertiesLabel;
 	}
 }
 	
