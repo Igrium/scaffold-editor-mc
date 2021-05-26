@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
-
 import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
 
 import net.minecraft.block.Block;
@@ -18,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.Spawner;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -40,6 +40,11 @@ public class EditorServerWorld extends ServerWorld {
 
 	@Override
 	public void updateNeighbors(BlockPos pos, Block block) {
+		return;
+	}
+	
+	@Override
+	public void tickChunk(WorldChunk chunk, int randomTickSpeed) {
 		return;
 	}
 	
