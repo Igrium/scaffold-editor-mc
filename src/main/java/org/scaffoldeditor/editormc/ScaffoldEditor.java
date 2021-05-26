@@ -11,6 +11,7 @@ import org.scaffoldeditor.editormc.engine.EditorServerWorld;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.scaffold_interface.WorldInterface;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
+import org.scaffoldeditor.editormc.util.ScaffoldClipboard;
 import org.scaffoldeditor.nbt.block.BlockWorld.ChunkCoordinate;
 import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
 import org.scaffoldeditor.scaffold.core.Project;
@@ -171,6 +172,20 @@ public class ScaffoldEditor {
 
 	public void setProject(Project project) {
 		this.project = project;
+	}
+	
+	/**
+	 * Copy the current selection to the clipboard.
+	 */
+	public void copySelection() {
+		ScaffoldClipboard.getInstance().copyEntities(selectedEntities);
+	}
+	
+	/**
+	 * Paste the current clipboard of entities into the level.
+	 */
+	public void paste() {
+		ScaffoldClipboard.getInstance().pasteEntities(getLevel());
 	}
 	
 	/**

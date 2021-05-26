@@ -114,6 +114,16 @@ public class MainFXMLController {
 		getLevel().getOperationManager().execute(new DeleteEntityOperation(getLevel(), entities));
 	}
 	
+	@FXML
+	private void copy() {
+		ScaffoldEditor.getInstance().copySelection();
+	}
+	
+	@FXML
+	private void paste() {
+		ScaffoldEditor.getInstance().c
+	}
+	
 	// VIEWPORT
 	private void addPressAndHoldHandler(Node node, Duration holdTime, EventHandler<MouseEvent> handler) {
 
