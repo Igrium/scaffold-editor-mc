@@ -6,7 +6,7 @@ import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.mixins.MainWindowAccessor;
 
-import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -16,14 +16,14 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.TranslatableText;
 
-public class ScaffoldEditorMod implements ModInitializer {
+public class ScaffoldEditorMod implements ClientModInitializer {
 	
 	private static ScaffoldEditorMod instance;
 	public boolean isInEditor = false;
 	private MinecraftClient client;
 	protected ScaffoldEditor editor;
 
-	public void onInitialize() {
+	public void onInitializeClient() {
 		client = MinecraftClient.getInstance();
 		
 		Config.init();
@@ -82,6 +82,5 @@ public class ScaffoldEditorMod implements ModInitializer {
 	public static ScaffoldEditorMod getInstance() {
 		return instance;
 	}
-
 
 }

@@ -1,6 +1,5 @@
 package org.scaffoldeditor.editormc.ui;
 
-import java.util.List;
 import java.util.Set;
 
 import org.scaffoldeditor.editormc.ScaffoldEditor;
