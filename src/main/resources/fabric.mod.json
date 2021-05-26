@@ -19,6 +19,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
+      "org.scaffoldeditor.editormc.engine.ScaffoldServerMod"
     ],
     "client": [
       "org.scaffoldeditor.editormc.engine.ScaffoldEditorMod"
