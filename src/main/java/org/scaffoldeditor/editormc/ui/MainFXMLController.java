@@ -120,8 +120,13 @@ public class MainFXMLController {
 	}
 	
 	@FXML
+	private void cut() {
+		ScaffoldEditor.getInstance().cutSelection();
+	}
+	
+	@FXML
 	private void paste() {
-		ScaffoldEditor.getInstance().c
+		ScaffoldEditor.getInstance().paste();
 	}
 	
 	// VIEWPORT

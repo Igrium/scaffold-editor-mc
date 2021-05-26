@@ -11,12 +11,14 @@ import org.scaffoldeditor.editormc.engine.EditorServerWorld;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.scaffold_interface.WorldInterface;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
-import org.scaffoldeditor.editormc.util.ScaffoldClipboard;
 import org.scaffoldeditor.nbt.block.BlockWorld.ChunkCoordinate;
 import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
 import org.scaffoldeditor.scaffold.core.Project;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
+import org.scaffoldeditor.scaffold.operation.PasteEntitiesOperation;
+import org.scaffoldeditor.scaffold.util.ClipboardManager;
 
 import net.minecraft.client.MinecraftClient;
 
@@ -178,14 +180,22 @@ public class ScaffoldEditor {
 	 * Copy the current selection to the clipboard.
 	 */
 	public void copySelection() {
-		ScaffoldClipboard.getInstance().copyEntities(selectedEntities);
+		ClipboardManager.getInstance().copyEntities(selectedEntities);
 	}
 	
 	/**
-	 * Paste the current clipboard of entities into the level.
+	 * Cut the current selection to the clipboard
+	 */
+	public void cutSelection() {
+		copySelection();
+		level.getOperationManager().execute(new DeleteEntityOperation(level, selectedEntities));
+	}
+	
+	/**
+	 * Paste the current clipboard into the level.
 	 */
 	public void paste() {
-		ScaffoldClipboard.getInstance().pasteEntities(getLevel());
+		level.getOperationManager().execute(new PasteEntitiesOperation(getLevel()));
 	}
 	
 	/**
