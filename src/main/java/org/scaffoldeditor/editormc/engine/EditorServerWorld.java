@@ -39,7 +39,12 @@ public class EditorServerWorld extends ServerWorld {
 	}
 
 	@Override
-	public void updateNeighbors(BlockPos pos, Block block) {
+	public void updateNeighbor(BlockPos sourcePos, Block sourceBlock, BlockPos neighborPos) {
+		return;
+	}
+	
+	@Override
+	public void updateComparators(BlockPos pos, Block block) {
 		return;
 	}
 	
