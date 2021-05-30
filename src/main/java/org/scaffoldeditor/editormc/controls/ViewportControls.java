@@ -65,6 +65,13 @@ public class ViewportControls {
 		this.editor = ui.getEditor();
 		Scene scene = ui.getStage().getScene();
 		
+		try {
+			mouseMover = new Robot();
+		} catch (AWTException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		scene.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			String name = e.getCode().getName();
 			if (bindings.containsKey(name)) {
@@ -93,12 +100,6 @@ public class ViewportControls {
 		
 		camera = (EditorCameraEntity) client.getCameraEntity();
 		
-		try {
-			mouseMover = new Robot();
-		} catch (AWTException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		initControls();
 	}
 	
