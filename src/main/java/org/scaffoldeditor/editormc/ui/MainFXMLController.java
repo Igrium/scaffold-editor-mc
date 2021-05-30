@@ -84,6 +84,11 @@ public class MainFXMLController {
 	}
 	
 	@FXML
+	private void newLevel() {
+		ScaffoldUI.getInstance().newLevel();
+	}
+	
+	@FXML
 	private void save() {
 		ScaffoldUI.getInstance().getEditor().save();
 	}

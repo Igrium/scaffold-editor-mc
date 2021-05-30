@@ -2,6 +2,7 @@ package org.scaffoldeditor.editormc.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -15,6 +16,7 @@ import org.scaffoldeditor.editormc.tools.ViewportTool;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLCompileController;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -155,6 +157,25 @@ public class ScaffoldUI extends Application {
 		}
 	}
 	
+	public void newLevel() {
+		if (editor.getProject() == null) return;
+		FileChooser chooser = new FileChooser();
+		chooser.setInitialDirectory(editor.getProject().getProjectFolder().resolve("maps").toFile());
+		chooser.getExtensionFilters().add(new ExtensionFilter("Scaffold Level Files", "*.mclevel"));
+		chooser.setInitialFileName("*.mclevel");
+		
+		File level = chooser.showSaveDialog(stage);
+		if (level != null) {
+			File level2;
+			if (!level.getName().endsWith(".mclevel")) {
+				level2 = new File(level.getParentFile(), level.getName()+".mclevel");
+			} else {
+				level2 = level;
+			}
+			editor.newLevel(level2);
+		}
+	}
+	
 	/**
 	 * Get the Scaffold Editor instance this ui is tied to.
 	 * @return The editor, or null if the editor is closed.
@@ -269,7 +290,12 @@ public class ScaffoldUI extends Application {
 			openEntityEditor(entity);
 		});
 		
-		ContextMenu contextMenu = new ContextMenu(edit);
+		MenuItem delete = new MenuItem("Delete");
+		delete.setOnAction(e -> {
+			editor.getLevel().getOperationManager().execute(new DeleteEntityOperation(editor.getLevel(), Collections.singleton(entity)));
+		});
+		
+		ContextMenu contextMenu = new ContextMenu(edit, delete);
 		label.setContextMenu(contextMenu);
 		
 		Button upButton = new Button("↑");

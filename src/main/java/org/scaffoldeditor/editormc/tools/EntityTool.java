@@ -47,6 +47,7 @@ public class EntityTool implements ViewportTool {
 		FXMLLoader loader = new FXMLLoader(FXMLCompileProgressController.class.getResource("/assets/scaffold/ui/tool_properties/entity_tool.fxml"));
 		root = loader.load();
 		uiController = loader.getController();
+		uiController.setParent(this);
 	}
 
 	@Override

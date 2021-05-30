@@ -18,14 +18,14 @@
             <Label fx:id="warningLabel" styleClass="warning-text" wrapText="true" />
             <HBox>
                <children>
-                  <TextField promptText="x" />
-                  <TextField promptText="y" />
-                  <TextField promptText="z" />
+                  <TextField promptText="x" fx:id="xField" />
+                  <TextField fx:id="yField" promptText="y" />
+                  <TextField fx:id="zField" promptText="z" />
                </children>
             </HBox>
             <ButtonBar prefHeight="40.0" prefWidth="200.0">
               <buttons>
-                <Button mnemonicParsing="false" text="Spawn" />
+                <Button mnemonicParsing="false" onAction="#spawn" text="Spawn" />
               </buttons>
                <VBox.margin>
                   <Insets />

@@ -119,6 +119,18 @@ public class ScaffoldEditor {
 		return level;
 	}
 	
+	/**
+	 * Create a new level and open it. Only works if the project is not null.
+	 * @param levelFile File to save the level as.
+	 */
+	public void newLevel(File levelFile) {
+		if (project == null) return;
+		Level level = new Level(getProject());
+		this.levelFile = levelFile;
+		setLevel(level);
+		level.saveFile(levelFile);
+	}
+	
 	protected void loadLevel(boolean compile) {
 		if (level == null) {
 			return;
