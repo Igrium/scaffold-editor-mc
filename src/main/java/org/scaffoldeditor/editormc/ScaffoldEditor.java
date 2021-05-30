@@ -4,6 +4,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
 import org.jetbrains.annotations.Nullable;
 import org.scaffoldeditor.editormc.engine.EditorServer;
 import org.scaffoldeditor.editormc.engine.EditorServerWorld;
@@ -113,7 +115,7 @@ public class ScaffoldEditor {
 				ui.updateEntityList();
 			});
 			ui.updateEntityList();		
-			loadLevel(true);		
+			loadLevel(true);
 		}
 	}
 	
@@ -237,11 +239,15 @@ public class ScaffoldEditor {
 	 * @param file File to load.
 	 * @return Loaded level.
 	 */
-	public Level openLevelFile(File file) {
-		Level level = Level.loadFile(project, file);
+	public CompletableFuture<Level> openLevelFile(File file) {
+		CompletableFuture<Level> future = new CompletableFuture<Level>();
+		project.getLevelService().execute(() -> {
+			Level level = Level.loadFile(project, file);
+			setLevel(level);
+			future.complete(level);
+		});
 		levelFile = file;
-		setLevel(level);
-		return level;
+		return future;
 	}
 	
 	public void save() {
