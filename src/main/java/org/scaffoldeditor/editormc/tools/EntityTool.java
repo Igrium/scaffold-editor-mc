@@ -1,7 +1,8 @@
 package org.scaffoldeditor.editormc.tools;
 
 import java.io.IOException;
-
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.editormc.ui.Viewport;
@@ -69,9 +70,7 @@ public class EntityTool implements ViewportTool {
 			HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height, 100);		
 			if (hitResult.getType() == HitResult.Type.MISS) return;		
 			Vec3d pos = hitResult.getPos();
-			if (spawn(new Vector((float) pos.x, (float) pos.y, (float) pos.z), uiController.shouldSnapToBlock())) {
-				// TODO: Switch back to selection tool.
-			}
+			spawn(new Vector((float) pos.x, (float) pos.y, (float) pos.z), uiController.shouldSnapToBlock());
 		}
 	}
 	
@@ -81,15 +80,19 @@ public class EntityTool implements ViewportTool {
 	 * @param snapToBlock Snap to a grid increment (always rounds down).
 	 * @return Success.
 	 */
-	public boolean spawn(Vector position, boolean snapToBlock) {
+	public CompletableFuture<Boolean> spawn(Vector position, boolean snapToBlock) {
 		if (uiController.getEnteredClass().length() == 0) {
-			return false;
+			CompletableFuture<Boolean> success = new CompletableFuture<>();
+			success.complete(false);
+			return success;
 		}
 		
 		String registryName = uiController.getEnteredClass();
 		if (!EntityRegistry.registry.containsKey(registryName)) {
 			uiController.setWarningText("Unknown entity type: "+registryName);
-			return false;
+			CompletableFuture<Boolean> success = new CompletableFuture<>();
+			success.complete(false);
+			return success;
 		}
 		String name = uiController.getEnteredName();
 		if (name.length() == 0) {
@@ -100,13 +103,19 @@ public class EntityTool implements ViewportTool {
 		}
 		
 		Level level = ScaffoldEditor.getInstance().getLevel();
-		boolean success = level.getOperationManager().execute(new AddEntityOperation(level, registryName, name, position));
+		CompletableFuture<Boolean> success = level.getOperationManager().execute(new AddEntityOperation(level, registryName, name, position));
 		
-		if (!success) {
-			uiController.setWarningText("Unable to spawn entity! See console for details.");
-			return false;
-		}
-		return true;
+		success.thenRun(() -> {
+			try {
+				if (!success.get()) {
+					uiController.setWarningText("Unable to spawn entity! See console for details.");
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+		});
+
+		return success;
 	}
 
 	@Override

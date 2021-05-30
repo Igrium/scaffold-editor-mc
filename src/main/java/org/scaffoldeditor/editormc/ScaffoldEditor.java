@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.jetbrains.annotations.Nullable;
 import org.scaffoldeditor.editormc.engine.EditorServer;
 import org.scaffoldeditor.editormc.engine.EditorServerWorld;
@@ -29,7 +28,7 @@ public class ScaffoldEditor {
 	protected ScaffoldUI ui;
 	private Project project;
 	protected File levelFile;
-	private final Set<Entity> selectedEntities = new HashSet<>(); 
+	private final Set<Entity> selectedEntities = new HashSet<>();
 	
 	public  String worldpath_cache;	
 	private boolean pauseCache = true;
@@ -88,6 +87,7 @@ public class ScaffoldEditor {
 	protected void onClose() {
 		client.onResolutionChanged();
 		client.options.pauseOnLostFocus = pauseCache;
+		project.close();
 	}
 
 	public void setLevel(Level level) {
@@ -99,11 +99,13 @@ public class ScaffoldEditor {
 				if (e.updatedSections.isEmpty()) {
 					loadLevel(false);
 				} else {
-					EditorServerWorld world = server.getEditorWorld();
-					for (SectionCoordinate c : e.updatedSections) {
-						WorldInterface.loadScaffoldSection(
-								level.getBlockWorld().getChunks().get(new ChunkCoordinate(c.x, c.z)).sections[c.y], world, c);
-					}
+					project.getLevelService().execute(() -> {
+						EditorServerWorld world = server.getEditorWorld();
+						for (SectionCoordinate c : e.updatedSections) {
+							WorldInterface.loadScaffoldSection(
+									level.getBlockWorld().getChunks().get(new ChunkCoordinate(c.x, c.z)).sections[c.y], world, c);
+						}
+					});
 				}
 			});
 			
@@ -128,7 +130,7 @@ public class ScaffoldEditor {
 		Level level = new Level(getProject());
 		this.levelFile = levelFile;
 		setLevel(level);
-		level.saveFile(levelFile);
+		project.getLevelService().execute(() -> level.saveFile(levelFile));
 	}
 	
 	protected void loadLevel(boolean compile) {
@@ -136,7 +138,7 @@ public class ScaffoldEditor {
 			return;
 		}
 		
-		getServer().execute(() -> {
+		project.getLevelService().execute(() -> {
 			if (compile) {
 				level.compileBlockWorld(false);
 			} else {
@@ -244,7 +246,7 @@ public class ScaffoldEditor {
 	
 	public void save() {
 		if (level != null && levelFile != null) {
-			level.saveFile(levelFile);
+			project.getLevelService().execute(() -> level.saveFile(levelFile));
 		}
 	}
 	

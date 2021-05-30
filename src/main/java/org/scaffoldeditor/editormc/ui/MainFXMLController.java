@@ -110,7 +110,9 @@ public class MainFXMLController {
 	
 	@FXML
 	private void recompileWorld() {
-		ScaffoldEditor.getInstance().getLevel().compileBlockWorld(false);
+		ScaffoldEditor.getInstance().getProject().getLevelService().execute(() -> {
+			ScaffoldEditor.getInstance().getLevel().compileBlockWorld(false);
+		});
 	}
 	
 	@FXML

@@ -25,6 +25,10 @@ public final class WorldInterface {
 	 * @param world World to load into.
 	 */
 	public static void loadScaffoldChunk(Chunk chunk, EditorServerWorld world, ChunkCoordinate offset) {
+		if (!world.getServer().isOnThread()) {
+			world.getServer().execute(() -> loadScaffoldChunk(chunk, world, offset));
+			return;
+		}
 		for (int i = 0; i < Chunk.HEIGHT / Section.HEIGHT; i++) {
 			loadScaffoldSection(chunk.sections[i], world, new SectionCoordinate(offset, i));
 		}
@@ -37,6 +41,10 @@ public final class WorldInterface {
 	 * @param offset Coordinates of the section.
 	 */
 	public static void loadScaffoldSection(Section section, EditorServerWorld world, SectionCoordinate offset) {
+		if (!world.getServer().isOnThread()) {
+			world.getServer().execute(() -> loadScaffoldSection(section, world, offset));
+			return;
+		}
 		if (world.occupiedSections.contains(offset)) {
 			world.clearSection(offset);
 		}
@@ -61,8 +69,12 @@ public final class WorldInterface {
 	}
 	
 	public static void loadScaffoldWorld(BlockWorld in, EditorServerWorld world) {
-		Map<ChunkCoordinate, Chunk> chunksMap = in.getChunks();
+		if (!world.getServer().isOnThread()) {
+			world.getServer().execute(() -> loadScaffoldWorld(in, world));
+			return;
+		}
 		
+		Map<ChunkCoordinate, Chunk> chunksMap = in.getChunks();
 		for (SectionCoordinate section : new HashSet<>(world.occupiedSections)) {
 			world.clearSection(section);
 		}

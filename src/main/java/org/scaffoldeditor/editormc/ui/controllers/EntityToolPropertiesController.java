@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.scaffoldeditor.editormc.tools.EntityTool;
 import org.scaffoldeditor.scaffold.math.Vector;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -46,7 +47,9 @@ public class EntityToolPropertiesController {
 	}
 	
 	public void setWarningText(String text) {
-		warningLabel.setText(text);
+		Platform.runLater(() -> {
+			warningLabel.setText(text);
+		});
 	}
 	
 	public String getEnteredClass() {
