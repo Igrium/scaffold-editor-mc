@@ -20,10 +20,19 @@ import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
 import org.scaffoldeditor.scaffold.operation.PasteEntitiesOperation;
 import org.scaffoldeditor.scaffold.util.ClipboardManager;
+import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
+import org.scaffoldeditor.scaffold.util.event.EventListener;
 
 import net.minecraft.client.MinecraftClient;
 
 public class ScaffoldEditor {
+	public static class UpdateSelectionEvent {
+		public final Set<Entity> newSelection;
+		public UpdateSelectionEvent(Set<Entity> newSelection) {
+			this.newSelection = newSelection;
+		}
+	}
+	
 	private Level level;
 	protected MinecraftClient client = MinecraftClient.getInstance();
 	protected EditorServer server;
@@ -31,7 +40,7 @@ public class ScaffoldEditor {
 	private Project project;
 	protected File levelFile;
 	private final Set<Entity> selectedEntities = new HashSet<>();
-	
+	private final EventDispatcher<UpdateSelectionEvent> updateSelectionDispatcher = new EventDispatcher<>();
 	public  String worldpath_cache;	
 	private boolean pauseCache = true;
 	
@@ -179,7 +188,12 @@ public class ScaffoldEditor {
 	}
 	
 	public void updateSelection() {
+		updateSelectionDispatcher.fire(new UpdateSelectionEvent(selectedEntities));
 		System.out.println("Selection: "+selectedEntities.toString());
+	}
+	
+	public void onUpdateSelection(EventListener<UpdateSelectionEvent> listener) {
+		updateSelectionDispatcher.addListener(listener);
 	}
 	
 	public Project getProject() {

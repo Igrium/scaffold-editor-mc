@@ -6,9 +6,12 @@ import java.util.List;
 
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
 import org.scaffoldeditor.scaffold.operation.ModifyStackOperation;
 
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
@@ -29,14 +33,46 @@ public class FXMLOutlinerController {
 	private ScaffoldEditor editor;
 	
 	private Parent root;
+	private boolean supressSelectionUpdate = false;
 	
 	@FXML
 	private void initialize() {
 		entityList.setCellFactory(param -> new EntityCell());
+		entityList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		entityList.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<String>() {
+
+			@Override
+			public void onChanged(Change<? extends String> c) {
+				if (!supressSelectionUpdate) {
+					for (int i = 0; i < entityList.getItems().size(); i++) {
+						if (entityList.getSelectionModel().isSelected(i)) {
+							editor.getSelectedEntities().add(editor.getLevel().getEntity(entityList.getItems().get(i)));
+						} else {
+							editor.getSelectedEntities().remove(editor.getLevel().getEntity(entityList.getItems().get(i)));
+						}
+					}
+					editor.updateSelection();
+				}
+			}
+		});
 	}
 	
 	public void init(ScaffoldEditor editor) {
 		this.editor = editor;
+		editor.onUpdateSelection(e -> {
+			Platform.runLater(() -> {
+				supressSelectionUpdate = true;
+				for (int i = 0; i < entityList.getItems().size(); i++) {
+					Entity ent = editor.getLevel().getEntity(entityList.getItems().get(i));
+					if (e.newSelection.contains(ent)) {
+						entityList.getSelectionModel().select(i);
+					} else {
+						entityList.getSelectionModel().clearSelection(i);
+					}
+				}
+				supressSelectionUpdate = false;
+			});
+		});
 	}
 	
 	private class EntityCell extends ListCell<String> {
