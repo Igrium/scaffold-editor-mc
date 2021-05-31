@@ -45,10 +45,12 @@ public class FXMLOutlinerController {
 			public void onChanged(Change<? extends String> c) {
 				if (!supressSelectionUpdate) {
 					for (int i = 0; i < entityList.getItems().size(); i++) {
-						if (entityList.getSelectionModel().isSelected(i)) {
-							editor.getSelectedEntities().add(editor.getLevel().getEntity(entityList.getItems().get(i)));
-						} else {
-							editor.getSelectedEntities().remove(editor.getLevel().getEntity(entityList.getItems().get(i)));
+						if (entityList.getItems().get(i) != null) {
+							if (entityList.getSelectionModel().isSelected(i)) {
+								editor.getSelectedEntities().add(editor.getLevel().getEntity(entityList.getItems().get(i)));
+							} else {
+								editor.getSelectedEntities().remove(editor.getLevel().getEntity(entityList.getItems().get(i)));
+							}
 						}
 					}
 					editor.updateSelection();
@@ -135,7 +137,7 @@ public class FXMLOutlinerController {
 			});
 			
 			addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-				if (event.getClickCount() > 1) {
+				if (event.getClickCount() > 1 && getItem() != null) {
 					editor.getUI().openEntityEditor(editor.getLevel().getEntity(getItem()));
 					event.consume();
 				}

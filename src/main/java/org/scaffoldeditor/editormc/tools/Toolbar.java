@@ -1,5 +1,8 @@
 package org.scaffoldeditor.editormc.tools;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 
 import javafx.geometry.Insets;
@@ -27,6 +30,8 @@ public class Toolbar {
 		}
 	}
 	
+	private final Map<String, ToolEntry> entries = new HashMap<>();
+	
 	/**
 	 * The root node of the toolbar.
 	 */
@@ -38,12 +43,31 @@ public class Toolbar {
 
 	}
 	
-	public void addTool(ViewportTool tool) {
+	/**
+	 * Add a tool to the toolbar.
+	 * @param tool Tool to add.
+	 * @param registryName Registry name.
+	 */
+	public void addTool(ViewportTool tool, String registryName) {
 		ToolEntry entry = new ToolEntry(tool);
+		entries.put(registryName, entry);
 		root.getChildren().add(entry.image);
 	}
 	
 	private void setTool(ViewportTool tool) {
 		ScaffoldUI.getInstance().getViewport().setActiveTool(tool);
+	}
+	
+	/**
+	 * Set the active tool.
+	 * @param registryName Registry name of tool.
+	 */
+	public void setTool(String registryName) {
+		setTool(entries.get(registryName).tool);
+	}
+	
+	public void clear() {
+		entries.clear();
+		root.getChildren().clear();
 	}
 }

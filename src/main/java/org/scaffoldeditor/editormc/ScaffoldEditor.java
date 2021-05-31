@@ -189,7 +189,6 @@ public class ScaffoldEditor {
 	
 	public void updateSelection() {
 		updateSelectionDispatcher.fire(new UpdateSelectionEvent(selectedEntities));
-		System.out.println("Selection: "+selectedEntities.toString());
 	}
 	
 	public void onUpdateSelection(EventListener<UpdateSelectionEvent> listener) {

@@ -86,9 +86,10 @@ public class ScaffoldUI extends Application {
 			stage.show();
 			viewportControls.init(this);
 			
-			toolbar.addTool(new SelectTool(viewport));
-			toolbar.addTool(new EntityTool());
+			toolbar.addTool(new SelectTool(viewport), "select");
+			toolbar.addTool(new EntityTool(), "entity");
 			controller.getMainPanel().setTop(toolbar.root);
+			toolbar.setTool("select");
 			
 			outliner = FXMLOutlinerController.load(this);
 			controller.getMainPanel().setRight(outliner.getRoot());
