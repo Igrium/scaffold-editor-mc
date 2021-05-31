@@ -101,13 +101,11 @@ public class ScaffoldEditor {
 				if (e.updatedSections.isEmpty()) {
 					loadLevel(false);
 				} else {
-					project.getLevelService().execute(() -> {
-						EditorServerWorld world = server.getEditorWorld();
-						for (SectionCoordinate c : e.updatedSections) {
-							WorldInterface.loadScaffoldSection(
-									level.getBlockWorld().getChunks().get(new ChunkCoordinate(c.x, c.z)).sections[c.y], world, c);
-						}
-					});
+					EditorServerWorld world = server.getEditorWorld();
+					for (SectionCoordinate c : e.updatedSections) {
+						WorldInterface.loadScaffoldSection(
+								level.getBlockWorld().getChunks().get(new ChunkCoordinate(c.x, c.z)).sections[c.y], world, c);
+					}
 				}
 			});
 			
