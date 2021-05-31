@@ -2,7 +2,6 @@ package org.scaffoldeditor.editormc.ui;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -14,23 +13,17 @@ import org.scaffoldeditor.editormc.tools.SelectTool;
 import org.scaffoldeditor.editormc.tools.Toolbar;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLCompileController;
+import org.scaffoldeditor.editormc.ui.controllers.FXMLOutlinerController;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -54,6 +47,7 @@ public class ScaffoldUI extends Application {
 	protected Viewport viewport;
 	protected ViewportControls viewportControls = new ViewportControls();
 	protected Toolbar toolbar = new Toolbar();
+	protected FXMLOutlinerController outliner;
 	
 	private boolean isExiting = false;
 	
@@ -95,6 +89,9 @@ public class ScaffoldUI extends Application {
 			toolbar.addTool(new SelectTool(viewport));
 			toolbar.addTool(new EntityTool());
 			controller.getMainPanel().setTop(toolbar.root);
+			
+			outliner = FXMLOutlinerController.load(this);
+			controller.getMainPanel().setRight(outliner.getRoot());
 			
 			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 				
@@ -264,50 +261,17 @@ public class ScaffoldUI extends Application {
 
 	public void updateEntityList() {
 		Platform.runLater(() -> {
-			GridPane entityList = (GridPane) mainScene.lookup("#entityList");
-			entityList.getChildren().clear();
 			Level level = ScaffoldUI.getInstance().getEditor().getLevel();
 			List<String> entityStack = level.getEntityStack();
-			for (int i = 0; i < entityStack.size(); i++) {
-				Entity entity = level.getEntity(entityStack.get(i));
-				generateEntityListing(entityList, i, entity, false, false);
-			}
+			outliner.setEntities(entityStack);
 		});
-	}
-	
-	private void generateEntityListing(GridPane entityList, int index, Entity entity, boolean enableUp, boolean enableDown) {
-		Label label = new Label(entity.getName());
-		label.setStyle("entity-label");
-		
-		label.setOnMouseClicked(e -> {
-			if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() == 2) {
-				openEntityEditor(entity);
-			}
-		});
-		
-		MenuItem edit = new MenuItem("Edit Entity");
-		edit.setOnAction(e -> {
-			openEntityEditor(entity);
-		});
-		
-		MenuItem delete = new MenuItem("Delete");
-		delete.setOnAction(e -> {
-			editor.getLevel().getOperationManager().execute(new DeleteEntityOperation(editor.getLevel(), Collections.singleton(entity)));
-		});
-		
-		ContextMenu contextMenu = new ContextMenu(edit, delete);
-		label.setContextMenu(contextMenu);
-		
-		Button upButton = new Button("↑");
-		upButton.setDisable(!enableUp);
-		
-		Button downButton = new Button("↓");
-		downButton.setDisable(!enableDown);
-		
-		entityList.addRow(index, label, upButton, downButton);
 	}
 	
 	public void openEntityEditor(Entity entity) {
+		if (entity == null) {
+			throw new IllegalArgumentException("Entity cannot be null!");
+		}
+		
 		EntityEditor editor = new EntityEditor(stage, entity);
 		editor.show();
 	}
