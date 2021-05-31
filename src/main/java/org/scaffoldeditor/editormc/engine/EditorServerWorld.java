@@ -72,7 +72,7 @@ public class EditorServerWorld extends ServerWorld {
 
 	public void clearChunk(ChunkPos pos) {
 		BlockPos pos1 = new BlockPos(pos.getStartX(), 0, pos.getStartZ());
-		BlockPos pos2 = new BlockPos(pos.getEndX(), 256, pos.getEndZ());
+		BlockPos pos2 = new BlockPos(pos.getEndX() - 1, 256, pos.getEndZ() - 1);
 		
 		Iterable<BlockPos> iterator = BlockPos.iterate(pos1, pos2);
 		
@@ -84,7 +84,7 @@ public class EditorServerWorld extends ServerWorld {
 	
 	public void clearSection(SectionCoordinate pos) {
 		BlockPos pos1 = new BlockPos(pos.getStartX(), pos.getStartY(), pos.getStartZ());
-		BlockPos pos2 = new BlockPos(pos.getEndX(), pos.getEndY(), pos.getEndZ());
+		BlockPos pos2 = new BlockPos(pos.getEndX() - 1, pos.getEndY() - 1, pos.getEndZ() - 1);
 		
 		Iterable<BlockPos> iterator = BlockPos.iterate(pos1, pos2);
 		
