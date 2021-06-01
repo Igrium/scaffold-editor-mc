@@ -11,3 +11,4 @@ import javafx.scene.Node;
 public interface IRenderAttributeType {
 	public Node createSetter(String name, Attribute<?> defaultValue);	
 }
+

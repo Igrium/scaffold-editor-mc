@@ -12,6 +12,7 @@ import org.scaffoldeditor.editormc.ui.attribute_types.FloatAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.IRenderAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.IntAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.LongAttributeType;
+import org.scaffoldeditor.editormc.ui.attribute_types.NBTAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.StringAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.VectorAttributeType;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLEntityEditorController;
@@ -22,6 +23,7 @@ import org.scaffoldeditor.scaffold.level.entity.attribute.DoubleAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.FloatAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.IntAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.LongAttribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.NBTAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.StringAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.VectorAttribute;
 import org.scaffoldeditor.scaffold.operation.ChangeAttributesOperation;
@@ -99,6 +101,7 @@ public class EntityEditor {
 		attributeTypes.put(FloatAttribute.REGISTRY_NAME, new FloatAttributeType());
 		attributeTypes.put(DoubleAttribute.REGISTRY_NAME, new DoubleAttributeType());
 		attributeTypes.put(VectorAttribute.REGISTRY_NAME, new VectorAttributeType());
+		attributeTypes.put(NBTAttribute.REGISTRY_NAME, new NBTAttributeType());
 	}
 	
 	protected void loadAttributes() {
