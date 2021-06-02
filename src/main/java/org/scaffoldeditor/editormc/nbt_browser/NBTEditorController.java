@@ -76,7 +76,9 @@ public class NBTEditorController {
 	public void editEntry(TreeItem<NamedTag> item) {
 		if (isEditable(item.getValue().getTag())) {
 			TreeItem<NamedTag> parent = item.getParent();
-			NBTValueEditor editor = NBTValueEditor.open(item.getValue(), stage);
+			boolean allowEmptyName = parent.getValue().getTag() instanceof ListTag;
+			
+			NBTValueEditor editor = NBTValueEditor.open(item.getValue(), stage, allowEmptyName);
 			editor.onFinished(tag -> {
 				if (parent.getValue().getTag() instanceof CompoundTag) {
 					CompoundTag compound = (CompoundTag) parent.getValue().getTag();

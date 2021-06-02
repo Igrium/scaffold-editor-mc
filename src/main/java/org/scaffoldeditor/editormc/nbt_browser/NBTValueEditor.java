@@ -176,6 +176,7 @@ public class NBTValueEditor {
 	private Map<Integer, String> tagNames = new HashMap<>();
 	private EventDispatcher<NamedTag> dispatcher = new EventDispatcher<>();
 	private Stage stage;
+	private boolean allowEmptyName = false;
 	
 	@FXML
 	private void initialize() {
@@ -194,7 +195,7 @@ public class NBTValueEditor {
 	
 	public NamedTag getNBT() {
 		String name = nameField.getText();
-		if (name.length() == 0) {
+		if (!allowEmptyName && name.length() == 0) {
 			Alert alert = new Alert(AlertType.ERROR, "Name cannot be empty!");
 			alert.initOwner(stage);
 			alert.showAndWait();
@@ -235,7 +236,7 @@ public class NBTValueEditor {
 	 * @param parent Parent stage.
 	 * @return Editor instance.
 	 */
-	public static NBTValueEditor open(NamedTag tag, Stage parent) {
+	public static NBTValueEditor open(NamedTag tag, Stage parent, boolean allowEmptyName) {
 		FXMLLoader loader = new FXMLLoader(NBTValueEditor.class.getResource("/assets/scaffold/ui/nbt/nbt_value_editor.fxml"));
 		Parent root;
 		try {
@@ -258,6 +259,7 @@ public class NBTValueEditor {
 		window.setResizable(false);
 		window.show();
 		
+		controller.allowEmptyName = allowEmptyName;
 		controller.setNBT(tag);
 		return controller;
 	}
