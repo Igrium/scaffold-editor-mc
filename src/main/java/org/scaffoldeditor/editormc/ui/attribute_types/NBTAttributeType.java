@@ -1,12 +1,14 @@
 package org.scaffoldeditor.editormc.ui.attribute_types;
 
-import org.scaffoldeditor.editormc.nbt_browser.NBTBrowserController;
+import org.scaffoldeditor.editormc.nbt_browser.NBTEditorController;
 import org.scaffoldeditor.editormc.ui.EntityEditor;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.NBTAttribute;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.CompoundTag;
@@ -20,12 +22,19 @@ public class NBTAttributeType implements IRenderAttributeType {
 		}
 		
 		CompoundTag nbt = ((NBTAttribute) defaultValue).getValue();
+		
 		Button editButton = new Button("Browse NBT");
 		editButton.setOnAction(e -> {
-			NBTBrowserController.openPopup((Stage) editButton.getScene().getWindow())
-					.loadNBT(new NamedTag("root", nbt));
+			NBTEditorController controller = NBTEditorController.openPopup((Stage) editButton.getScene().getWindow());
+			controller.loadNBT(new NamedTag("root", nbt));
+			
+			controller.onUpdateNBT(tag -> {
+				editButton.fireEvent(new ChangeAttributeEvent(ChangeAttributeEvent.ATTRIBUTE_CHANGED, name,
+						new NBTAttribute((CompoundTag) tag.getTag())));
+			});
 		});
 		
+		GridPane.setVgrow(editButton, Priority.NEVER);
 		return editButton;
 	}
 

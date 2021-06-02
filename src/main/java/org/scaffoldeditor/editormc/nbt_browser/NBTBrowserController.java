@@ -141,7 +141,7 @@ public final class NBTBrowserController {
 	}
 	
 	public static NBTBrowserController load() throws IOException {
-		FXMLLoader loader = new FXMLLoader(NBTBrowserController.class.getResource("/assets/scaffold/ui/nbt_browser.fxml"));
+		FXMLLoader loader = new FXMLLoader(NBTBrowserController.class.getResource("/assets/scaffold/ui/nbt/nbt_browser.fxml"));
 		Parent root = loader.load();
 		NBTBrowserController controller = loader.getController();
 		controller.root = root;
