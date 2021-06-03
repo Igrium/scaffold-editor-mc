@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.scaffoldeditor.editormc.ui.attribute_types.BlockTextureAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.BooleanAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
 import org.scaffoldeditor.editormc.ui.attribute_types.DefaultAttributeType;
@@ -18,6 +19,7 @@ import org.scaffoldeditor.editormc.ui.attribute_types.VectorAttributeType;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLEntityEditorController;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.BlockTextureAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.BooleanAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.DoubleAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.FloatAttribute;
@@ -102,6 +104,7 @@ public class EntityEditor {
 		attributeTypes.put(DoubleAttribute.REGISTRY_NAME, new DoubleAttributeType());
 		attributeTypes.put(VectorAttribute.REGISTRY_NAME, new VectorAttributeType());
 		attributeTypes.put(NBTAttribute.REGISTRY_NAME, new NBTAttributeType());
+		attributeTypes.put(BlockTextureAttribute.REGISTRY_NAME, new BlockTextureAttributeType());
 	}
 	
 	protected void loadAttributes() {

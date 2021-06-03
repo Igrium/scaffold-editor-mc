@@ -1,6 +1,6 @@
 package org.scaffoldeditor.editormc.ui.attribute_types;
 
-import org.scaffoldeditor.editormc.nbt_browser.NBTEditorController;
+import org.scaffoldeditor.editormc.sub_editors.nbt.NBTEditorController;
 import org.scaffoldeditor.editormc.ui.EntityEditor;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.NBTAttribute;
@@ -21,7 +21,7 @@ public class NBTAttributeType implements IRenderAttributeType {
 			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(name, defaultValue);
 		}
 		
-		CompoundTag nbt = ((NBTAttribute) defaultValue).getValue();
+		CompoundTag nbt = ((NBTAttribute) defaultValue).getValue().clone();
 		
 		Button editButton = new Button("Browse NBT");
 		editButton.setOnAction(e -> {

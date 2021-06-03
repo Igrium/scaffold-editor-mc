@@ -1,4 +1,4 @@
-package org.scaffoldeditor.editormc.nbt_browser;
+package org.scaffoldeditor.editormc.sub_editors.nbt;
 
 import java.io.IOException;
 import java.util.Arrays;
