@@ -4,30 +4,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.scaffoldeditor.editormc.ui.attribute_types.BlockTextureAttributeType;
-import org.scaffoldeditor.editormc.ui.attribute_types.BooleanAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
 import org.scaffoldeditor.editormc.ui.attribute_types.DefaultAttributeType;
-import org.scaffoldeditor.editormc.ui.attribute_types.DoubleAttributeType;
-import org.scaffoldeditor.editormc.ui.attribute_types.FloatAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.IRenderAttributeType;
-import org.scaffoldeditor.editormc.ui.attribute_types.IntAttributeType;
-import org.scaffoldeditor.editormc.ui.attribute_types.LongAttributeType;
-import org.scaffoldeditor.editormc.ui.attribute_types.NBTAttributeType;
-import org.scaffoldeditor.editormc.ui.attribute_types.StringAttributeType;
-import org.scaffoldeditor.editormc.ui.attribute_types.VectorAttributeType;
+import org.scaffoldeditor.editormc.ui.attribute_types.RenderAttributeRegistry;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLEntityEditorController;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.BlockTextureAttribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.BooleanAttribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.DoubleAttribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.FloatAttribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.IntAttribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.LongAttribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.NBTAttribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.StringAttribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.VectorAttribute;
 import org.scaffoldeditor.scaffold.operation.ChangeAttributesOperation;
 
 import javafx.fxml.FXMLLoader;
@@ -42,7 +25,6 @@ import javafx.stage.Stage;
 public class EntityEditor {
 	public final Stage parent;
 	public final Entity entity;
-	public final Map<String, IRenderAttributeType> attributeTypes = new HashMap<>();
 	protected Scene scene;
 	protected Stage stage;
 	protected Map<String, Attribute<?>> cachedAttributes = new HashMap<>();
@@ -56,7 +38,6 @@ public class EntityEditor {
 		this.parent = parent;
 		this.entity = entity;
 		this.stage = new Stage();
-		initDefaultAttributeTypes();
 		
 		Parent root;
 		FXMLLoader loader;
@@ -95,29 +76,12 @@ public class EntityEditor {
 		});
 	}
 	
-	protected void initDefaultAttributeTypes() {
-		attributeTypes.put(StringAttribute.REGISTRY_NAME, new StringAttributeType());
-		attributeTypes.put(BooleanAttribute.REGISTRY_NAME, new BooleanAttributeType());
-		attributeTypes.put(IntAttribute.REGISTRY_NAME, new IntAttributeType());
-		attributeTypes.put(LongAttribute.REGISTRY_NAME, new LongAttributeType());
-		attributeTypes.put(FloatAttribute.REGISTRY_NAME, new FloatAttributeType());
-		attributeTypes.put(DoubleAttribute.REGISTRY_NAME, new DoubleAttributeType());
-		attributeTypes.put(VectorAttribute.REGISTRY_NAME, new VectorAttributeType());
-		attributeTypes.put(NBTAttribute.REGISTRY_NAME, new NBTAttributeType());
-		attributeTypes.put(BlockTextureAttribute.REGISTRY_NAME, new BlockTextureAttributeType());
-	}
-	
 	protected void loadAttributes() {
 		int i = 2;
 		for (String name : entity.getAttributes()) {
 			Attribute<?> attribute = entity.getAttribute(name);
 			
-			Node setter;
-			if (attributeTypes.containsKey(attribute.registryName)) {
-				setter = attributeTypes.get(attribute.registryName).createSetter(name, attribute);
-			} else {
-				setter = DEFAULT_ATTRIBUTE_TYPE.createSetter(name, attribute);
-			}		
+			Node setter = RenderAttributeRegistry.createSetter(name, attribute);
 			Label label = new Label(name);
 			
 			attributePane.add(label, 1, i);

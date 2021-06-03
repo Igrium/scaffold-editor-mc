@@ -12,6 +12,7 @@ import org.scaffoldeditor.editormc.engine.EditorServerWorld;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.scaffold_interface.WorldInterface;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
+import org.scaffoldeditor.editormc.ui.attribute_types.RenderAttributeRegistry;
 import org.scaffoldeditor.nbt.block.BlockWorld.ChunkCoordinate;
 import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
 import org.scaffoldeditor.scaffold.core.Project;
@@ -74,6 +75,7 @@ public class ScaffoldEditor {
 		ui = ScaffoldUI.open();
 		ui.setEditor(this);
 		
+		RenderAttributeRegistry.initDefaults();
 		ScaffoldEditorMod.getInstance().isInEditor = true;
 		
 	}

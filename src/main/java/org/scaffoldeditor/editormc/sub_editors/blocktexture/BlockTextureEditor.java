@@ -10,7 +10,6 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.scaffoldeditor.scaffold.block_textures.SerializableBlockTexture;
-import org.scaffoldeditor.scaffold.core.Project;
 import org.scaffoldeditor.scaffold.io.AssetManager;
 import org.scaffoldeditor.scaffold.io.AssetType;
 import org.scaffoldeditor.scaffold.serialization.BlockTextureWriter;
