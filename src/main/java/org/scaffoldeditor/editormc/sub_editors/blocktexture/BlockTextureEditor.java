@@ -183,6 +183,16 @@ public class BlockTextureEditor {
 	}
 	
 	@FXML
+	private void browse() {
+		FileChooser chooser = new FileChooser();
+		chooser.setTitle("Open BlockTexture");
+		chooser.setInitialDirectory(AssetManager.getInstance().getProject().getProjectFolder().toFile());
+		chooser.getExtensionFilters().add(new ExtensionFilter("BlockTexture Files", "*.texture"));
+		File file = chooser.showOpenDialog(stage);
+		loadBlockTexture(AssetManager.getInstance().relativise(file));
+	}
+	
+	@FXML
 	/**
 	 * Remove all the attributes that this texture class doesn't use.
 	 */

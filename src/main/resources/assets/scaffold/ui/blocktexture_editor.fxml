@@ -32,7 +32,7 @@
          <children>
             <CheckBox fx:id="useExternal" mnemonicParsing="false" text="Use External File" />
             <TextField fx:id="filePath" disable="true" promptText="Asset Path" HBox.hgrow="ALWAYS" />
-            <Button fx:id="browseButton" disable="true" mnemonicParsing="false" text="Browse" />
+            <Button fx:id="browseButton" disable="true" mnemonicParsing="false" onAction="#browse" text="Browse" />
             <Button fx:id="loadButton" disable="true" mnemonicParsing="false" onAction="#load" text="Load" />
          </children>
          <padding>
