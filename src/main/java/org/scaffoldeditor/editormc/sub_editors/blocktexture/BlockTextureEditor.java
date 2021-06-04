@@ -4,26 +4,38 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.io.FilenameUtils;
+import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
+import org.scaffoldeditor.editormc.ui.attribute_types.RenderAttributeRegistry;
+import org.scaffoldeditor.scaffold.block_textures.BlockTextureRegistry;
 import org.scaffoldeditor.scaffold.block_textures.SerializableBlockTexture;
 import org.scaffoldeditor.scaffold.io.AssetManager;
 import org.scaffoldeditor.scaffold.io.AssetType;
+import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.serialization.BlockTextureWriter;
 import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
 import org.scaffoldeditor.scaffold.util.event.EventListener;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -31,6 +43,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.GridPane;
 
 public class BlockTextureEditor {
 	
@@ -56,6 +69,13 @@ public class BlockTextureEditor {
 	private Button loadButton;
 	@FXML
 	private Button saveExternallyButton;
+	
+	@FXML
+	private ChoiceBox<String> textureType;
+	private boolean supressTypeUpdate = true;
+	@FXML
+	private GridPane attributesPane;
+	
 	private SerializableBlockTexture texture;
 	private EventDispatcher<SaveBlockTextureEvent> dispatcher = new EventDispatcher<>();
 	private String assetPath = "";
@@ -70,6 +90,33 @@ public class BlockTextureEditor {
 			loadButton.setDisable(filePath.getText().length() == 0);
 		});
 		setBlockTexture(SerializableBlockTexture.DEFAULT);
+		
+		attributesPane.addEventHandler(ChangeAttributeEvent.ATTRIBUTE_CHANGED, event -> {
+			texture.setAttribute(event.name, event.newValue);
+		});
+		
+		for (String registryName : BlockTextureRegistry.registry.keySet()) {
+			textureType.getItems().add(registryName);
+		}
+		textureType.getSelectionModel().select(0);
+		
+		textureType.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (supressTypeUpdate) return;
+				
+				SerializableBlockTexture newTexture = BlockTextureRegistry.createBlockTexture(newValue);
+				if (texture != null) {
+					for (String key : texture.getAttributes()) {
+						newTexture.setAttribute(key, texture.getAttribute(key));
+					}
+				}
+				texture = newTexture;
+				clean();
+				onSetTexture();
+			}
+		});
 	}
 	
 	/**
@@ -134,6 +181,24 @@ public class BlockTextureEditor {
 	private void load() {
 		loadBlockTexture(filePath.getText());
 	}
+	
+	@FXML
+	/**
+	 * Remove all the attributes that this texture class doesn't use.
+	 */
+	public void clean() {
+		Set<String> defaults = texture.getDefaultAttributes();
+		Set<String> deletion = new HashSet<>();
+		for (String name : texture.getAttributes()) {
+			if (!defaults.contains(name)) {
+				deletion.add(name);
+			}
+		}
+		for (String name : deletion) {
+			texture.deleteAttribute(name);
+		}
+		loadAttributes();
+	}
 			
 	/**
 	 * Set the block texture that this editor is editing.
@@ -144,8 +209,13 @@ public class BlockTextureEditor {
 	public void setBlockTexture(SerializableBlockTexture texture) {
 		this.texture = texture.clone();
 		setUseExternalFile(false);
+		onSetTexture();
 	}
 	
+	/**
+	 * Set the asset in the asset path field (used in the browse menu).
+	 * @param target Absolute file to set.
+	 */
 	public void setEnteredAsset(File target) {
 		if (target != null) {
 			filePath.setText(AssetManager.getInstance().relativise(target));
@@ -161,7 +231,8 @@ public class BlockTextureEditor {
 		if (assetPath == null || assetPath.length() == 0) return false;
 		
 		AssetManager manager = AssetManager.getInstance();
-		if (!manager.getLoader(assetPath).isAssignableTo(SerializableBlockTexture.class)) {
+		AssetType<?> loader = manager.getLoader(assetPath);
+		if (loader == null || !loader.isAssignableTo(SerializableBlockTexture.class)) {
 			error("Block textures are not loadable from the file type ."+FilenameUtils.getExtension(assetPath));
 			return false;
 		};
@@ -184,6 +255,7 @@ public class BlockTextureEditor {
 			useExternal.setSelected(true);
 		}
 		
+		onSetTexture();
 		return true;
 	}
 	
@@ -210,6 +282,44 @@ public class BlockTextureEditor {
 		
 		if (this.useExternal.isSelected() != useExternal) {
 			this.useExternal.setSelected(useExternal);
+		}
+	}
+	
+	protected void onSetTexture() {
+		String registryName = texture.getRegistryName();
+		if (!registryName.equals(textureType.getValue())) {
+			supressTypeUpdate = true;
+			textureType.setValue(registryName);
+			supressTypeUpdate = false;
+		}
+		
+		loadAttributes();
+	}
+	
+	private void loadAttributes() {
+		List<Node> children = attributesPane.getChildren();
+		{
+			int i = 0;
+			while (i < children.size()) {
+				Integer index = GridPane.getRowIndex(children.get(i));
+				if (index != null && index > 0) {
+					children.remove(i);
+				} else {
+					i++;
+				}
+			}
+		}
+		
+		int i = 1;
+		for (String name : texture.getAttributes()) {
+			Attribute<?> attribute = texture.getAttribute(name);
+			Node setter = RenderAttributeRegistry.createSetter(name, attribute);
+			Label label = new Label(name);
+			
+			attributesPane.add(label, 0, i);
+			attributesPane.add(setter, 1, i);
+			
+			i++;
 		}
 	}
 	
@@ -278,6 +388,7 @@ public class BlockTextureEditor {
 		
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
+		stage.setResizable(false);
 		stage.show();
 		
 		BlockTextureEditor controller = loader.getController();
