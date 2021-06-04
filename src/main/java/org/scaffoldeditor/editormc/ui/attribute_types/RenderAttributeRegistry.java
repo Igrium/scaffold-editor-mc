@@ -10,6 +10,7 @@ import org.scaffoldeditor.scaffold.level.entity.attribute.BooleanAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.DoubleAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.FloatAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.IntAttribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.ListAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.LongAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.NBTAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.StringAttribute;
@@ -40,5 +41,6 @@ public final class RenderAttributeRegistry {
 		registry.put(VectorAttribute.REGISTRY_NAME, new VectorAttributeType());
 		registry.put(NBTAttribute.REGISTRY_NAME, new NBTAttributeType());
 		registry.put(BlockTextureAttribute.REGISTRY_NAME, new BlockTextureAttributeType());
+		registry.put(ListAttribute.REGISTRY_NAME, new ListAttributeType());
 	}
 }
