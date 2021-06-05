@@ -16,8 +16,8 @@ import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
 import org.scaffoldeditor.editormc.ui.attribute_types.RenderAttributeRegistry;
 import org.scaffoldeditor.scaffold.block_textures.BlockTextureRegistry;
 import org.scaffoldeditor.scaffold.block_textures.SerializableBlockTexture;
+import org.scaffoldeditor.scaffold.io.AssetLoader;
 import org.scaffoldeditor.scaffold.io.AssetManager;
-import org.scaffoldeditor.scaffold.io.AssetType;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.serialization.BlockTextureWriter;
 import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
@@ -137,7 +137,7 @@ public class BlockTextureEditor {
 				this.assetPath = newPath;
 			}
 						
-			AssetType<?> loader = manager.getLoader(assetPath);
+			AssetLoader<?> loader = manager.getLoader(assetPath);
 			if (loader == null || !loader.isAssignableTo(SerializableBlockTexture.class)) {
 				error("Block textures are not savable to the file type ."+FilenameUtils.getExtension(assetPath));
 				return;
@@ -241,7 +241,7 @@ public class BlockTextureEditor {
 		if (assetPath == null || assetPath.length() == 0) return false;
 		
 		AssetManager manager = AssetManager.getInstance();
-		AssetType<?> loader = manager.getLoader(assetPath);
+		AssetLoader<?> loader = manager.getLoader(assetPath);
 		if (loader == null || !loader.isAssignableTo(SerializableBlockTexture.class)) {
 			error("Block textures are not loadable from the file type ."+FilenameUtils.getExtension(assetPath));
 			return false;
