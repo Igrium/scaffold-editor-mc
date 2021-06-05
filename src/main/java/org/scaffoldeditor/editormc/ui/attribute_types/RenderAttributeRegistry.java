@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.scaffoldeditor.editormc.ui.EntityEditor;
+import org.scaffoldeditor.scaffold.level.entity.attribute.AssetAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.BlockTextureAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.BooleanAttribute;
@@ -42,5 +43,6 @@ public final class RenderAttributeRegistry {
 		registry.put(NBTAttribute.REGISTRY_NAME, new NBTAttributeType());
 		registry.put(BlockTextureAttribute.REGISTRY_NAME, new BlockTextureAttributeType());
 		registry.put(ListAttribute.REGISTRY_NAME, new ListAttributeType());
+		registry.put(AssetAttribute.REGISTRY_NAME, new AssetAttributeType());
 	}
 }
