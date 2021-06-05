@@ -114,8 +114,12 @@ public class ScaffoldEditor {
 				} else {
 					EditorServerWorld world = server.getEditorWorld();
 					for (SectionCoordinate c : e.updatedSections) {
-						WorldInterface.loadScaffoldSection(
-								level.getBlockWorld().getChunks().get(new ChunkCoordinate(c.x, c.z)).sections[c.y], world, c);
+						try {
+							WorldInterface.loadScaffoldSection(
+									level.getBlockWorld().getChunks().get(new ChunkCoordinate(c.x, c.z)).sections[c.y], world, c);
+						} catch (NullPointerException ex) {
+							world.clearSection(c);
+						}
 					}
 				}
 			});
