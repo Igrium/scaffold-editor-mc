@@ -34,7 +34,8 @@ import net.minecraft.world.level.storage.LevelStorage;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
-
+	
+	@Shadow
 	public ClientWorld world;
 	
 	private static final String START_SERVER_METHOD =
@@ -42,7 +43,9 @@ public abstract class MixinMinecraftClient {
 	
 	private static DynamicRegistryManager.Impl impl_holder;
 	
+	@Shadow
 	private AtomicReference<WorldGenerationProgressTracker> worldGenProgressTracker;
+	@Shadow
 	private Queue<Runnable> renderTaskQueue;
 	
 	@Shadow
@@ -96,6 +99,7 @@ public abstract class MixinMinecraftClient {
              this.worldGenProgressTracker.set(worldGenerationProgressTracker);
              Queue<Runnable> queue = this.renderTaskQueue;
              queue.getClass();
+             
              return new QueueingWorldGenerationProgressListener(worldGenerationProgressTracker, queue::add);
 		};
 		this.server = MinecraftServer.startServer((serverThread) -> {
