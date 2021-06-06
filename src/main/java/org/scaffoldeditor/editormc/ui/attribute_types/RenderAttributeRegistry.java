@@ -9,6 +9,7 @@ import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.BlockTextureAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.BooleanAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.DoubleAttribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.EnumAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.FloatAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.IntAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.ListAttribute;
@@ -48,5 +49,6 @@ public final class RenderAttributeRegistry {
 		registry.put(BlockTextureAttribute.REGISTRY_NAME, new BlockTextureAttributeType());
 		registry.put(ListAttribute.REGISTRY_NAME, new ListAttributeType());
 		registry.put(AssetAttribute.REGISTRY_NAME, new AssetAttributeType());
+		registry.put(EnumAttribute.REGISTRY_NAME, new EnumAttributeType());
 	}
 }
