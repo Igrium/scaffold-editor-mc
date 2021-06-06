@@ -1,5 +1,7 @@
 package org.scaffoldeditor.editormc.ui;
 
+import java.io.File;
+import java.util.List;
 import java.util.Set;
 
 import org.scaffoldeditor.editormc.ScaffoldEditor;
@@ -13,6 +15,8 @@ import javafx.fxml.FXML;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -38,6 +42,9 @@ public class MainFXMLController {
 	
 	@FXML
 	private Label toolPropertiesLabel;
+	
+	@FXML
+	private Menu openRecentMenu;
 	
 	@FXML
 	public void initialize() {
@@ -184,6 +191,19 @@ public class MainFXMLController {
 	
 	public Level getLevel() {
 		return ScaffoldUI.getInstance().getEditor().getLevel();
+	}
+	
+	public void reloadRecent(List<String> items) {
+		openRecentMenu.getItems().clear();
+		System.out.println("Items: "+items);
+		for (String string : items) {
+			MenuItem item = new MenuItem(string);
+			File file = ScaffoldEditor.getInstance().getProject().assetManager().getAbsoluteFile(string);
+			item.setOnAction(event -> {
+				ScaffoldEditor.getInstance().openLevelFile(file);
+			});
+			openRecentMenu.getItems().add(item);
+		}
 	}
 }
 	

@@ -2,6 +2,8 @@ package org.scaffoldeditor.editormc.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -285,5 +287,23 @@ public class ScaffoldUI extends Application {
 			controller.getToolPropertiesLabel().setText("[No tool selected]");
 			controller.getToolPropertiesPane().setCenter(null);
 		}		
+	}
+	
+	public MainFXMLController getController() {
+		return controller;
+	}
+	
+	public void reloadRecentFiles() {
+		if (editor.getCache().has("recentLevels")) {
+			List<String> recent = new ArrayList<String>();
+			for (Object fileName : getEditor().getCache().getJSONArray("recentLevels")) {
+				if (fileName instanceof String) {
+					recent.add((String) fileName);
+				}
+			}
+			controller.reloadRecent(recent);
+		} else {
+			controller.reloadRecent(Collections.emptyList());
+		}
 	}
 }

@@ -22,7 +22,7 @@
           <items>
             <MenuItem mnemonicParsing="false" onAction="#newLevel" text="New" />
             <MenuItem mnemonicParsing="false" onAction="#openLevel" text="Open…" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
+            <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open Recent" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Close" />
             <MenuItem mnemonicParsing="false" onAction="#save" text="Save">

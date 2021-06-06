@@ -7,7 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -115,9 +117,8 @@ public class ScaffoldEditor {
 			saveCache();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			project.close();
 		}
+		project.close();
 	}
 
 	public void setLevel(Level level) {
@@ -147,6 +148,7 @@ public class ScaffoldEditor {
 			ui.updateEntityList();		
 			loadLevel(true);
 		}
+		ui.reloadRecentFiles();
 		try {
 			saveCache();
 		} catch (IOException e) {
@@ -270,6 +272,8 @@ public class ScaffoldEditor {
 		} else {
 			this.project = Project.init(folder.toString(), folder.getFileName().toString());
 		}
+		loadCache();
+		ui.reloadRecentFiles();
 		return project;
 	}
 	
@@ -286,6 +290,16 @@ public class ScaffoldEditor {
 			future.complete(level);
 		});
 		levelFile = file;
+		ui.reloadRecentFiles();
+		{
+			List<Object> recentLevels = cache.has("recentLevels") ? cache.getJSONArray("recentLevels").toList() : new ArrayList<>();
+			String filename = project.assetManager().relativise(file);
+			if (recentLevels.contains(filename)) {
+				recentLevels.remove(filename);
+			}
+			recentLevels.add(0, filename);
+			cache.put("recentLevels", recentLevels);
+		}
 		return future;
 	}
 	
@@ -328,10 +342,12 @@ public class ScaffoldEditor {
 	}
 	
 	public void saveCache() throws IOException {
-		File file = project.getCacheFolder().resolve(CACHE_FILE_NAME).toFile();
-		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-		writer.write(getCache().toString());
-		writer.close();
+		if (project != null) {
+			File file = project.getCacheFolder().resolve(CACHE_FILE_NAME).toFile();
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			writer.write(getCache().toString());
+			writer.close();
+		}
 	}
 	
 //	public static ScaffoldEditor startWithTestProject() {
