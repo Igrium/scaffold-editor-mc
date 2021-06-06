@@ -25,6 +25,10 @@ public final class RenderAttributeRegistry {
 	public static final Map<String, IRenderAttributeType> registry = new HashMap<>();
 	
 	public static Node createSetter(String attributeName, Attribute<?> defaultValue) {
+		if (defaultValue == null) {
+			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(attributeName, null);
+		}
+		
 		if (registry.containsKey(defaultValue.registryName)) {
 			return registry.get(defaultValue.registryName).createSetter(attributeName, defaultValue);
 		} else {

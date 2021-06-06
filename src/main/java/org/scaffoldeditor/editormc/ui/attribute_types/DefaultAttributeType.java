@@ -9,7 +9,8 @@ public class DefaultAttributeType implements IRenderAttributeType {
 
 	@Override
 	public Node createSetter(String name, Attribute<?> defaultValue) {
-		TextField field = new TextField("Unable to edit attribute type: " + defaultValue.registryName);
+		String attName = defaultValue != null ? defaultValue.registryName : "null";
+		TextField field = new TextField("Unable to edit attribute type: " + attName);
 		field.setEditable(false);
 		return field;
 	}
