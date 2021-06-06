@@ -41,6 +41,7 @@ dependencies {
 	implementation(include ("org.scaffoldeditor:scaffold-core:0.3.0"))
 	implementation(include ("org.scaffoldeditor:scaffold-nbt:0.3.0"))
 	implementation(include ("com.github.Querz:NBT:6.1"))
+	implementation(include ("org.json:json:20190722")) // Scaffold core uses org.json, not gson.
 }
 
 processResources {

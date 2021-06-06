@@ -1,12 +1,20 @@
 package org.scaffoldeditor.editormc;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.scaffoldeditor.editormc.engine.EditorServer;
 import org.scaffoldeditor.editormc.engine.EditorServerWorld;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
@@ -34,6 +42,8 @@ public class ScaffoldEditor {
 		}
 	}
 	
+	public static final String CACHE_FILE_NAME = "editorcache.json";
+	
 	private Level level;
 	protected MinecraftClient client = MinecraftClient.getInstance();
 	protected EditorServer server;
@@ -44,6 +54,7 @@ public class ScaffoldEditor {
 	private final EventDispatcher<UpdateSelectionEvent> updateSelectionDispatcher = new EventDispatcher<>();
 	public  String worldpath_cache;	
 	private boolean pauseCache = true;
+	private JSONObject cache = new JSONObject();
 	
 	public ScaffoldEditor() {
 
@@ -100,7 +111,13 @@ public class ScaffoldEditor {
 	protected void onClose() {
 		client.onResolutionChanged();
 		client.options.pauseOnLostFocus = pauseCache;
-		project.close();
+		try {
+			saveCache();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			project.close();
+		}
 	}
 
 	public void setLevel(Level level) {
@@ -129,6 +146,11 @@ public class ScaffoldEditor {
 			});
 			ui.updateEntityList();		
 			loadLevel(true);
+		}
+		try {
+			saveCache();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -271,6 +293,45 @@ public class ScaffoldEditor {
 		if (level != null && levelFile != null) {
 			project.getLevelService().execute(() -> level.saveFile(levelFile));
 		}
+		try {
+			saveCache();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Get the primary JSON object used for caching values used by the high-level
+	 * editor (recently opened, etc)
+	 * 
+	 * @return JSONObject representing the file at
+	 *         <code>.scaffold/editorcache.json</code>
+	 */
+	public JSONObject getCache() {
+		return cache;
+	}
+	
+	public void loadCache() {
+		if (project != null) {
+			File file = project.getCacheFolder().resolve(CACHE_FILE_NAME).toFile();
+			if (file.isFile()) {
+				try {
+					cache = new JSONObject(new JSONTokener(new FileInputStream(file)));
+				} catch (JSONException | FileNotFoundException e) {
+					e.printStackTrace();
+					cache = new JSONObject();
+				}
+			} else {
+				cache = new JSONObject();
+			}
+		}
+	}
+	
+	public void saveCache() throws IOException {
+		File file = project.getCacheFolder().resolve(CACHE_FILE_NAME).toFile();
+		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+		writer.write(getCache().toString());
+		writer.close();
 	}
 	
 //	public static ScaffoldEditor startWithTestProject() {
