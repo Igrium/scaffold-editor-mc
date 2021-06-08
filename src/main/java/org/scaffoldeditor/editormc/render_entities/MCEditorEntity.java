@@ -27,6 +27,10 @@ public class MCEditorEntity implements EditorRenderEntity {
 		if (!(entity instanceof MCRenderEntity)) {
 			throw new IllegalArgumentException("RenderEntity not an instance of MCRenderEntity!");
 		}
+		if (!world.getServer().isOnThread()) {
+			world.getServer().execute(() -> spawn(entity));
+			return;
+		}
 		MCEntity ent = ((MCRenderEntity) entity).getMcEntity();
 		Optional<EntityType<?>> type = EntityType.get(ent.getID());
 		if (type.isPresent()) {
@@ -46,6 +50,10 @@ public class MCEditorEntity implements EditorRenderEntity {
 	public void update(RenderEntity entity) {
 		if (!(entity instanceof MCRenderEntity)) {
 			throw new IllegalArgumentException("RenderEntity not an instance of MCRenderEntity!");
+		}
+		if (!world.getServer().isOnThread()) {
+			world.getServer().execute(() -> update(entity));
+			return;
 		}
 		MCEntity ent = ((MCRenderEntity) entity).getMcEntity();
 		if (mcEntity == null) return;
@@ -74,6 +82,10 @@ public class MCEditorEntity implements EditorRenderEntity {
 
 	@Override
 	public void despawn() {
+		if (!world.getServer().isOnThread()) {
+			world.getServer().execute(() -> despawn());
+			return;
+		}
 		if (mcEntity != null) mcEntity.remove();
 	}
 

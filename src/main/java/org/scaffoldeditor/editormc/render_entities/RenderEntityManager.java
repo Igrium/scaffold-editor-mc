@@ -86,19 +86,17 @@ public class RenderEntityManager {
 		this.world = server.getEditorWorld();
 		
 		level.onUpdateRenderEntities(event -> {
-			server.execute(() -> {				
-				EntityEntry entry = renderEntities.get(event.subject);
-				if (entry != null && event.renderEntities.isEmpty()) {
-					entry.clear();
-					renderEntities.remove(event.subject);
-				} else if (!event.renderEntities.isEmpty()) {
-					if (entry == null) {
-						entry = new EntityEntry();
-						renderEntities.put(event.subject, entry);
-					}
-					entry.handleUpdate(event.renderEntities);
+			EntityEntry entry = renderEntities.get(event.subject);
+			if (entry != null && event.renderEntities.isEmpty()) {
+				entry.clear();
+				renderEntities.remove(event.subject);
+			} else if (!event.renderEntities.isEmpty()) {
+				if (entry == null) {
+					entry = new EntityEntry();
+					renderEntities.put(event.subject, entry);
 				}
-			});
+				entry.handleUpdate(event.renderEntities);
+			}
 		});
 	}
 
