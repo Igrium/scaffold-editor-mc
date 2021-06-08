@@ -149,9 +149,9 @@ public class ScaffoldEditor {
 				ui.updateEntityList();
 			});
 			renderEntityManager.init();
-			
 			ui.updateEntityList();		
 			loadLevel(true);
+			level.updateRenderEntities();
 		}
 		ui.reloadRecentFiles();
 		try {

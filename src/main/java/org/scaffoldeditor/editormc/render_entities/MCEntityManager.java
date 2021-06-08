@@ -39,7 +39,6 @@ public class MCEntityManager {
 					despawn(name);
 				}
 			}
-			System.out.println();
 			for (RenderEntity entity : renderEntities) {				
 				MCRenderEntity ent = (MCRenderEntity) entity;
 				if (entities.containsKey(ent.identifier())) {
@@ -75,7 +74,6 @@ public class MCEntityManager {
 			} else {
 				System.err.println("Unknown entity type: "+ent.getID());
 			}
-			System.out.println(entities);
 		}
 		
 		private void update(MCEntity ent, String name, Vector3d pos, Vector3f rot) {
@@ -88,6 +86,7 @@ public class MCEntityManager {
 					newNBT.putBoolean("NoAI", true);
 					newNBT.putBoolean("NoGravity", true);
 					newNBT.putBoolean("Silent", true);
+					newNBT.putBoolean("Invulnerable", true);
 					entity.fromTag(newNBT);
 					
 					entity.updatePositionAndAngles(pos.x, pos.y, pos.z, rot.x, rot.y);
