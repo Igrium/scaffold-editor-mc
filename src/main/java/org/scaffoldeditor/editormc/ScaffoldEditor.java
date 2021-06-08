@@ -20,6 +20,7 @@ import org.json.JSONTokener;
 import org.scaffoldeditor.editormc.engine.EditorServer;
 import org.scaffoldeditor.editormc.engine.EditorServerWorld;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
+import org.scaffoldeditor.editormc.render_entities.RenderEntityManager;
 import org.scaffoldeditor.editormc.scaffold_interface.WorldInterface;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.editormc.ui.attribute_types.RenderAttributeRegistry;
@@ -57,6 +58,7 @@ public class ScaffoldEditor {
 	public  String worldpath_cache;	
 	private boolean pauseCache = true;
 	private JSONObject cache = new JSONObject();
+	private RenderEntityManager renderEntityManager;
 	
 	public ScaffoldEditor() {
 
@@ -89,6 +91,7 @@ public class ScaffoldEditor {
 		ui.setEditor(this);
 		
 		RenderAttributeRegistry.initDefaults();
+		renderEntityManager = new RenderEntityManager(this);
 		ScaffoldEditorMod.getInstance().isInEditor = true;
 		
 	}
@@ -145,6 +148,8 @@ public class ScaffoldEditor {
 			level.onUpdateEntityStack(() -> {
 				ui.updateEntityList();
 			});
+			renderEntityManager.init();
+			
 			ui.updateEntityList();		
 			loadLevel(true);
 		}

@@ -264,7 +264,7 @@ public class ScaffoldUI extends Application {
 
 	public void updateEntityList() {
 		Platform.runLater(() -> {
-			Level level = ScaffoldUI.getInstance().getEditor().getLevel();
+			Level level = getEditor().getLevel();
 			List<String> entityStack = level.getEntityStack();
 			outliner.setEntities(entityStack);
 		});
