@@ -128,6 +128,7 @@ public class ScaffoldEditor {
 		if (level != null) {
 			this.level = level;
 			this.setProject(level.getProject());
+			renderEntityManager.clear();
 			
 			level.onWorldUpdate(e -> {
 				if (e.updatedSections.isEmpty()) {

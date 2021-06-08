@@ -1,13 +1,15 @@
 package org.scaffoldeditor.editormc.render_entities;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.EditorServer;
 import org.scaffoldeditor.editormc.engine.EditorServerWorld;
 import org.scaffoldeditor.scaffold.level.Level;
-import org.scaffoldeditor.scaffold.level.WorldUpdates.UpdateRenderEntitiesEvent;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.render.MCRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.RenderEntity;
 
@@ -22,34 +24,79 @@ public class RenderEntityManager {
 	private ScaffoldEditor editor;
 	private EditorServer server;
 	private EditorServerWorld world;
-	private MCEntityManager mcEntityManager;
 	
 	public RenderEntityManager(ScaffoldEditor editor) {
 		this.editor = editor;
 	}
 	
+	/**
+	 * Represents a single Scaffold entity.
+	 */
+	public class EntityEntry {
+		private Map<String, EditorRenderEntity> entities = new HashMap<>();
+		
+		public void handleUpdate(Set<RenderEntity> renderEntities) {
+			Set<String> newEntities = new HashSet<>();
+			for (RenderEntity ent : renderEntities) {
+				newEntities.add(ent.identifier());
+			}
+			
+			for (String name : entities.keySet()) {
+				if (!newEntities.contains(name)) {
+					entities.get(name).despawn();
+					entities.remove(name); // Allow the garbege collecter to collect the Minecraft entity(s).
+				}
+			}
+			
+			for (RenderEntity entity : renderEntities) {				
+				if (entities.containsKey(entity.identifier())) {
+					entities.get(entity.identifier()).update(entity);
+				} else {
+					entities.put(entity.identifier(), spawnEditorRenderEntity(entity));
+				}
+			}
+		}
+		
+		public void clear() {
+			for (EditorRenderEntity ent : entities.values()) {
+				ent.despawn();
+			}
+			entities.clear();
+		}
+	}
+	
+	protected EditorRenderEntity spawnEditorRenderEntity(RenderEntity in) {
+		EditorRenderEntity ent;
+		if (in instanceof MCRenderEntity) {
+			ent = new MCEditorEntity(world);
+			ent.spawn(in);
+		} else {
+			throw new IllegalArgumentException(
+					"Render entity: " + in + " is not a subclass of any known render entity classes.");
+		}
+		
+		return ent;
+	}
+	
+	private Map<Entity, EntityEntry> renderEntities = new HashMap<>();
 	
 	public void init() {
 		this.level = editor.getLevel();
 		this.server = editor.getServer();
 		this.world = server.getEditorWorld();
-		this.mcEntityManager = new MCEntityManager(this);
 		
 		level.onUpdateRenderEntities(event -> {
 			server.execute(() -> {				
-				if (event.renderEntities == null || event.renderEntities.isEmpty()) {
-					mcEntityManager.clear(event.subject);
-					return;
-				}
-
-				Set<RenderEntity> mcRenderEntities = new HashSet<>();
-				for (RenderEntity ent : event.renderEntities) {
-					if (ent instanceof MCRenderEntity) mcRenderEntities.add(ent);
-				}
-
-				// Make a new UpdateRenderEntitiesEvent with only the MC render entities.
-				if (!mcRenderEntities.isEmpty()) {
-					mcEntityManager.handleUpdateRenderEntities(new UpdateRenderEntitiesEvent(mcRenderEntities, event.subject));
+				EntityEntry entry = renderEntities.get(event.subject);
+				if (entry != null && event.renderEntities.isEmpty()) {
+					entry.clear();
+					renderEntities.remove(event.subject);
+				} else if (!event.renderEntities.isEmpty()) {
+					if (entry == null) {
+						entry = new EntityEntry();
+						renderEntities.put(event.subject, entry);
+					}
+					entry.handleUpdate(event.renderEntities);
 				}
 			});
 		});
@@ -70,5 +117,12 @@ public class RenderEntityManager {
 
 	public EditorServer getServer() {
 		return server;
+	}
+	
+	public void clear() {
+		for (EntityEntry entry : renderEntities.values()) {
+			entry.clear();
+		}
+		renderEntities.clear();
 	}
 }
