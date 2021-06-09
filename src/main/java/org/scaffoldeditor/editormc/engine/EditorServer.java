@@ -18,6 +18,7 @@ import net.minecraft.server.WorldGenerationProgressListenerFactory;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.registry.DynamicRegistryManager.Impl;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.World;
@@ -44,7 +45,7 @@ public class EditorServer extends IntegratedServer {
 	protected void createWorlds(WorldGenerationProgressListener worldGenerationProgressListener) {
 		ServerWorldProperties serverWorldProperties = this.saveProperties.getMainWorldProperties();
 //		GeneratorOptions generatorOptions = this.saveProperties.getGeneratorOptions();
-		DimensionType dimensionType = this.registryManager.getDimensionTypes().getOrThrow(DimensionType.OVERWORLD_REGISTRY_KEY);
+		DimensionType dimensionType = this.registryManager.get(Registry.DIMENSION_TYPE_KEY).getOrThrow(DimensionType.OVERWORLD_REGISTRY_KEY);
 		
 		GeneratorOptions generatorOptions = this.saveProperties.getGeneratorOptions();
 		SimpleRegistry<DimensionOptions> dimensionOptionRegistry = generatorOptions.getDimensions();

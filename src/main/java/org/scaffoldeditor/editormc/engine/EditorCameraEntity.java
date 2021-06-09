@@ -85,7 +85,7 @@ public class EditorCameraEntity extends ClientPlayerEntity implements CameraCont
 	}
 
 	@Override
-	public void setPosition(Vec3d pos) {
+	public void setCameraPos(Vec3d pos) {
 		this.setPos(pos.x, pos.y, pos.z);
 	}
 	

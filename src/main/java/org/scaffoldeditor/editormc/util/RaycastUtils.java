@@ -1,7 +1,6 @@
 package org.scaffoldeditor.editormc.util;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.util.hit.BlockHitResult;
@@ -11,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.RaycastContext;
 
 // Derived from (well, basically copied from) https://fabricmc.net/wiki/tutorial:pixel_raycast
@@ -45,8 +45,8 @@ public class RaycastUtils {
 		double fov = client.options.fov;
 		double angleSize = fov / height;
 
-		Vector3f verticalRotationAxis = new Vector3f(cameraDirection);
-		verticalRotationAxis.cross(Vector3f.POSITIVE_Y);
+		Vec3f verticalRotationAxis = new Vec3f(cameraDirection);
+		verticalRotationAxis.cross(Vec3f.POSITIVE_Y);
 		if (!verticalRotationAxis.normalize()) {
 			// The camera is pointed straight up or down. Need to deal with this
 			return new HitResult(cameraDirection) {	
@@ -57,7 +57,7 @@ public class RaycastUtils {
 			};
 		}
 
-		Vector3f horizontalRotationAxis = new Vector3f(cameraDirection);
+		Vec3f horizontalRotationAxis = new Vec3f(cameraDirection);
 		horizontalRotationAxis.cross(verticalRotationAxis);
 
 		Vec3d direction = map((float) angleSize, cameraDirection, horizontalRotationAxis, verticalRotationAxis, x, y,
@@ -66,12 +66,12 @@ public class RaycastUtils {
 		return raycastInDirection(client.getCameraEntity(), client.getTickDelta(), direction, 100, true);
 	}
 
-	private static Vec3d map(float anglePerPixel, Vec3d center, Vector3f horizontalRotationAxis,
-			Vector3f verticalRotationAxis, int x, int y, int width, int height) {
+	private static Vec3d map(float anglePerPixel, Vec3d center, Vec3f horizontalRotationAxis,
+			Vec3f verticalRotationAxis, int x, int y, int width, int height) {
 		float horizontalRotation = (x - width / 2f) * anglePerPixel;
 		float verticalRotation = (y - height / 2f) * -anglePerPixel;
 
-		final Vector3f temp = new Vector3f(center);
+		final Vec3f temp = new Vec3f(center);
 		temp.rotate(verticalRotationAxis.getDegreesQuaternion(verticalRotation));
 		temp.rotate(horizontalRotationAxis.getDegreesQuaternion(horizontalRotation));
 		return new Vec3d(temp);

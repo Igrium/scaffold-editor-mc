@@ -26,7 +26,7 @@ public final class NBTConverter {
 	 * @param in Scaffold tag.
 	 * @return Minecraft tag.
 	 */
-	public static net.minecraft.nbt.Tag scaffoldToMinecraft(Tag<?> in) {
+	public static net.minecraft.nbt.NbtElement scaffoldToMinecraft(Tag<?> in) {
 		if (in instanceof ByteTag) {
 			return scaffoldByteToMinecraft((ByteTag) in);
 		} else if (in instanceof ShortTag) {
@@ -55,40 +55,40 @@ public final class NBTConverter {
 		throw new IllegalArgumentException("Unknown tag type: "+in.getClass().getName());
 	}
 	
-	public static net.minecraft.nbt.ByteTag scaffoldByteToMinecraft(ByteTag in) {
-		return net.minecraft.nbt.ByteTag.of(in.asByte());
+	public static net.minecraft.nbt.NbtByte scaffoldByteToMinecraft(ByteTag in) {
+		return net.minecraft.nbt.NbtByte.of(in.asByte());
 	}
 	
-	public static net.minecraft.nbt.ShortTag scaffoldShortToMinecraft(ShortTag in) {
-		return net.minecraft.nbt.ShortTag.of(in.asShort());
+	public static net.minecraft.nbt.NbtShort scaffoldShortToMinecraft(ShortTag in) {
+		return net.minecraft.nbt.NbtShort.of(in.asShort());
 	}
 
-	public static net.minecraft.nbt.IntTag scaffoldIntToMinecraft(IntTag in) {
-		return net.minecraft.nbt.IntTag.of(in.asInt());
+	public static net.minecraft.nbt.NbtInt scaffoldIntToMinecraft(IntTag in) {
+		return net.minecraft.nbt.NbtInt.of(in.asInt());
 	}
 	
-	public static net.minecraft.nbt.LongTag scaffoldLongToMinecraft(LongTag in) {
-		return net.minecraft.nbt.LongTag.of(in.asLong());
+	public static net.minecraft.nbt.NbtLong scaffoldLongToMinecraft(LongTag in) {
+		return net.minecraft.nbt.NbtLong.of(in.asLong());
 	}
 	
-	public static net.minecraft.nbt.FloatTag scaffoldFloatToMinecraft(FloatTag in) {
-		return net.minecraft.nbt.FloatTag.of(in.asFloat());
+	public static net.minecraft.nbt.NbtFloat scaffoldFloatToMinecraft(FloatTag in) {
+		return net.minecraft.nbt.NbtFloat.of(in.asFloat());
 	}
 	
-	public static net.minecraft.nbt.DoubleTag scaffoldDoubleToMinecraft(DoubleTag in) {
-		return net.minecraft.nbt.DoubleTag.of(in.asDouble());
+	public static net.minecraft.nbt.NbtDouble scaffoldDoubleToMinecraft(DoubleTag in) {
+		return net.minecraft.nbt.NbtDouble.of(in.asDouble());
 	}
 	
-	public static net.minecraft.nbt.ByteArrayTag scaffoldByteArrayToMinecraft(ByteArrayTag in) {
-		return new net.minecraft.nbt.ByteArrayTag(in.getValue());
+	public static net.minecraft.nbt.NbtByteArray scaffoldByteArrayToMinecraft(ByteArrayTag in) {
+		return new net.minecraft.nbt.NbtByteArray(in.getValue());
 	}
 	
-	public static net.minecraft.nbt.StringTag scaffoldStringToMinecraft(StringTag in) {
-		return net.minecraft.nbt.StringTag.of(in.getValue());
+	public static net.minecraft.nbt.NbtString scaffoldStringToMinecraft(StringTag in) {
+		return net.minecraft.nbt.NbtString.of(in.getValue());
 	}
 	
-	public static net.minecraft.nbt.ListTag scaffoldListToMinecraft(ListTag<?> in) {
-		net.minecraft.nbt.ListTag list = new net.minecraft.nbt.ListTag();
+	public static net.minecraft.nbt.NbtList scaffoldListToMinecraft(ListTag<?> in) {
+		net.minecraft.nbt.NbtList list = new net.minecraft.nbt.NbtList();
 		for (Tag<?> tag : in) {
 			list.add(scaffoldToMinecraft(tag));
 		}
@@ -96,20 +96,20 @@ public final class NBTConverter {
 		return list;
 	}
 	
-	public static net.minecraft.nbt.CompoundTag scaffoldCompoundToMinecraft(CompoundTag in) {
-		net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+	public static net.minecraft.nbt.NbtCompound scaffoldCompoundToMinecraft(CompoundTag in) {
+		net.minecraft.nbt.NbtCompound tag = new net.minecraft.nbt.NbtCompound();
 		for (String key : in.keySet()) {
 			tag.put(key, scaffoldToMinecraft(in.get(key)));
 		}
 		return tag;
 	}
 	
-	public static net.minecraft.nbt.IntArrayTag scaffoldIntArrayToMinecraft(IntArrayTag in) {
-		return new net.minecraft.nbt.IntArrayTag(in.getValue());
+	public static net.minecraft.nbt.NbtIntArray scaffoldIntArrayToMinecraft(IntArrayTag in) {
+		return new net.minecraft.nbt.NbtIntArray(in.getValue());
 	}
 	
-	public static net.minecraft.nbt.LongArrayTag scaffoldLongArrayToMinecraft(LongArrayTag in) {
-		return new net.minecraft.nbt.LongArrayTag(in.getValue());
+	public static net.minecraft.nbt.NbtLongArray scaffoldLongArrayToMinecraft(LongArrayTag in) {
+		return new net.minecraft.nbt.NbtLongArray(in.getValue());
 	}
 	
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 import org.scaffoldeditor.nbt.block.Block;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -30,7 +30,7 @@ public final class BlockConverter {
 		if (in.getProperties() == null) {
 			state =  Registry.BLOCK.get(new Identifier(in.getName())).getDefaultState();
 		} else {
-			CompoundTag start = NBTConverter.scaffoldCompoundToMinecraft(in.toPaletteEntry());
+			NbtCompound start = NBTConverter.scaffoldCompoundToMinecraft(in.toPaletteEntry());
 			state = NbtHelper.toBlockState(start);
 		}
 			

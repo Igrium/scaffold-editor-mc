@@ -41,10 +41,10 @@ public interface CameraController {
 	
 	public Vec3d getPosition();
 	
-	public void setPosition(Vec3d pos);
+	public void setCameraPos(Vec3d pos);
 	
-	public default void setPosition(double x, double y, double z) {
-		setPosition(new Vec3d(x,y,z));
+	public default void setCameraPos(double x, double y, double z) {
+		setCameraPos(new Vec3d(x,y,z));
 	}
 	
 	public void setRot(float yaw, float pitch);

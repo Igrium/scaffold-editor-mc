@@ -100,7 +100,7 @@ public abstract class MixinMinecraftClient {
              Queue<Runnable> queue = this.renderTaskQueue;
              queue.getClass();
              
-             return new QueueingWorldGenerationProgressListener(worldGenerationProgressTracker, queue::add);
+             return QueueingWorldGenerationProgressListener.create(worldGenerationProgressTracker, queue::add);
 		};
 		this.server = MinecraftServer.startServer((serverThread) -> {
 			if (worldName.length() == 0) {
@@ -121,23 +121,4 @@ public abstract class MixinMinecraftClient {
 		return MinecraftClient.getInstance().getServer();
 	}
 
-//	@Redirect(method = "method_29603(Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;Lnet/minecraft/world/level/storage/LevelStorage$Session;Lnet/minecraft/client/MinecraftClient$IntegratedResourceManager;Lnet/minecraft/world/SaveProperties;Lcom/mojang/authlib/minecraft/MinecraftSessionService;Lcom/mojang/authlib/GameProfileRepository;Lnet/minecraft/util/UserCache;Ljava/lang/Thread;)Lnet/minecraft/server/integrated/IntegratedServer;",
-//			at = @At(value = "NEW", target = "net/minecraft/server/integrated/IntegratedServer"))
-//	private IntegratedServer replaceIntegratedServer(Thread serverThread, MinecraftClient client,
-//			DynamicRegistryManager.Impl registryManager, LevelStorage.Session session,
-//			ResourcePackManager resourcePackManager, ServerResourceManager serverResourceManager,
-//			SaveProperties saveProperties, MinecraftSessionService minecraftSessionService,
-//			GameProfileRepository gameProfileRepository, UserCache userCache,
-//			WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory) {
-//		System.out.println("World status: "+ScaffoldEditor.getInstance().isInEditor());
-//		if (ScaffoldEditor.getInstance().isInEditor()) {
-//			return new EditorServer(serverThread, client, registryManager, session, resourcePackManager,
-//					serverResourceManager, saveProperties, minecraftSessionService, gameProfileRepository, userCache,
-//					worldGenerationProgressListenerFactory);
-//		} else {
-//			return new IntegratedServer(serverThread, client, registryManager, session, resourcePackManager,
-//					serverResourceManager, saveProperties, minecraftSessionService, gameProfileRepository, userCache,
-//					worldGenerationProgressListenerFactory);
-//		}
-//	}
 }

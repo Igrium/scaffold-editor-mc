@@ -9,8 +9,9 @@ import org.scaffoldeditor.scaffold.level.render.RenderEntity;
 import org.scaffoldeditor.scaffold.logic.MCEntity;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.Entity.RemovalReason;
 import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 
 public class MCEditorEntity implements EditorRenderEntity {
@@ -59,17 +60,17 @@ public class MCEditorEntity implements EditorRenderEntity {
 		if (mcEntity == null) return;
 		
 		if (EntityType.getId(mcEntity.getType()).toString().equals(ent.getID())) {
-			mcEntity.fromTag(NBTConverter.scaffoldCompoundToMinecraft(ent.getNBT()));
+			mcEntity.readNbt(NBTConverter.scaffoldCompoundToMinecraft(ent.getNBT()));
 			
 			Vector3f pos = entity.getPosition();
 			Vector3f rot = entity.getRotation();
 			
-			CompoundTag newNBT = new CompoundTag();
+			NbtCompound newNBT = new NbtCompound();
 			newNBT.putBoolean("NoAI", true);
 			newNBT.putBoolean("NoGravity", true);
 			newNBT.putBoolean("Silent", true);
 			newNBT.putBoolean("Invulnerable", true);
-			mcEntity.fromTag(newNBT);
+			mcEntity.readNbt(newNBT);
 			
 			mcEntity.updatePositionAndAngles(pos.x, pos.y, pos.z, rot.x, rot.y);
 			
@@ -86,7 +87,7 @@ public class MCEditorEntity implements EditorRenderEntity {
 			world.getServer().execute(() -> despawn());
 			return;
 		}
-		if (mcEntity != null) mcEntity.remove();
+		if (mcEntity != null) mcEntity.remove(RemovalReason.DISCARDED);
 	}
 
 }

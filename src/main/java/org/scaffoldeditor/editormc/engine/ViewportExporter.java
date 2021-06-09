@@ -44,7 +44,7 @@ public class ViewportExporter {
 		ByteBuffer buffer = MemoryUtil.memAlloc(x * y * 4);
 		
 		frameBuffer.beginWrite(true);
-		GlStateManager.readPixels(0, 0, x, y, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, buffer);
+		GlStateManager._readPixels(0, 0, x, y, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, buffer);
 		frameBuffer.endWrite();
 		
 		buffer.rewind();

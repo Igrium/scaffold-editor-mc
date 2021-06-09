@@ -5,16 +5,12 @@ import java.awt.Dimension;
 import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.mixins.MainWindowAccessor;
+//import org.scaffoldeditor.editormc.engine.mixins.ScreenAccessor;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.TranslatableText;
 
 public class ScaffoldEditorMod implements ClientModInitializer {
 	
@@ -28,16 +24,17 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 		
 		Config.init();
 
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-			client = MinecraftClient.getInstance();
-			if (screen instanceof TitleScreen) {
-				Screens.getButtons(screen).add(
-						new ButtonWidget(0, 0, 20, 20, new TranslatableText("menu.scaffoldeditor"), (buttonWidget) -> {
-							System.out.println("Launching editor!");
-							launchEditor();
-						}));
-			}
-		});
+//		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+//			client = MinecraftClient.getInstance();
+//			if (screen instanceof TitleScreen) {
+//				ScreenAccessor accessor = (ScreenAccessor) screen;
+//				accessor.invokeAddDrawableChild(new ButtonWidget(screen.width / 2 - 100,
+//						screen.height / 4 + 48 + 72 + 12, 98, 20, new TranslatableText("menu.scaffoldeditor"), (button) -> {
+//					launchEditor(); 
+//				}));
+//				System.out.println("Title screen!");
+//			}
+//		});
 		
 		ScaffoldEditorMod.instance = this;
 		
@@ -82,5 +79,4 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 	public static ScaffoldEditorMod getInstance() {
 		return instance;
 	}
-
 }

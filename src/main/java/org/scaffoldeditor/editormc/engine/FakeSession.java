@@ -21,13 +21,14 @@ import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.FileResourcePackProvider;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.resource.VanillaDataPackProvider;
 import net.minecraft.server.MinecraftServer;
@@ -37,6 +38,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.GameRules;
@@ -54,7 +56,7 @@ public class FakeSession extends Session {
 	private static String GEN_SETTINGS_JSON = "{\"bonus_chest\":false,\"dimensions\":{\"minecraft:overworld\":{\"type\":\"minecraft:overworld\",\"generator\":{\"settings\":{\"lakes\":false,\"features\":true,\"biome\":\"minecraft:plains\",\"structures\":{\"structures\":{}},\"layers\":[{\"height\":1,\"block\":\"minecraft:air\"}]},\"type\":\"minecraft:flat\"}},\"minecraft:the_nether\":{\"type\":\"minecraft:the_nether\",\"generator\":{\"biome_source\":{\"preset\":\"minecraft:nether\",\"seed\":-959868788587540434,\"type\":\"minecraft:multi_noise\"},\"seed\":-959868788587540434,\"settings\":\"minecraft:nether\",\"type\":\"minecraft:noise\"}},\"minecraft:the_end\":{\"type\":\"minecraft:the_end\",\"generator\":{\"biome_source\":{\"seed\":-959868788587540434,\"type\":\"minecraft:the_end\"},\"seed\":-959868788587540434,\"settings\":\"minecraft:end\",\"type\":\"minecraft:noise\"}}},\"seed\":-959868788587540434,\"generate_features\":false}";
 	private LevelStorage levelStorage;
 	
-	protected DynamicRegistryManager.Impl dynRegMan;
+	protected DynamicRegistryManager dynRegMan;
 	
 	public FakeSession(LevelStorage levelStorage, DynamicRegistryManager.Impl impl) throws IOException {
 		levelStorage.super(".scaffold_placeholder");
@@ -84,11 +86,11 @@ public class FakeSession extends Session {
 	
 
 	@Override
-	public SaveProperties readLevelProperties(DynamicOps<Tag> dynamicOps, DataPackSettings dataPackSettings) {
+	public SaveProperties readLevelProperties(DynamicOps<NbtElement> dynamicOps, DataPackSettings dataPackSettings) {
 		try {
 			return generateLevelProperties(dynamicOps, dataPackSettings);
 		} catch (IOException | InterruptedException | ExecutionException e) {
-			throw new RuntimeException("Igrium fucked something up in the fake world generator code", e);
+			throw new AssertionError("Igrium fucked something up in the fake world generator code", e);
 		}
 	}
 	
@@ -99,7 +101,7 @@ public class FakeSession extends Session {
 	
 	@Override
 	public void backupLevelDataFile(DynamicRegistryManager dynamicRegistryManager, SaveProperties saveProperties,
-			CompoundTag compoundTag) {}
+			NbtCompound compoundTag) {}
 	
 	@Override
 	public void save(String name) throws IOException {
@@ -116,7 +118,7 @@ public class FakeSession extends Session {
 		FileUtils.deleteDirectory(directory.toFile());
 	}
 	
-	public SaveProperties generateLevelProperties(DynamicOps<Tag> dynamicOps, DataPackSettings dataPackSettings)
+	public SaveProperties generateLevelProperties(DynamicOps<NbtElement> dynamicOps, DataPackSettings dataPackSettings)
 			throws IOException, InterruptedException, ExecutionException {
 		// Create a whole bunch of fake level data because we're not actually reading a level file.
 		// God, I'm sorry for this spaghetti code.
@@ -126,13 +128,13 @@ public class FakeSession extends Session {
 
 		Path dataPackTempDir = Files.createTempDirectory("mcworld-");
 
-		ResourcePackManager resourcePackManager = new ResourcePackManager(
+		ResourcePackManager resourcePackManager = new ResourcePackManager( ResourceType.SERVER_DATA,
 				new ResourcePackProvider[] { new VanillaDataPackProvider(),
 						new FileResourcePackProvider(dataPackTempDir.toFile(), ResourcePackSource.PACK_SOURCE_WORLD) });
 
 		MinecraftServer.loadDataPacks(resourcePackManager, dataPackSettings, false);
 		CompletableFuture<ServerResourceManager> completableFuture = ServerResourceManager.reload(
-				resourcePackManager.createResourcePacks(), CommandManager.RegistrationEnvironment.INTEGRATED, 2,
+				resourcePackManager.createResourcePacks(), dynRegMan, CommandManager.RegistrationEnvironment.INTEGRATED, 2,
 				Util.getMainWorkerExecutor(), MinecraftClient.getInstance());
 		MinecraftClient.getInstance().runTasks(completableFuture::isDone);
 		ServerResourceManager serverResourceManager = (ServerResourceManager) completableFuture.get();
@@ -152,7 +154,7 @@ public class FakeSession extends Session {
 		if (result.isPresent()) {
 			genOps = result.get();
 		} else {
-			genOps = GeneratorOptions.getDefaultOptions(dynRegMan.getDimensionTypes(), BuiltinRegistries.BIOME,
+			genOps = GeneratorOptions.getDefaultOptions(dynRegMan.get(Registry.DIMENSION_TYPE_KEY), BuiltinRegistries.BIOME,
 					BuiltinRegistries.CHUNK_GENERATOR_SETTINGS);
 		}
 
@@ -169,7 +171,7 @@ public class FakeSession extends Session {
 		public void savePlayerData(PlayerEntity playerEntity) {}
 		
 		@Override
-		public CompoundTag loadPlayerData(PlayerEntity playerEntity) {
+		public NbtCompound loadPlayerData(PlayerEntity playerEntity) {
 			return null;
 		}
 		

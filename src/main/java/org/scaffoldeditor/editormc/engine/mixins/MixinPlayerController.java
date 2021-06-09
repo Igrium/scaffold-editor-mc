@@ -26,7 +26,7 @@ public class MixinPlayerController {
 	private ClientPlayNetworkHandler networkHandler;
 
 	@Inject(method = "createPlayer(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/stat/StatHandler;Lnet/minecraft/client/recipebook/ClientRecipeBook;ZZ)Lnet/minecraft/client/network/ClientPlayerEntity;", at = @At("HEAD"), cancellable = true)
-	private void replayModReplay_createReplayCamera(ClientWorld worldIn,StatHandler statisticsManager, ClientRecipeBook recipeBookClient,boolean lastIsHoldingSneakKey,
+	private void createCamera(ClientWorld worldIn,StatHandler statisticsManager, ClientRecipeBook recipeBookClient,boolean lastIsHoldingSneakKey,
 			boolean lastSprinting,CallbackInfoReturnable<ClientPlayerEntity> ci) {
 		if (client.getServer() instanceof EditorServer) {
 			ci.setReturnValue(new EditorCameraEntity(client, worldIn, networkHandler, statisticsManager, recipeBookClient, lastIsHoldingSneakKey, lastSprinting));
