@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
 import org.scaffoldeditor.editormc.ui.attribute_types.RenderAttributeRegistry;
 import org.scaffoldeditor.scaffold.block_textures.BlockTextureRegistry;
@@ -157,7 +158,7 @@ public class BlockTextureEditor {
 			
 			// Save the file.
 			File targetFile = manager.getAbsoluteFile(getAssetPath());
-			System.out.println("Saving block texture to "+targetFile);
+			LogManager.getLogger().info("Saving block texture to "+targetFile);
 			try {
 				new BlockTextureWriter(new FileOutputStream(targetFile)).write(texture);
 				manager.forceCache(assetPath, texture);

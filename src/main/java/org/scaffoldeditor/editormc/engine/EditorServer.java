@@ -79,7 +79,7 @@ public class EditorServer extends IntegratedServer {
 				minecraftSessionService, gameProfileRepository, userCache, worldGenerationProgressListenerFactory);
 		ScaffoldEditorMod.getInstance().isInEditor = true;
 		this.setPlayerManager(new FakePlayerManager(this, this.registryManager, this.saveHandler));
-		System.out.println("loaded editor server");
+		LOGGER.info("Loaded editor server.");
 	}
 	
 	@Override

@@ -111,7 +111,6 @@ public class FXMLOutlinerController {
 			});
 			
 			setOnDragDropped(event -> {
-				System.out.println("Drag detected "+getItem());
 				if (getItem() == null) return;
 				
 				Dragboard db = event.getDragboard();

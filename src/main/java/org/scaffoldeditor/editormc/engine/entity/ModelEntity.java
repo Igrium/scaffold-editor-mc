@@ -33,7 +33,6 @@ public class ModelEntity extends Entity {
 
 	public ModelEntity(EntityType<?> type, World world) {
 		super(type, world);
-		System.out.println("Spawning model entity");
 	}
 	
 	@Override
@@ -66,7 +65,6 @@ public class ModelEntity extends Entity {
 	}
 
 	public void setModel(ModelIdentifier modelIdentifier) {
-		System.out.println("Setting model: "+modelIdentifier);
 		LogManager.getLogger().debug("Setting model: "+modelIdentifier);
 		String modelString = modelIdentifier.toString();
 		if (!modelString.equals(dataTracker.get(MODEL))) {

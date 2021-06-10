@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -267,9 +268,9 @@ public class ScaffoldEditor {
 	 * @return Opened project.
 	 */
 	public Project openProject(Path folder) {
-		System.out.println("Opening project: "+folder.toString());
+		LogManager.getLogger().info("Opening project: "+folder.toString());
 		if (!folder.toFile().isDirectory()) {
-			System.err.println(folder.toString()+" is not a directory!");
+			LogManager.getLogger().error(folder.toString()+" is not a directory!");
 			return null;
 		}
 		

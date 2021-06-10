@@ -51,7 +51,6 @@ public final class NBTBrowserController {
 						setGraphic(null);
 					} else {
 						Tag<?> tag = item.getTag();
-//						System.out.println(tag);
 						String textValue = tag.valueToString();
 						if (tag instanceof ListTag) {
 							textValue = ((ListTag<?>) tag).size()+" entries";

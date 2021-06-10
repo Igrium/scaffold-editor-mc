@@ -2,6 +2,7 @@ package org.scaffoldeditor.editormc.ui.controllers;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.tools.EntityTool;
 import org.scaffoldeditor.scaffold.math.Vector;
 
@@ -83,7 +84,7 @@ public class EntityToolPropertiesController {
 			
 			parentTool.spawn(new Vector(x, y, z), shouldSnapToBlock());
 		} catch (NumberFormatException e) {
-			System.err.println("Malformatted vector!");
+			LogManager.getLogger().error("Malformatted vector!");
 			return;
 		}
 	}

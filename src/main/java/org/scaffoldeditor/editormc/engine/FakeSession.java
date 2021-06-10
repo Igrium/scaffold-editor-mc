@@ -142,7 +142,6 @@ public class FakeSession extends Session {
 		RegistryOps<JsonElement> registryOps = RegistryOps.of(JsonOps.INSTANCE,
 				serverResourceManager.getResourceManager(), dynRegMan);
 
-		System.out.println(GEN_SETTINGS_JSON);
 		JsonParser jsonParser = new JsonParser();
 		JsonElement jsonElement = jsonParser.parse(GEN_SETTINGS_JSON);
 		DataResult<GeneratorOptions> dataResult = GeneratorOptions.CODEC.parse(registryOps, jsonElement);

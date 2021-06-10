@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.gismos.TransformationGismo;
 import org.scaffoldeditor.editormc.gismos.TranslationGismo;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
@@ -181,7 +182,7 @@ public class Viewport {
 		}
 		this.activeTool = activeTool;
 		if (activeTool != null) {
-			System.out.println("Activating tool: "+activeTool.getClass().getName());
+			LogManager.getLogger().info("Activating tool: "+activeTool.getClass().getName());
 			activeTool.onActivate();
 			ScaffoldUI.getInstance().setToolVisual(activeTool);
 		}

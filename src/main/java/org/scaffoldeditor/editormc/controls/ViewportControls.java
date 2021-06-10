@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.EditorCameraEntity;
@@ -60,7 +61,7 @@ public class ViewportControls {
 	}
 	
 	public void init(ScaffoldUI ui) {
-		System.out.println("Initializig Scaffold viewport controls.");
+		LogManager.getLogger().info("Initializig Scaffold viewport controls.");
 		this.ui = ui;
 		this.editor = ui.getEditor();
 		Scene scene = ui.getStage().getScene();
@@ -94,7 +95,7 @@ public class ViewportControls {
 		
 		Entity cameraEntity = client.getCameraEntity();
 		if (!(cameraEntity instanceof CameraController)) {
-			System.out.println("ERROR: Camera entity is not a camera controller! Viewport controls will not work!");
+			LogManager.getLogger().error("Camera entity is not a camera controller! Viewport controls will not work!");
 			return;
 		}
 		

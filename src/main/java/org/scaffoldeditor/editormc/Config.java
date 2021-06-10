@@ -23,7 +23,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -50,7 +50,7 @@ public final class Config {
 	private static List<Runnable> saveListeners = new ArrayList<Runnable>();
 	
 	public static void init() {
-		System.out.println("Initializing Scaffold config.");
+		LogManager.getLogger().info("Initializing Scaffold config.");
 		try {
 			builder = documentFactory.newDocumentBuilder();
 			transformer = transformerFactory.newTransformer();
@@ -172,7 +172,7 @@ public final class Config {
 		if (element != null) {
 			return element.getAttribute("value");
 		} else {
-			System.out.println("No config value: "+path);
+			LogManager.getLogger().warn("No config value: "+path);
 			return null;
 		}
 	}
@@ -191,7 +191,6 @@ public final class Config {
 			element.setAttribute("value", value);
 		} else {
 			Element parent = getElement(Arrays.copyOfRange(splitPath, 0, splitPath.length - 1));
-			System.out.println(parent);
 			Element newElement = document.createElement(type);
 			newElement.setAttribute("value", value);
 			newElement.setAttribute("id", splitPath[splitPath.length-1]);

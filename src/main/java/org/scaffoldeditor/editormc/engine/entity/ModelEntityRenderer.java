@@ -35,12 +35,10 @@ public class ModelEntityRenderer extends EntityRenderer<ModelEntity> {
 	public void render(ModelEntity entity, float yaw, float tickDelta, MatrixStack matrixStack,
 			VertexConsumerProvider vertexConsumers, int light) {
 		super.render(entity, yaw, tickDelta, matrixStack, vertexConsumers, light);
-//		System.out.println("Rendering model: "+entity.getModel());
 		if (entity.getModel() == null) return;
 		matrixStack.push();
 		BlockRenderManager blockRenderManager = this.client.getBlockRenderManager();
         BakedModelManager bakedModelManager = blockRenderManager.getModels().getModelManager();
-//        System.out.println("Model: "+bakedModelManager.getModel(entity.getModel()));
 		blockRenderManager.getModelRenderer().render(matrixStack.peek(),
 				vertexConsumers.getBuffer(TexturedRenderLayers.getEntitySolid()), null,
 				bakedModelManager.getModel(entity.getModel()), 1, 1, 1, light, OverlayTexture.DEFAULT_UV);

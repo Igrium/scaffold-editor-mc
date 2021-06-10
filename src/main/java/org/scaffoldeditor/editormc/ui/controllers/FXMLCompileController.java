@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.scaffold.compile.Compiler.CompileEndStatus;
 import org.scaffoldeditor.scaffold.level.Level;
@@ -76,7 +77,7 @@ public class FXMLCompileController {
 	
 	@FXML
 	public void launch() {
-		System.out.println("If this was implemented, we would launch the game to: "+compilePathField.getText());
+		LogManager.getLogger().info("If this was implemented, we would launch the game to: "+compilePathField.getText());
 	}
 	
 	@FXML

@@ -67,7 +67,6 @@ public abstract class MixinMinecraftClient {
 	@Redirect(method = START_SERVER_METHOD,
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorage;createSession(Ljava/lang/String;)Lnet/minecraft/world/level/storage/LevelStorage$Session;"))
 	private LevelStorage.Session replaceSession(LevelStorage levelStorage, String worldName) throws IOException {
-		System.out.println("Running mixin!");
 
 		if (worldName.length() == 0) {
 			return new FakeSession(levelStorage, MixinMinecraftClient.impl_holder);

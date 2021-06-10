@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ui.setting_types.ChangeSettingEvent;
 import org.scaffoldeditor.editormc.ui.setting_types.ISettingType;
@@ -85,8 +86,7 @@ public class SettingsWindow {
 			try {
 				Config.save();
 			} catch (IOException e) {
-				System.err.println("Unable to save Scaffold config!");
-				e.printStackTrace();
+				LogManager.getLogger().error("Unable to save Scaffold config!", e);
 			}
 		}
 	}

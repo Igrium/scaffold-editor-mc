@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.scaffoldeditor.scaffold.compile.Compiler;
+import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.scaffold.compile.Compiler.CompileEndStatus;
 import org.scaffoldeditor.scaffold.compile.Compiler.CompileProgressListener;
@@ -80,7 +81,7 @@ public class FXMLCompileProgressController {
 	}
 	
 	public void println(String string) {
-		System.out.println(string);
+		LogManager.getLogger().info(string);
 		Platform.runLater(() -> {
 			outputField.setText(outputField.getText() + System.lineSeparator() + string);
 		});

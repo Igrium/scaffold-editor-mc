@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
@@ -113,7 +114,7 @@ public class ScaffoldUI extends Application {
 				openSplashScreen();
 			}
 		} catch (Exception e) {
-			System.err.println("Unable to initialize scaffold ui!");
+			LogManager.getLogger().error("Unable to initialize scaffold ui!");
 			e.printStackTrace();
 		}
 

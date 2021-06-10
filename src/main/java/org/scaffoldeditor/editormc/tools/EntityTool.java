@@ -58,7 +58,6 @@ public class EntityTool implements ViewportTool {
 
 	@Override
 	public void onMouseClicked(MouseEvent event) {
-		System.out.println("Mouse event: "+event.toString());
 		if (event.getButton() == MouseButton.PRIMARY) {
 			Viewport viewport = ScaffoldUI.getInstance().getViewport();
 			int width = (int) viewport.getParent().getWidth();
