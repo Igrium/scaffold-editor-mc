@@ -11,6 +11,7 @@ import org.scaffoldeditor.editormc.engine.EditorServerWorld;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.render.MCRenderEntity;
+import org.scaffoldeditor.scaffold.level.render.ModelRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.RenderEntity;
 
 /**
@@ -65,16 +66,16 @@ public class RenderEntityManager {
 		}
 	}
 	
+	// ADD RENDER ENTITIES HERE
 	protected EditorRenderEntity spawnEditorRenderEntity(RenderEntity in) {
 		EditorRenderEntity ent;
-		if (in instanceof MCRenderEntity) {
-			ent = new MCEditorEntity(world);
-			ent.spawn(in);
-		} else {
+		if (in instanceof MCRenderEntity) ent = new MCEditorEntity(world);
+		else if (in instanceof ModelRenderEntity) ent = new ModelEditorEntity(world);
+		else {
 			throw new IllegalArgumentException(
 					"Render entity: " + in + " is not a subclass of any known render entity classes.");
 		}
-		
+		ent.spawn(in);
 		return ent;
 	}
 	

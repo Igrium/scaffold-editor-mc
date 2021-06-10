@@ -21,7 +21,6 @@ public class MixinTitleScreen extends Screen {
 
 	@Inject(method = "init()V", at = @At("RETURN"))
 	protected void init(CallbackInfo ci) { 
-		int j = this.height / 4 + 48;
 		addDrawableChild(new ButtonWidget(0, 0, 98, 20, new TranslatableText("menu.scaffoldeditor"), (button) -> {
 			ScaffoldEditorMod.getInstance().launchEditor();
 		}));

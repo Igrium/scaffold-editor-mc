@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
+import org.scaffoldeditor.editormc.engine.entity.ModelEntityRenderer;
 import org.scaffoldeditor.editormc.engine.mixins.MainWindowAccessor;
 //import org.scaffoldeditor.editormc.engine.mixins.ScreenAccessor;
 
@@ -23,22 +24,12 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 		client = MinecraftClient.getInstance();
 		
 		Config.init();
-
-//		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-//			client = MinecraftClient.getInstance();
-//			if (screen instanceof TitleScreen) {
-//				ScreenAccessor accessor = (ScreenAccessor) screen;
-//				accessor.invokeAddDrawableChild(new ButtonWidget(screen.width / 2 - 100,
-//						screen.height / 4 + 48 + 72 + 12, 98, 20, new TranslatableText("menu.scaffoldeditor"), (button) -> {
-//					launchEditor(); 
-//				}));
-//				System.out.println("Title screen!");
-//			}
-//		});
+		
+		ModelEntityRenderer.register();
 		
 		ScaffoldEditorMod.instance = this;
 		
-		ClientTickEvents.START_WORLD_TICK.register(e -> {
+		ClientTickEvents.START_CLIENT_TICK.register(e -> {
 			if (isInEditor) {
 				try {
 					Dimension res = editor.getUI().getViewport().getDesiredResolution();
