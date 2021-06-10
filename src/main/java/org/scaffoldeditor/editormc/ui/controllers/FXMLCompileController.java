@@ -102,25 +102,19 @@ public class FXMLCompileController {
 	public void compile() {
 		if (isCompiling) return;
 		
-		FXMLCompileProgressController controller;
+		CompileProgressUI controller;
 		
 		try {
-			controller = FXMLCompileProgressController.open(stage);
+			controller = CompileProgressUI.open(stage);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
 		}
 		
 		controller.onFinishedCompile(c -> {
-			if (c.endStatus == CompileEndStatus.FAILED) {
-				Alert a = new Alert(AlertType.ERROR, "Compile failed! "+c.errorMessage);
-				a.show();
-			} else if (c.endStatus == CompileEndStatus.FINISHED) {
+			if (c.endStatus == CompileEndStatus.FINISHED) {
 				if (autoLaunch.isSelected()) {
 					launch();
-				} else {
-					Alert a = new Alert(AlertType.INFORMATION, "Compile finished!");
-					a.show();
 				}
 				
 				editor.worldpath_cache = compilePathField.getText();
@@ -136,7 +130,7 @@ public class FXMLCompileController {
 	}
 	
 	public static FXMLCompileController open(Window parent) throws IOException {
-		FXMLLoader loader = new FXMLLoader(FXMLCompileProgressController.class.getResource("/assets/scaffold/ui/compile_window.fxml"));
+		FXMLLoader loader = new FXMLLoader(CompileProgressUI.class.getResource("/assets/scaffold/ui/compile_window.fxml"));
 		Parent root = loader.load();
 		
 		Scene scene = new Scene(root, 400, 300);

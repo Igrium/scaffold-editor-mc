@@ -14,6 +14,16 @@
     -fx-prompt-text-fill: gray;
 }
 
+.output-text {
+    -fx-fill: lightgray;
+    -fx-font-family: 'Lucida Console', 'Courier New';
+}
+
+.output-error {
+    -fx-font-family: 'Lucida Console', 'Courier New';
+    -fx-fill: darkred
+}
+
 .titulo {
     -fx-font-weight: bold;
     -fx-font-size: 18px;
@@ -71,4 +81,10 @@
 .list-view, .split-pane {
     -fx-background-insets: 0;
     -fx-padding: 0;
+}
+
+.output-field {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-border-style: solid;
+    -fx-border-color: -fx-text-box-border;
 }

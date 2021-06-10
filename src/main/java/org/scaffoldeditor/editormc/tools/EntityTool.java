@@ -7,7 +7,7 @@ import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.editormc.ui.Viewport;
 import org.scaffoldeditor.editormc.ui.controllers.EntityToolPropertiesController;
-import org.scaffoldeditor.editormc.ui.controllers.FXMLCompileProgressController;
+import org.scaffoldeditor.editormc.ui.controllers.CompileProgressUI;
 import org.scaffoldeditor.editormc.util.RaycastUtils;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.EntityRegistry;
@@ -45,7 +45,7 @@ public class EntityTool implements ViewportTool {
 	}
 	
 	protected void loadUI() throws IOException {
-		FXMLLoader loader = new FXMLLoader(FXMLCompileProgressController.class.getResource("/assets/scaffold/ui/tool_properties/entity_tool.fxml"));
+		FXMLLoader loader = new FXMLLoader(CompileProgressUI.class.getResource("/assets/scaffold/ui/tool_properties/entity_tool.fxml"));
 		root = loader.load();
 		uiController = loader.getController();
 		uiController.setParent(this);

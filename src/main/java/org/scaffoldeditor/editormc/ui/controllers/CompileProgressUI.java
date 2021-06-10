@@ -21,17 +21,27 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextArea;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-public class FXMLCompileProgressController {
+public class CompileProgressUI {
+	public enum MessageType {
+		LOG,
+		WARNING,
+		ERROR
+	}
+	
 	@FXML
 	private ProgressBar progressBar;
 	@FXML
-	private TextArea outputField;
+	private TextFlow outputField;
+	@FXML
+	private Button launchButton;
 	
 	private Thread thread;
 	private boolean isFinished = false;
@@ -42,14 +52,14 @@ public class FXMLCompileProgressController {
 	
 	public Thread compile(Level level, Path target, Map<String, Attribute<?>> args) {
 		thread = new Thread(() -> {
-			println("Initializing compile into world folder: "+target.toString());
+			println("Initializing compile into world folder: "+target.toString(), MessageType.LOG);
 			
 			Compiler compiler = ScaffoldEditor.getInstance().getProject().getCompiler();
 			CompileResult result = compiler.compile(level, target, args, new CompileProgressListener() {
 				
 				@Override
-				public void onError(String description) {
-					println("Error: "+description+" Check console for details.");
+				public void onError(String message) {
+					CompileProgressUI.this.println(message, MessageType.ERROR);
 				}
 				
 				@Override
@@ -59,16 +69,22 @@ public class FXMLCompileProgressController {
 						progressBar.setProgress(percent);
 					});
 				}
+
+				@Override
+				public void println(String string) {
+					CompileProgressUI.this.println(string, MessageType.LOG);
+				}
 			});
 			
 			if (result.endStatus == CompileEndStatus.FINISHED) {
-				println("Compile finished!");
+				println("Compile finished!", MessageType.LOG);
+				launchButton.setDisable(false);
+				
 			} else if (result.endStatus == CompileEndStatus.FAILED) {
-				println("Compile failed! "+result.errorMessage);
+				println("Compile failed! "+result.errorMessage, MessageType.ERROR);
 			}
 			Platform.runLater(() -> {
 				isFinished = true;
-				stage.close();
 				for (Consumer<CompileResult> c : endListeners) {
 					c.accept(result);
 				}
@@ -80,13 +96,22 @@ public class FXMLCompileProgressController {
 		return thread;
 	}
 	
-	public void println(String string) {
-		LogManager.getLogger().info(string);
+	public void println(String message, MessageType type) {
+		LogManager.getLogger().info(message);
 		Platform.runLater(() -> {
-			outputField.setText(outputField.getText() + System.lineSeparator() + string);
+			Text output = new Text("> "+message);
+			switch(type) {
+			case ERROR:
+				output.getStyleClass().add("output-error");
+				break;
+			default:
+				output.getStyleClass().add("output-text");
+				break;
+			}
+			outputField.getChildren().addAll(output, new Text(System.lineSeparator()));
 		});
 	}
-	
+
 	public void onFinishedCompile(Consumer<CompileResult> listener) {
 		endListeners.add(listener);
 	}
@@ -94,10 +119,11 @@ public class FXMLCompileProgressController {
 	@FXML
 	public void cancel() {
 		ScaffoldEditor.getInstance().getProject().getCompiler().cancel();
+		stage.close();
 	}
 	
-	public static FXMLCompileProgressController open(Window parent) throws IOException {
-		FXMLLoader loader = new FXMLLoader(FXMLCompileProgressController.class.getResource("/assets/scaffold/ui/compile_progress_screen.fxml"));
+	public static CompileProgressUI open(Window parent) throws IOException {
+		FXMLLoader loader = new FXMLLoader(CompileProgressUI.class.getResource("/assets/scaffold/ui/compile_progress_screen.fxml"));
 		Parent root = loader.load();
 		
 		Scene scene = new Scene(root, 600, 400);
@@ -106,7 +132,7 @@ public class FXMLCompileProgressController {
 		stage.setScene(scene);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.initOwner(parent);
-		FXMLCompileProgressController controller = loader.getController();
+		CompileProgressUI controller = loader.getController();
 		controller.stage = stage;
 		
 		stage.setOnCloseRequest(e -> {

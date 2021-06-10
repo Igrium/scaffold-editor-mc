@@ -51,7 +51,7 @@ public class EntityBrowser {
 	}
 	
 	public static EntityBrowser open() throws IOException {
-		FXMLLoader loader = new FXMLLoader(FXMLCompileProgressController.class.getResource("/assets/scaffold/ui/entity_browser.fxml"));
+		FXMLLoader loader = new FXMLLoader(CompileProgressUI.class.getResource("/assets/scaffold/ui/entity_browser.fxml"));
 		Parent root = loader.load();
 		
 		Scene scene = new Scene(root, 600, 400);
