@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 public class ModelEditorEntity extends ClientSideEntity<ModelEntity, ModelRenderEntity> {
 
 	public ModelEditorEntity(World world) {
-		super(world, ModelEntity.class, ModelRenderEntity.class);
+		super(world, ModelRenderEntity.class);
 	}
 
 	@Override

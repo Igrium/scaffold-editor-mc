@@ -15,21 +15,19 @@ import net.minecraft.world.World;
 public abstract class ClientSideEntity<T extends Entity, R extends RenderEntity> implements EditorRenderEntity {
 	
 	protected final World world;
-	protected final Class<T> entClass;
 	protected final Class<R> renderEntClass;
 	protected T entity;
 	private final MinecraftClient client = MinecraftClient.getInstance();
 	
-	public ClientSideEntity(World world, Class<T> entClass, Class<R> renderEntClass) {
+	public ClientSideEntity(World world, Class<R> renderEntClass) {
 		this.world = world;
-		this.entClass = entClass;
 		this.renderEntClass = renderEntClass;
 	}
 
 	@Override
 	public void spawn(RenderEntity in) {
 		if (!(renderEntClass.isAssignableFrom(in.getClass()))) {
-			throw new IllegalArgumentException("Passed RenderEntity is not an instance of "+entClass.getSimpleName());
+			throw new IllegalArgumentException("Passed RenderEntity is not an instance of "+renderEntClass.getSimpleName());
 		}
 		client.execute(() -> spawnImpl(renderEntClass.cast(in)));
 	}
@@ -45,7 +43,7 @@ public abstract class ClientSideEntity<T extends Entity, R extends RenderEntity>
 	@Override
 	public void update(RenderEntity in) {
 		if (!(renderEntClass.isAssignableFrom(in.getClass()))) {
-			throw new IllegalArgumentException("Passed RenderEntity is not an instance of "+entClass.getSimpleName());
+			throw new IllegalArgumentException("Passed RenderEntity is not an instance of "+renderEntClass.getSimpleName());
 		}
 		client.execute(() -> updateImpl(renderEntClass.cast(in)));
 	}
@@ -64,6 +62,11 @@ public abstract class ClientSideEntity<T extends Entity, R extends RenderEntity>
 		entity.remove(RemovalReason.DISCARDED);
 	}
 	
+	/**
+	 * Get an instance of the entity. Should NOT call <code>world.spawnEntity()</code>
+	 * @param world World to instanciate with.
+	 * @return Entity instance.
+	 */
 	protected abstract T spawnEntity(World world);
 	
 	public World getWorld() {

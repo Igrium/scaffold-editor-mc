@@ -1,7 +1,5 @@
 package org.scaffoldeditor.editormc.engine.entity;
 
-import org.apache.logging.log4j.LogManager;
-
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.entity.Entity;
@@ -65,7 +63,6 @@ public class ModelEntity extends Entity {
 	}
 
 	public void setModel(ModelIdentifier modelIdentifier) {
-		LogManager.getLogger().debug("Setting model: "+modelIdentifier);
 		String modelString = modelIdentifier.toString();
 		if (!modelString.equals(dataTracker.get(MODEL))) {
 			this.dataTracker.set(MODEL, modelIdentifier.toString());
