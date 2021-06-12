@@ -40,17 +40,12 @@ public class ModelEntity extends Entity {
 
 	@Override
 	protected void readCustomDataFromNbt(NbtCompound nbt) {
-		if (nbt.contains("model")) {
-			setModel(new ModelIdentifier(nbt.getString("model")));
-		}
+		if (nbt.contains("model")) setModel(new ModelIdentifier(nbt.getString("model")));		
 	}
 
 	@Override
 	protected void writeCustomDataToNbt(NbtCompound nbt) {
-		
-		if (getModel() != null) {
-			nbt.putString("model", getModel().toString());
-		}
+		nbt.putString("model", getModel().toString());
 	}
 
 	@Override
