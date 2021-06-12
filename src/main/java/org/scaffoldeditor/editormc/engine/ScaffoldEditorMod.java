@@ -4,7 +4,6 @@ import java.awt.Dimension;
 
 import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
-import org.scaffoldeditor.editormc.engine.billboard.BillboardRenderer;
 import org.scaffoldeditor.editormc.engine.entity.BillboardEntityRenderer;
 import org.scaffoldeditor.editormc.engine.entity.ModelEntityRenderer;
 import org.scaffoldeditor.editormc.engine.mixins.MainWindowAccessor;
@@ -21,7 +20,6 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 	public boolean isInEditor = false;
 	private MinecraftClient client;
 	protected ScaffoldEditor editor;
-	private BillboardRenderer billboardRenderer;
 
 	public void onInitializeClient() {
 		client = MinecraftClient.getInstance();
@@ -30,8 +28,6 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 		
 		ModelEntityRenderer.register();
 		BillboardEntityRenderer.register();
-		billboardRenderer = new BillboardRenderer();
-		billboardRenderer.register();
 		
 		ScaffoldEditorMod.instance = this;
 		
@@ -70,10 +66,6 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 	
 	public ScaffoldEditor getEditor() {
 		return editor;
-	}
-	
-	public BillboardRenderer getBillboardRenderer() {
-		return billboardRenderer;
 	}
 	
 	public static ScaffoldEditorMod getInstance() {
