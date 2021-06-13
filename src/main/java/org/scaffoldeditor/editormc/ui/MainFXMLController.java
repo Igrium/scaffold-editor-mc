@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
 import org.scaffoldeditor.scaffold.level.Level;

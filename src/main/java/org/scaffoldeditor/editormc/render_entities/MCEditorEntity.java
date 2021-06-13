@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.scaffoldeditor.editormc.scaffold_interface.NBTConverter;
 import org.scaffoldeditor.nbt.math.Vector3f;
+import org.scaffoldeditor.nbt.util.MCEntity;
 import org.scaffoldeditor.scaffold.level.render.MCRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.RenderEntity;
-import org.scaffoldeditor.scaffold.logic.MCEntity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Entity.RemovalReason;
