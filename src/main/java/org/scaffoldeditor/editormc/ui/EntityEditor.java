@@ -2,8 +2,8 @@ package org.scaffoldeditor.editormc.ui;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
 import org.scaffoldeditor.editormc.ui.attribute_types.DefaultAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.IRenderAttributeType;
@@ -11,6 +11,7 @@ import org.scaffoldeditor.editormc.ui.attribute_types.RenderAttributeRegistry;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLEntityEditorController;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.level.io.Output;
 import org.scaffoldeditor.scaffold.operation.ChangeAttributesOperation;
 
 import javafx.fxml.FXMLLoader;
@@ -74,6 +75,8 @@ public class EntityEditor {
 			apply();
 			close();
 		});
+		
+		controller.loadOutputs(entity);
 	}
 	
 	protected void loadAttributes() {
@@ -100,8 +103,13 @@ public class EntityEditor {
 	}
 	
 	public void apply() {
-		if (cachedAttributes.size() > 0) {
-			entity.getLevel().getOperationManager().execute(new ChangeAttributesOperation(entity, cachedAttributes));
+		Map<String, Attribute<?>> newAttributes = null;
+		List<Output> newOutputs = null;
+		if (cachedAttributes.size() > 0) newAttributes = cachedAttributes;
+		if (controller.hasBeenUpdated) newOutputs = controller.outputTable.getItems();
+		if (newAttributes != null || newOutputs != null) {
+			entity.getLevel().getOperationManager().execute(new ChangeAttributesOperation(entity, newAttributes, newOutputs));
+			controller.hasBeenUpdated = false;
 		}
 	}
 }

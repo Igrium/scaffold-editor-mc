@@ -6,18 +6,15 @@ import net.minecraft.client.model.ModelPartBuilder;
 import net.minecraft.client.model.ModelPartData;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.SinglePartEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
 
 public class BrushEntityModel extends SinglePartEntityModel<BrushEntity> {
 	
-	private final BrushEntity entity;
+//	private final BrushEntity entity;
 	private ModelPart root;
 	
 	public BrushEntityModel(BrushEntity entity) {
-		this.entity = entity;
+//		this.entity = entity;
 
 		ModelData modelData = new ModelData();
 		ModelPartData modelPartData = modelData.getRoot();

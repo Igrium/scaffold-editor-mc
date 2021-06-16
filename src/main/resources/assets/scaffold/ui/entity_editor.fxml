@@ -3,16 +3,21 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@css/scaffold.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.scaffoldeditor.editormc.ui.controllers.FXMLEntityEditorController">
@@ -64,6 +69,64 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
+               </content>
+            </Tab>
+            <Tab text="Outputs">
+               <content>
+                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+                     <children>
+                        <StackPane prefHeight="150.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <TableView fx:id="outputTable" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn fx:id="outputColumn" prefWidth="110.0" text="My Output" />
+                                  <TableColumn fx:id="targetColumn" editable="false" prefWidth="158.0" text="Target Entity" />
+                                    <TableColumn fx:id="inputColumn" prefWidth="216.0" text="Target Input" />
+                                </columns>
+                                 <StackPane.margin>
+                                    <Insets />
+                                 </StackPane.margin>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                        <HBox spacing="5.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#addOutput" prefWidth="25.0" text="+" textAlignment="CENTER" />
+                              <Button fx:id="deleteOutputButton" disable="true" mnemonicParsing="false" prefWidth="25.0" text="-" />
+                           </children>
+                        </HBox>
+                        <GridPane hgap="10.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="285.0" minWidth="10.0" prefWidth="124.0" />
+                            <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="433.0" minWidth="10.0" prefWidth="245.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="433.0" minWidth="10.0" prefWidth="212.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="My output named" />
+                              <ComboBox fx:id="outputBox" disable="true" editable="true" prefHeight="25.0" prefWidth="1000.0" GridPane.columnIndex="1" />
+                              <ComboBox fx:id="targetBox" disable="true" editable="true" prefWidth="1000.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label text="Target entity" GridPane.rowIndex="1" />
+                              <Label text="Via this input" GridPane.rowIndex="2" />
+                              <ComboBox fx:id="inputBox" disable="true" editable="true" prefWidth="1000.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Button fx:id="selectTargetButton" disable="true" mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <Label text="Arguements" GridPane.rowIndex="3" />
+                              <TextField disable="true" editable="false" text="Not implemented yet!" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                           </children>
+                        </GridPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
                </content>
             </Tab>
         </tabs>
