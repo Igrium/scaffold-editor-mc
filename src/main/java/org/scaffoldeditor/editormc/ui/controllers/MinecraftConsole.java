@@ -12,10 +12,13 @@ import org.scaffoldeditor.editormc.ui.controllers.CompileProgressUI.MessageType;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
@@ -97,6 +100,21 @@ public final class MinecraftConsole {
 		history.add(message);
 		historyIndex = history.size();
 		sendButton.setDisable(true);
+	}
+	
+	@FXML
+	public void copy() {
+		Clipboard clipboard = Clipboard.getSystemClipboard();
+		ClipboardContent content = new ClipboardContent();
+		StringBuilder sb = new StringBuilder();
+		for (Node node :  outputField.getChildren()) {
+			if (node instanceof Text) {
+				sb.append(((Text) node).getText());
+			}
+		}
+		
+		content.putString(sb.toString());
+		clipboard.setContent(content);
 	}
 	
 	public void up() {

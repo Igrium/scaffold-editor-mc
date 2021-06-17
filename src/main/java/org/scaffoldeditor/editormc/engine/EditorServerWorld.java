@@ -9,6 +9,8 @@ import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
@@ -51,6 +53,15 @@ public class EditorServerWorld extends ServerWorld {
 	@Override
 	public void tickChunk(WorldChunk chunk, int randomTickSpeed) {
 		return;
+	}
+	
+	@Override
+	public void tickEntity(Entity entity) {
+		super.tickEntity(entity);
+		
+		if (entity instanceof FallingBlockEntity) {
+			((FallingBlockEntity) entity).timeFalling = 1;
+		}
 	}
 	
 	@Override

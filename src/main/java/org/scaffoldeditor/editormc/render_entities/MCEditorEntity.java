@@ -59,17 +59,16 @@ public class MCEditorEntity implements EditorRenderEntity {
 		MCEntity ent = ((MCRenderEntity) entity).getMcEntity();
 		if (mcEntity == null) return;
 		
-		if (EntityType.getId(mcEntity.getType()).toString().equals(ent.getID())) {
-			mcEntity.readNbt(NBTConverter.scaffoldCompoundToMinecraft(ent.getNBT()));
-			
+		if (EntityType.getId(mcEntity.getType()).toString().equals(ent.getID())) {		
 			Vector3f pos = entity.getPosition();
 			Vector3f rot = entity.getRotation();
 			
-			NbtCompound newNBT = new NbtCompound();
+			NbtCompound newNBT = NBTConverter.scaffoldCompoundToMinecraft(ent.getNBT());
 			newNBT.putBoolean("NoAI", true);
 			newNBT.putBoolean("NoGravity", true);
 			newNBT.putBoolean("Silent", true);
 			newNBT.putBoolean("Invulnerable", true);
+			
 			mcEntity.readNbt(newNBT);
 			
 			mcEntity.updatePositionAndAngles(pos.x, pos.y, pos.z, rot.x, rot.y);
