@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -56,7 +57,7 @@ public class ScaffoldEditor {
 	protected File levelFile;
 	private final Set<Entity> selectedEntities = new HashSet<>();
 	private final EventDispatcher<UpdateSelectionEvent> updateSelectionDispatcher = new EventDispatcher<>();
-	public  String worldpath_cache;	
+	public String worldpath_cache;	
 	private boolean pauseCache = true;
 	private JSONObject cache = new JSONObject();
 	private RenderEntityManager renderEntityManager;
@@ -294,6 +295,7 @@ public class ScaffoldEditor {
 		project.getLevelService().execute(() -> {
 			Level level = Level.loadFile(project, file);
 			setLevel(level);
+			level.setName(FilenameUtils.getBaseName(file.getName()));
 			future.complete(level);
 		});
 		levelFile = file;
@@ -330,6 +332,25 @@ public class ScaffoldEditor {
 	 */
 	public JSONObject getCache() {
 		return cache;
+	}
+	
+	/**
+	 * Get the JSON object used for caching values specific to this level.
+	 * @return A child object of {@link #getCache()}.
+	 */
+	public JSONObject getLevelCache() {
+		if (level == null) return null;
+		
+		if (!cache.has("levels")) {
+			cache.put("levels", new JSONObject());
+		}
+		
+		JSONObject levels = cache.getJSONObject("levels");
+		
+		if (!levels.has(level.getName())) {
+			levels.put(level.getName(), new JSONObject());
+		}
+		return levels.getJSONObject(level.getName());
 	}
 	
 	public void loadCache() {

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
+import org.json.JSONObject;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.scaffold.compile.Compiler.CompileEndStatus;
 import org.scaffoldeditor.scaffold.level.Level;
@@ -54,11 +55,12 @@ public class FXMLCompileController {
 		editor = ScaffoldEditor.getInstance();
 		level = editor.getLevel();
 		
-		if (editor.worldpath_cache != null) {
-			compilePathField.setText(editor.worldpath_cache);
+		JSONObject levelCache = editor.getLevelCache();
+		if (levelCache.has("export_path")) {
+			compilePathField.setText(levelCache.getString("export_path"));
 		} else {
-			compilePathField.setText(
-					editor.getProject().assetManager().getAbsolutePath("game/saves/" + level.getName()).toString());
+			String path = editor.getProject().assetManager().getAbsolutePath("game/saves/" + level.getName()).toString();
+			compilePathField.setText(path);
 		}
 		
 		compilePathField.focusedProperty().addListener(e -> {
@@ -101,6 +103,7 @@ public class FXMLCompileController {
 	@FXML
 	public void compile() {
 		if (isCompiling) return;
+		editor.getLevelCache().put("export_path", compilePathField.getText());
 		
 		CompileProgressUI controller;
 		
@@ -117,7 +120,6 @@ public class FXMLCompileController {
 					launch();
 				}
 				
-				editor.worldpath_cache = compilePathField.getText();
 				updateButton();
 			}
 		});
