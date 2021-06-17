@@ -1,6 +1,7 @@
 package org.scaffoldeditor.editormc.engine;
 
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -15,6 +16,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import javafx.application.Platform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.util.math.Vec3d;
 
 public class ViewportExporter {
 	
@@ -52,8 +54,16 @@ public class ViewportExporter {
 		
 		Platform.runLater(() -> {
 			viewport.updateViewport(buffer, x, y);
-			ScaffoldUI.getInstance().setFPSIndicator(MinecraftClientAccessor.getFPS());
 			MemoryUtil.memFree(buffer);
+			
+			MinecraftClient client = MinecraftClient.getInstance();
+			ScaffoldUI.getInstance().setFPSIndicator(MinecraftClientAccessor.getFPS());
+			
+			Vec3d coords = client.player.getPos();
+			DecimalFormat format = new DecimalFormat("#.0");
+			ScaffoldUI.getInstance().setCoordIndicator("<" + format.format(coords.x) + ", " + format.format(coords.y)
+					+ ", " + format.format(coords.z) + ">");
+
 		});
 	}
 	

@@ -17,6 +17,7 @@ import org.scaffoldeditor.editormc.tools.Toolbar;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLCompileController;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLOutlinerController;
+import org.scaffoldeditor.editormc.ui.controllers.MinecraftConsole;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import javafx.application.Application;
@@ -25,7 +26,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -51,6 +51,7 @@ public class ScaffoldUI extends Application {
 	protected ViewportControls viewportControls = new ViewportControls();
 	protected Toolbar toolbar = new Toolbar();
 	protected FXMLOutlinerController outliner;
+	protected MinecraftConsole console;
 	
 	private boolean isExiting = false;
 	
@@ -195,8 +196,11 @@ public class ScaffoldUI extends Application {
 	}
 	
 	public void setFPSIndicator(int value) {
-		Label fps = (Label) mainScene.lookup("#fps_indicator");
-		fps.setText("fps: "+value);
+		controller.setFPS(Integer.toString(value));
+	}
+	
+	public void setCoordIndicator(String value) {
+		controller.setCoords(value);
 	}
 	
 	public Stage getStage() {
@@ -287,7 +291,24 @@ public class ScaffoldUI extends Application {
 		} else {
 			controller.getToolPropertiesLabel().setText("[No tool selected]");
 			controller.getToolPropertiesPane().setCenter(null);
-		}		
+		}
+	}
+	
+	public void openConsole() {
+		if (console != null) {
+			console.getStage().requestFocus();
+		} else {
+			try {
+				console = MinecraftConsole.open(stage);
+			} catch (IOException e) {
+				LogManager.getLogger().error("Error opening console!", e);
+				return;
+			}
+			
+			console.getStage().setOnCloseRequest(event -> {
+				this.console = null;
+			});
+		}
 	}
 	
 	public MainFXMLController getController() {

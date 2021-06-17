@@ -13,7 +13,8 @@
     "MinecraftClientAccessor",
     "MixinPlayerController",
     "MixinClientPlayNetworkHandler",
-    "MixinTitleScreen"
+    "MixinTitleScreen",
+    "HudAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

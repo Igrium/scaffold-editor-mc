@@ -47,6 +47,12 @@ public class MainFXMLController {
 	private Menu openRecentMenu;
 	
 	@FXML
+	private Label fpsIndicator;
+	
+	@FXML
+	private Label coordIndicator;
+	
+	@FXML
 	public void initialize() {
 		
 		addPressAndHoldHandler(viewport_pane, ViewportControls.HOLD_TIME, e -> handleViewportMousePressed(e));
@@ -191,6 +197,19 @@ public class MainFXMLController {
 	
 	public Level getLevel() {
 		return ScaffoldUI.getInstance().getEditor().getLevel();
+	}
+	
+	@FXML
+	protected void openConsole() {
+		ScaffoldUI.getInstance().openConsole();
+	}
+	
+	public void setFPS(String value) {
+		fpsIndicator.setText("FPS: "+value);
+	}
+	
+	public void setCoords(String value) {
+		coordIndicator.setText("Viewport Pos: "+value);
 	}
 	
 	public void reloadRecent(List<String> items) {
