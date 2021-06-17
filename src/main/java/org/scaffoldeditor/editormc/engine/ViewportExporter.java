@@ -53,6 +53,7 @@ public class ViewportExporter {
 		Platform.runLater(() -> {
 			viewport.updateViewport(buffer, x, y);
 			ScaffoldUI.getInstance().setFPSIndicator(MinecraftClientAccessor.getFPS());
+			MemoryUtil.memFree(buffer);
 		});
 	}
 	

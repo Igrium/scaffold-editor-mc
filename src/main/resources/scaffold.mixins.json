@@ -9,7 +9,6 @@
   ],
   "client": [
     "MixinMinecraftClient",
-    "MixinGameRenderer",
     "MainWindowAccessor",
     "MinecraftClientAccessor",
     "MixinPlayerController",
