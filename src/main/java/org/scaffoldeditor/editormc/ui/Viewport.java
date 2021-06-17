@@ -9,9 +9,8 @@ import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.gismos.TransformationGismo;
 import org.scaffoldeditor.editormc.gismos.TranslationGismo;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
+import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.math.Vector;
-
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
@@ -86,9 +85,9 @@ public class Viewport {
 	}
 	
 	@SuppressWarnings("resource")
-	public Vector getCameraPos() {
+	public Vector3f getCameraPos() {
 		Vec3d entityPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
-		return new Vector((float) entityPos.x, (float) entityPos.y, (float) entityPos.z);
+		return new Vector3f((float) entityPos.x, (float) entityPos.y, (float) entityPos.z);
 	}
 	
 	public void handleMousePressed(MouseEvent e) {

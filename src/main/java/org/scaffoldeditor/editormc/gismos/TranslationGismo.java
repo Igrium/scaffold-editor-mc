@@ -3,8 +3,8 @@ package org.scaffoldeditor.editormc.gismos;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.ui.Viewport;
 import org.scaffoldeditor.editormc.util.RaycastUtils;
+import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.math.Vector;
 import org.scaffoldeditor.scaffold.operation.MoveEntityOperation;
 
 import javafx.scene.layout.Pane;
@@ -18,8 +18,8 @@ public class TranslationGismo implements TransformationGismo {
 	/** Target distance to the entity */
 	protected float distanceSquared;
 	protected Entity entity;
-	protected Vector targetOffset;
-	protected Vector startPosition;
+	protected Vector3f targetOffset;
+	protected Vector3f startPosition;
 	
 	/**
 	 * Create a translation gizmo.
@@ -33,18 +33,18 @@ public class TranslationGismo implements TransformationGismo {
 	@Override
 	public void activate(Entity entity, int x, int y) {
 		this.entity = entity;
-		distanceSquared = Vector.subtract(entity.getPosition(), viewport.getCameraPos()).lengthSquared();
+		distanceSquared = entity.getPosition().subtract(viewport.getCameraPos()).lengthSquared();
 		startPosition = entity.getPosition();
 		
 		HitResult initial = performRaycast(x, y);
-		targetOffset = Vector.subtract(entity.getPosition(), parseVector(initial.getPos()));	
+		targetOffset = entity.getPosition().subtract(parseVector(initial.getPos()));
 	}
 
 	@Override
 	public void mouseMoved(int x, int y) {
 		if (entity != null) {
 			HitResult target = performRaycast(x, y);
-			entity.setPosition(Vector.add(parseVector(target.getPos()), targetOffset));
+			entity.setPosition(parseVector(target.getPos()).add(targetOffset));
 		}
 	}
 
@@ -72,8 +72,8 @@ public class TranslationGismo implements TransformationGismo {
 		return RaycastUtils.raycastPixel(x, y, (int) pane.getWidth(), (int) pane.getHeight(), Math.sqrt(distanceSquared), false);
 	}
 	
-	private Vector parseVector(Vec3d in) {
-		return new Vector((float) in.x, (float) in.y, (float) in.z);
+	private Vector3f parseVector(Vec3d in) {
+		return new Vector3f((float) in.x, (float) in.y, (float) in.z);
 	}
 
 }

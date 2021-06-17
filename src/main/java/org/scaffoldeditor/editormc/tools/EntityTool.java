@@ -9,9 +9,9 @@ import org.scaffoldeditor.editormc.ui.Viewport;
 import org.scaffoldeditor.editormc.ui.controllers.EntityToolPropertiesController;
 import org.scaffoldeditor.editormc.ui.controllers.CompileProgressUI;
 import org.scaffoldeditor.editormc.util.RaycastUtils;
+import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.EntityRegistry;
-import org.scaffoldeditor.scaffold.math.Vector;
 import org.scaffoldeditor.scaffold.operation.AddEntityOperation;
 
 import javafx.fxml.FXMLLoader;
@@ -69,7 +69,7 @@ public class EntityTool implements ViewportTool {
 			HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height, 100);		
 			if (hitResult.getType() == HitResult.Type.MISS) return;		
 			Vec3d pos = hitResult.getPos();
-			spawn(new Vector((float) pos.x, (float) pos.y, (float) pos.z), uiController.shouldSnapToBlock());
+			spawn(new Vector3f((float) pos.x, (float) pos.y, (float) pos.z), uiController.shouldSnapToBlock());
 		}
 	}
 	
@@ -79,7 +79,7 @@ public class EntityTool implements ViewportTool {
 	 * @param snapToBlock Snap to a grid increment (always rounds down).
 	 * @return Success.
 	 */
-	public CompletableFuture<Boolean> spawn(Vector position, boolean snapToBlock) {
+	public CompletableFuture<Boolean> spawn(Vector3f position, boolean snapToBlock) {
 		if (uiController.getEnteredClass().length() == 0) {
 			CompletableFuture<Boolean> success = new CompletableFuture<>();
 			success.complete(false);
@@ -98,7 +98,7 @@ public class EntityTool implements ViewportTool {
 			name = registryName;
 		}
 		if (snapToBlock) {
-			position = Vector.floor(position);
+			position = position.floor().toFloat();
 		}
 		
 		Level level = ScaffoldEditor.getInstance().getLevel();
