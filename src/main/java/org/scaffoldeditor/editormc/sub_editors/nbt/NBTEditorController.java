@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.CompoundTag;
 import net.querz.nbt.tag.ListTag;
@@ -119,7 +120,7 @@ public class NBTEditorController {
 		return controller;
 	}
 	
-	public static NBTEditorController openPopup(Stage parent) {
+	public static NBTEditorController openPopup(Window parent) {
 		Stage popup = new Stage();
 		popup.initModality(Modality.APPLICATION_MODAL);
 		popup.initOwner(parent);

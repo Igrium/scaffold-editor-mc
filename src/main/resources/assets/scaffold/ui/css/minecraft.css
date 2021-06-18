@@ -1,0 +1,38 @@
+@font-face {
+    font-family: 'Minecraft' ;
+    src: url('MinecraftRegular.otf');
+}
+
+.root {
+    -fx-font-family: "Minecraft";
+    -fx-font-size: 16pt;
+    -fx-base: #c6c6c6;
+}
+
+.label {
+    -fx-text-fill: #444
+}
+
+.white-text {
+    -fx-text-fill: #fff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 1, 1, 1, 1);
+}
+
+.button-pane {
+    -fx-border-style: solid;
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+}
+
+.button-selected {
+    -fx-border-color: white;
+}
+
+.mc-button {
+    -fx-image: url('../images/mc_button.png');
+}
+
+.inventory_slot {
+    -fx-image: url('../images/inventory_slot.png');
+
+}
