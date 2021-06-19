@@ -12,6 +12,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -19,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import net.querz.nbt.io.NamedTag;
+import net.querz.nbt.tag.ByteTag;
 import net.querz.nbt.tag.CompoundTag;
 import net.querz.nbt.tag.ListTag;
 import net.querz.nbt.tag.Tag;
@@ -29,10 +32,13 @@ public class NBTEditorController {
 	private BorderPane rootPane;
 	@FXML
 	private Button editButton;
+	@FXML
+	private Button newButton;
 	private NBTBrowserController nbtBrowser;
 	private Parent root;
 	private Stage stage;
 	private EventDispatcher<NamedTag> updateNBTDispatcher = new EventDispatcher<>();
+	private Tag<?> activeTag;
 	
 	public void loadNBT(NamedTag tag) {
 		nbtBrowser.loadNBT(tag);
@@ -62,11 +68,49 @@ public class NBTEditorController {
 				if (c.getList().size() > 0) {
 					NamedTag selection = c.getList().get(0).getValue();
 					editButton.setDisable(!isEditable(selection.getTag()));
+					
+					activeTag = c.getList().get(0).getValue().getTag();
+					if (activeTag instanceof CompoundTag || activeTag instanceof ListTag) {
+						newButton.setDisable(false);
+					} else {
+						newButton.setDisable(true);
+					}
 				} else {
 					editButton.setDisable(true);
+					newButton.setDisable(true);
 				}
 			}
 		});
+		
+		rootPane.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+			if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
+				delete();
+				event.consume();
+			}
+		});
+	}
+	
+	@FXML
+	public void delete() {
+		for (TreeItem<NamedTag> item : nbtBrowser.getNBTTree().getSelectionModel().getSelectedItems()) {
+			deleteEntry(item);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void deleteEntry(TreeItem<NamedTag> item) {
+		if (item == null || item.getParent() == null) return;
+		Tag<?> parent = item.getParent().getValue().getTag();
+		
+		if (parent instanceof CompoundTag) {
+			((CompoundTag) parent).remove(item.getValue().getName());
+		} else if (parent instanceof ListTag) {
+			ListTag<Tag<?>> parentTag = (ListTag<Tag<?>>) parent;
+			parentTag.remove(parentTag.indexOf(item.getValue().getTag()));
+		} else {
+			return;
+		}
+		item.getParent().getChildren().remove(item);
 	}
 	
 	@FXML
@@ -96,6 +140,26 @@ public class NBTEditorController {
 				parent.getChildren().set(index, new TreeItem<>(tag));
 			});
 		}
+	}
+	
+	@FXML
+	public void newEntry() {
+		newEntry(nbtBrowser.getNBTTree().getSelectionModel().getSelectedItem());
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void newEntry(TreeItem<NamedTag> parentItem) {
+		Tag<?> parent = parentItem.getValue().getTag();	
+		if (!(parent instanceof CompoundTag || parent instanceof ListTag)) return;
+		NBTValueEditor editor = NBTValueEditor.open(new NamedTag("", new ByteTag()), stage, parent instanceof ListTag);
+		editor.onFinished(tag -> {
+			if (parent instanceof CompoundTag) {
+				((CompoundTag) parent).put(tag.getName(), tag.getTag());
+			} else if (parent instanceof ListTag) {
+				((ListTag<Tag<?>>) parent).add(tag.getTag());
+			}
+			parentItem.getChildren().add(new TreeItem<>(tag));
+		});
 	}
 	
 	@FXML

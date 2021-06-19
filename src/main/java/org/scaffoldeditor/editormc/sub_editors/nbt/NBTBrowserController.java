@@ -104,6 +104,9 @@ public final class NBTBrowserController {
 		return item;
 	}
 	
+	public void refresh() {
+		nbtTree.setRoot(loadTag(tag));
+	}
 	
 	private Image getTagImage(byte tagID) {
 		if (tagID == 1) {

@@ -21,7 +21,7 @@
                   <Label styleClass="white-text" text="Browse NBT" />
                </children>
             </StackPane>
-            <StackPane styleClass="button-pane" HBox.hgrow="NEVER">
+            <StackPane onMouseClicked="#apply" styleClass="button-pane" HBox.hgrow="NEVER">
                <children>
                   <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="mc-button" />
                   <Label styleClass="white-text" text="Apply" />

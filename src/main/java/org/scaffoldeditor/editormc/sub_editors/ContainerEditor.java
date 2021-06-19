@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.scaffoldeditor.editormc.sub_editors.nbt.NBTEditorController;
 import org.scaffoldeditor.editormc.ui.controllers.CompileProgressUI;
+import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
+import org.scaffoldeditor.scaffold.util.event.EventListener;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +28,7 @@ public class ContainerEditor {
 	private static class Cell {
 		public final StackPane stack;
 		public final ImageView image;
-		public final int id;
+//		public final int id;
 		
 		public Cell(int id) {
 			stack = new StackPane();
@@ -35,7 +37,7 @@ public class ContainerEditor {
 			stack.getChildren().add(image);
 			image.setFitWidth(54);
 			image.setFitHeight(54);
-			this.id = id;
+//			this.id = id;
 		}
 	}
 	
@@ -46,6 +48,8 @@ public class ContainerEditor {
 	
 	private List<Cell> cells = new ArrayList<>();
 	private ListTag<CompoundTag> content;
+	private EventDispatcher<ListTag<CompoundTag>> finishedDispatcher = new EventDispatcher<>();
+	private Stage stage;
 	
 	@FXML
 	private void initialize() {
@@ -85,6 +89,16 @@ public class ContainerEditor {
 		editor.loadNBT(new NamedTag("Items", content));
 	}
 	
+	@FXML
+	public void apply() {
+		finishedDispatcher.fire(content);
+		stage.close();
+	}
+	
+	public void onFinished(EventListener<ListTag<CompoundTag>> listener) {
+		finishedDispatcher.addListener(listener);
+	}
+	
 	public static ContainerEditor open(Window parent, int numSlotsX, int numSlotsY) throws IOException {
 		FXMLLoader loader = new FXMLLoader(CompileProgressUI.class.getResource("/assets/scaffold/ui/container_editor.fxml"));
 		Parent root = loader.load();
@@ -94,12 +108,12 @@ public class ContainerEditor {
 		stage.setTitle("Console");
 		stage.setScene(scene);
 		ContainerEditor controller = loader.getController();
+		controller.stage = stage;
 		controller.init(numSlotsX, numSlotsY);
 		
 		stage.show();
 		
 		return controller;
 	} 
-	
 	
 }

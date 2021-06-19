@@ -26,7 +26,7 @@ public class NBTAttributeType implements IRenderAttributeType {
 		Button editButton = new Button("Browse NBT");
 		editButton.setOnAction(e -> {
 			NBTEditorController controller = NBTEditorController.openPopup((Stage) editButton.getScene().getWindow());
-			controller.loadNBT(new NamedTag("root", nbt));
+			controller.loadNBT(new NamedTag("root", nbt.clone()));
 			
 			controller.onUpdateNBT(tag -> {
 				editButton.fireEvent(new ChangeAttributeEvent(ChangeAttributeEvent.ATTRIBUTE_CHANGED, name,
