@@ -87,6 +87,9 @@ public class ContainerEditor {
 		
 		NBTEditorController editor = NBTEditorController.openPopup(grid.getScene().getWindow());
 		editor.loadNBT(new NamedTag("Items", content));
+		editor.onUpdateNBT(tag -> {
+			this.setContent(((ListTag<?>) tag.getTag()).asCompoundTagList());
+		});
 	}
 	
 	@FXML
