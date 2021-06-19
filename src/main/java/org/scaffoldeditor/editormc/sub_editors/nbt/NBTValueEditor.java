@@ -17,6 +17,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.scene.control.Alert.AlertType;
 import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.ByteArrayTag;
@@ -177,6 +178,7 @@ public class NBTValueEditor {
 	private EventDispatcher<NamedTag> dispatcher = new EventDispatcher<>();
 	private Stage stage;
 	private boolean allowEmptyName = false;
+	private boolean forceType = false;
 	
 	@FXML
 	private void initialize() {
@@ -191,6 +193,8 @@ public class NBTValueEditor {
 		String type = tagNames.get((int) nbt.getID());
 		choiceBox.setValue(type);
 		valueField.setText(tagTypes.get(type).getString(nbt));
+		nameField.setDisable(allowEmptyName);
+		choiceBox.setDisable(forceType);
 	}
 	
 	public NamedTag getNBT() {
@@ -231,12 +235,47 @@ public class NBTValueEditor {
 	}
 	
 	/**
+	 * Open the NBT value editor with a new tag.
+	 * @param tagClass Class of tag to create.
+	 * @param parent Parent window.
+	 * @param isList Is the parent tag a list?
+	 * @return Editor instance.
+	 */
+	public static NBTValueEditor openNew(Class<?> tagClass, Window parent, boolean isList) {
+		Tag<?> tag;
+		if (ByteTag.class.isAssignableFrom(tagClass)) {
+			tag = new ByteTag();
+		} else if (ShortTag.class.isAssignableFrom(tagClass)) {
+			tag = new ShortTag();
+		} else if (IntTag.class.isAssignableFrom(tagClass)) {
+			tag = new IntTag();
+		} else if (LongTag.class.isAssignableFrom(tagClass)) {
+			tag = new LongTag();
+		} else if (FloatTag.class.isAssignableFrom(tagClass)) {
+			tag = new FloatTag();
+		} else if (DoubleTag.class.isAssignableFrom(tagClass)) {
+			tag = new DoubleTag();
+		} else if (StringTag.class.isAssignableFrom(tagClass)) {
+			tag = new StringTag();
+		} else if (ByteArrayTag.class.isAssignableFrom(tagClass)) {
+			tag = new ByteArrayTag();
+		} else if (LongArrayTag.class.isAssignableFrom(tagClass)) {
+			tag = new LongArrayTag();
+		} else {
+			throw new IllegalArgumentException("Cannot create a tag with class: "+tagClass.getSimpleName()+" using the NBT value editor!");
+		}
+		
+		return open(new NamedTag("", tag), parent, isList);
+	}
+	
+	/**
 	 * Open the editor.
 	 * @param tag Tag to open with.
 	 * @param parent Parent stage.
+	 * @param isList Is the parent tag a list?
 	 * @return Editor instance.
 	 */
-	public static NBTValueEditor open(NamedTag tag, Stage parent, boolean allowEmptyName) {
+	public static NBTValueEditor open(NamedTag tag, Window parent, boolean isList) {
 		FXMLLoader loader = new FXMLLoader(NBTValueEditor.class.getResource("/assets/scaffold/ui/nbt/nbt_value_editor.fxml"));
 		Parent root;
 		try {
@@ -259,7 +298,8 @@ public class NBTValueEditor {
 		window.setResizable(false);
 		window.show();
 		
-		controller.allowEmptyName = allowEmptyName;
+		controller.allowEmptyName = isList;
+		controller.forceType = isList;
 		controller.setNBT(tag);
 		return controller;
 	}

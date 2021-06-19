@@ -24,6 +24,10 @@
     -fx-fill: darkred
 }
 
+.code-text {
+    -fx-font-family: 'Lucida Console', 'Courier New';
+}
+
 .titulo {
     -fx-font-weight: bold;
     -fx-font-size: 18px;

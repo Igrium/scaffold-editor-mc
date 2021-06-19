@@ -78,6 +78,11 @@ public final class NBTBrowserController {
 		nbtTree.setRoot(root);
 	}
 	
+	public void loadNBT(TreeItem<NamedTag> item) {
+		this.tag = item.getValue();
+		nbtTree.setRoot(item);
+	}
+	
 	/**
 	 * Get the NBT which is being displayed.
 	 */

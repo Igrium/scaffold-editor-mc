@@ -103,7 +103,7 @@ public class ContainerEditor {
 		FXMLLoader loader = new FXMLLoader(CompileProgressUI.class.getResource("/assets/scaffold/ui/container_editor.fxml"));
 		Parent root = loader.load();
 		
-		Scene scene = new Scene(root, 600, 400);
+		Scene scene = new Scene(root);
 		Stage stage = new Stage();
 		stage.setTitle("Console");
 		stage.setScene(scene);
