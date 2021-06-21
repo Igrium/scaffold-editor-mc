@@ -11,6 +11,7 @@ import org.scaffoldeditor.editormc.engine.EditorServerWorld;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.render.BillboardRenderEntity;
+import org.scaffoldeditor.scaffold.level.render.BrushRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.MCRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.ModelRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.RenderEntity;
@@ -73,6 +74,7 @@ public class RenderEntityManager {
 		if (in instanceof MCRenderEntity) ent = new MCEditorEntity(world);
 		else if (in instanceof ModelRenderEntity) ent = new ModelEditorEntity(world);
 		else if (in instanceof BillboardRenderEntity) ent = new BillboardEditorEntity();
+		else if (in instanceof BrushRenderEntity) ent = new BrushEditorEntity(world);
 		else {
 			throw new IllegalArgumentException(
 					"Render entity: " + in + " is not a subclass of any known render entity classes.");

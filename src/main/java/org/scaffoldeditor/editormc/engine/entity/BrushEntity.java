@@ -1,15 +1,20 @@
 package org.scaffoldeditor.editormc.engine.entity;
 
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 /**
@@ -23,6 +28,11 @@ public class BrushEntity extends Entity {
 	private static TrackedData<Float> SIZE_X = DataTracker.registerData(BrushEntity.class, TrackedDataHandlerRegistry.FLOAT);
 	private static TrackedData<Float> SIZE_Y = DataTracker.registerData(BrushEntity.class, TrackedDataHandlerRegistry.FLOAT);
 	private static TrackedData<Float> SIZE_Z = DataTracker.registerData(BrushEntity.class, TrackedDataHandlerRegistry.FLOAT);
+	
+	public static final Identifier IDENTIFIER = new Identifier("scaffold","brushentity");
+	
+	public static final EntityType<BrushEntity> TYPE = Registry.register(Registry.ENTITY_TYPE, IDENTIFIER, FabricEntityTypeBuilder
+			.create(SpawnGroup.MISC, BrushEntity::new).dimensions(EntityDimensions.fixed(1, 1)).build());
 
 	public BrushEntity(EntityType<?> type, World world) {
 		super(type, world);
@@ -82,17 +92,23 @@ public class BrushEntity extends Entity {
 	
 	@Override
 	protected Box calculateBoundingBox() {
-		return new Box(0, 0, 0, getSizeX(), getSizeY(), getSizeZ());
+		return new Box(getPos(), getPos().add(getSizeX(), getSizeY(), getSizeZ()));
 	}
 
 	@Override
 	protected void readCustomDataFromNbt(NbtCompound nbt) {
 		if (nbt.contains("texture")) setTexture(nbt.getString("texture"));
+		if (nbt.contains("sizeX")) setSizeX(nbt.getFloat("sizeX"));
+		if (nbt.contains("sizeY")) setSizeY(nbt.getFloat("sizeY"));
+		if (nbt.contains("sizeZ")) setSizeZ(nbt.getFloat("sizeZ"));
 	}
 
 	@Override
 	protected void writeCustomDataToNbt(NbtCompound nbt) {
 		nbt.putString("texture", getTexture());
+		nbt.putFloat("sizeX", getSizeX());
+		nbt.putFloat("sizeY", getSizeY());
+		nbt.putFloat("sizeZ", getSizeZ());
 	}
 
 	@Override

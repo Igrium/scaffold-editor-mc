@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.entity.BillboardEntityRenderer;
+import org.scaffoldeditor.editormc.engine.entity.BrushEntityRenderer;
 import org.scaffoldeditor.editormc.engine.entity.ModelEntityRenderer;
 import org.scaffoldeditor.editormc.engine.mixins.MainWindowAccessor;
 
@@ -28,6 +29,7 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 		
 		ModelEntityRenderer.register();
 		BillboardEntityRenderer.register();
+		BrushEntityRenderer.register();
 		
 		ScaffoldEditorMod.instance = this;
 		

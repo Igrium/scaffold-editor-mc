@@ -14,6 +14,11 @@ public class ImageBillboardParticle extends SpriteBillboardParticle {
 		this.maxAge = 80;
 		this.collidesWithWorld = false;
 	}
+	
+	@Override
+	public float getSize(float tickDelta) {
+		return 0.5f;
+	}
 
 	@Override
 	public ParticleTextureSheet getType() {

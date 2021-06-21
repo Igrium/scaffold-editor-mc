@@ -94,7 +94,7 @@ public final class MinecraftConsole {
 	
 	public void sendMessage(String message) {
 		client.execute(() -> {
-			client.player.sendChatMessage(message);
+			client.player.sendChatMessage("/"+message);
 		});
 		history.subList(historyIndex, history.size()).clear();
 		history.add(message);
