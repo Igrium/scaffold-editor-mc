@@ -6,7 +6,10 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -14,7 +17,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.scaffold.io.AssetManager;
@@ -85,31 +93,56 @@ public class ScaffoldResourcePack implements ResourcePack {
 			Predicate<String> pathFilter) {
 		Set<Identifier> set = new HashSet<>();
 		if (type == ResourceType.CLIENT_RESOURCES) {
-			List<URL> list;
-			try {
-				list = assetManager.getAssets("assets/");
-			} catch (IOException e) {
-				LogManager.getLogger().error("Couldn't get a list of Scaffold resources!", e);
-				return set;
+			for (Path path : assetManager.searchDirectories) {
+				if (!path.resolve("assets").toFile().isDirectory()) continue;
+				try {
+					Files.walk(path.resolve("assets"), maxDepth, FileVisitOption.FOLLOW_LINKS).forEach(file -> {
+						set.add(getIdentifier(file.toString()));
+					});
+					
+				} catch (IOException e) {
+					LogManager.getLogger().error("Unable to scan assets folder of "+path, e);
+				}
 			}
 			
 			try {
-				for (URL url : list) {
-					URI uri = url.toURI();
-					if (uri.getScheme().equals("file")) {
+				for (URL url : assetManager.getAssets("assets.zip")) {
+					ZipInputStream zis = new ZipInputStream(url.openStream());
+					ZipEntry entry;
+					while((entry = zis.getNextEntry()) != null) {
+						if (entry.isDirectory()) continue;
+						Path entryPath = Paths.get(entry.getName());
+						Path parent = entryPath;
+						while (!parent.getFileName().toString().equals("assets")) {
+							parent = parent.getParent();
+						}
+						
+						Path relative = parent.relativize(entryPath);
+						set.add(getIdentifier(relative.toString()));
 					}
 				}
-			} catch (URISyntaxException e) {
-				LogManager.getLogger().error("Couldn't get a list of Scaffold resources!", e);
-				return set;
+			} catch (IOException e) {
+				LogManager.getLogger().error("Unable to list Scaffold assets!", e);
 			}
 
-			
 		} else {
 			return new HashSet<>();
 		}
 		return set;	
 		
+	}
+	
+	/**
+	 * Get the identifier of an asset.
+	 * 
+	 * @param in Asset path, relative to the <code>assets</code> folder.
+	 * @return Asset identifier.
+	 */
+	private Identifier getIdentifier(String in) {
+		in = FilenameUtils.normalize(in, true);
+		String namespace = in.split("/")[0];
+		String path = in.substring(in.indexOf('/'+1));
+		return new Identifier(namespace, path);
 	}
 
 	@Override
