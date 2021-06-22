@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -38,6 +39,7 @@ import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
 import org.scaffoldeditor.scaffold.util.event.EventListener;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.math.Vec3d;
 
 public class ScaffoldEditor {
 	public static class UpdateSelectionEvent {
@@ -155,6 +157,7 @@ public class ScaffoldEditor {
 			ui.updateEntityList();		
 			loadLevel(true);
 			level.updateRenderEntities();
+
 		}
 		ui.reloadRecentFiles();
 		try {
@@ -297,6 +300,17 @@ public class ScaffoldEditor {
 			setLevel(level);
 			level.setName(FilenameUtils.getBaseName(file.getName()));
 			future.complete(level);
+			
+			JSONArray cameraPos = getLevelCache().optJSONArray("cameraPos");
+			if (cameraPos != null) {
+				double x = cameraPos.getDouble(0);
+				double y = cameraPos.getDouble(1);
+				double z = cameraPos.getDouble(2);
+				
+				getServer().execute(() -> {
+					getServer().teleportPlayers(x, y, z);
+				});
+			}
 		});
 		levelFile = file;
 		ui.reloadRecentFiles();
@@ -309,6 +323,7 @@ public class ScaffoldEditor {
 			recentLevels.add(0, filename);
 			cache.put("recentLevels", recentLevels);
 		}
+		
 		return future;
 	}
 	
@@ -319,7 +334,7 @@ public class ScaffoldEditor {
 		try {
 			saveCache();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LogManager.getLogger().error("Error saving cache ", e);
 		}
 	}
 	
@@ -371,6 +386,12 @@ public class ScaffoldEditor {
 	
 	public void saveCache() throws IOException {
 		if (project != null) {
+			if (level != null) {
+				JSONObject levelCache = getLevelCache();
+				Vec3d pos = client.player.getPos();
+				levelCache.put("cameraPos", List.of(pos.x, pos.y, pos.z));
+			}
+			
 			File file = project.getCacheFolder().resolve(CACHE_FILE_NAME).toFile();
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(getCache().toString());

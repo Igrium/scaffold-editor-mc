@@ -16,6 +16,7 @@ import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
 import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.registry.DynamicRegistryManager.Impl;
 import net.minecraft.util.registry.Registry;
@@ -109,5 +110,10 @@ public class EditorServer extends IntegratedServer {
 		
 		ScaffoldEditorMod.getInstance().isInEditor = false;
 	}
-
+	
+	public void teleportPlayers(double x, double y, double z) {
+		for (ServerPlayerEntity player : getPlayerManager().getPlayerList()) {
+			player.teleport(x, y, z);
+		}
+	}
 }
