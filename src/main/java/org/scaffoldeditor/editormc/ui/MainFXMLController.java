@@ -65,12 +65,15 @@ public class MainFXMLController {
 	
 	@FXML
 	public void initialize() {
-		
+
+	}
+	
+	public void init() {
+		ScaffoldUI ui = ScaffoldUI.getInstance();
 		addPressAndHoldHandler(viewport_pane, ViewportControls.HOLD_TIME, e -> handleViewportMousePressed(e));
+		viewport_pane.addEventHandler(MouseEvent.MOUSE_PRESSED, ui.viewport::handleMousePressed);
 		viewport_pane.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> handleViewportMouseReleased(e));
-		viewport_pane.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-			ScaffoldUI.getInstance().viewport.handleMouseClicked(e);
-		});
+		viewport_pane.addEventHandler(MouseEvent.MOUSE_CLICKED, ui.viewport::handleMouseClicked);
 		viewport_pane.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			ScaffoldUI.getInstance().viewport.handleKeyReleased(e);
 			if (e.getCode().equals(KeyCode.SHIFT)) {
@@ -83,17 +86,13 @@ public class MainFXMLController {
 				isShiftPressed = false;
 			}
 		});
-		viewport_pane.addEventHandler(KeyEvent.KEY_TYPED, e -> {
-			ScaffoldUI.getInstance().viewport.handleKeyTyped(e);
-		});
+		viewport_pane.addEventHandler(KeyEvent.KEY_TYPED, ui.viewport::handleKeyTyped);
 		
 		viewport_pane.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
 			ScaffoldUI.getInstance().viewport.handleMouseMoved((int) e.getX(), (int) e.getY());
 		});
 		
-		viewport_pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
-			
-		});
+		viewport_pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, ui.viewport::handleMouseDragged);
 	}
 	
 	@FXML
@@ -181,17 +180,14 @@ public class MainFXMLController {
 	private void handleViewportMousePressed(MouseEvent e) {
 		if (e.getButton() == MouseButton.SECONDARY) {
 			ScaffoldUI.getInstance().viewportControls.setEnableControls(true);
-		} else {
-			ScaffoldUI.getInstance().viewport.handleMousePressed(e);
 		}
 	}
 	
 	private void handleViewportMouseReleased(MouseEvent e) {
 		if (e.getButton() == MouseButton.SECONDARY) {
 			ScaffoldUI.getInstance().viewportControls.setEnableControls(false);
-		} else {
-			ScaffoldUI.getInstance().viewport.handleMouseReleased(e);
 		}
+		ScaffoldUI.getInstance().viewport.handleMouseReleased(e);
 	}
 	
 	public BorderPane getMainPanel() {

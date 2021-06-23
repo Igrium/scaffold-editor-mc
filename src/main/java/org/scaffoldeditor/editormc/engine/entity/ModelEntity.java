@@ -25,7 +25,7 @@ public class ModelEntity extends Entity {
 	public static final Identifier IDENTIFIER = new Identifier("scaffold", "modelentitiy");
 	
 	public static final EntityType<ModelEntity> TYPE = Registry.register(Registry.ENTITY_TYPE, IDENTIFIER, FabricEntityTypeBuilder
-			.create(SpawnGroup.MISC, ModelEntity::new).dimensions(EntityDimensions.fixed(1, 1)).build());
+			.create(SpawnGroup.MISC, ModelEntity::new).dimensions(EntityDimensions.fixed(1, 1)).trackedUpdateRate(1).build());
 	
 	private static final TrackedData<String> MODEL = DataTracker.registerData(ModelEntity.class, TrackedDataHandlerRegistry.STRING);
 

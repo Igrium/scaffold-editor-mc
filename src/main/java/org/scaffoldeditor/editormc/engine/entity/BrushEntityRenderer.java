@@ -43,7 +43,7 @@ public class BrushEntityRenderer extends EntityRenderer<BrushEntity> {
 				entity.getSizeY() * 16, entity.getSizeZ() * 16), ModelTransform.NONE);
 		ModelPart part = TexturedModelData.of(modelData, 16, 16).createModel();
 		VertexConsumer vertices = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucentCull(getTexture(entity)));
-		part.render(matrices, vertices, light, OverlayTexture.DEFAULT_UV);
+		part.render(matrices, vertices, 255, OverlayTexture.DEFAULT_UV);
 	}
 
 }

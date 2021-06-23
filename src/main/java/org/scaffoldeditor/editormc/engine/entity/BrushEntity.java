@@ -32,7 +32,7 @@ public class BrushEntity extends Entity {
 	public static final Identifier IDENTIFIER = new Identifier("scaffold","brushentity");
 	
 	public static final EntityType<BrushEntity> TYPE = Registry.register(Registry.ENTITY_TYPE, IDENTIFIER, FabricEntityTypeBuilder
-			.create(SpawnGroup.MISC, BrushEntity::new).dimensions(EntityDimensions.fixed(1, 1)).build());
+			.create(SpawnGroup.MISC, BrushEntity::new).dimensions(EntityDimensions.fixed(1, 1)).trackedUpdateRate(1).build());
 
 	public BrushEntity(EntityType<?> type, World world) {
 		super(type, world);

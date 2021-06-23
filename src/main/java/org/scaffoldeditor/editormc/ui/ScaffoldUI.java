@@ -90,6 +90,7 @@ public class ScaffoldUI extends Application {
 			System.setProperty("java.awt.headless", "false");
 			stage.show();
 			viewportControls.init(this);
+			controller.init();
 			
 			toolbar.addTool(new SelectTool(viewport), "select");
 			toolbar.addTool(new EntityTool(), "entity");
