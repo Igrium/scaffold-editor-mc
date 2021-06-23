@@ -63,7 +63,7 @@ public class RaycastUtils {
 		Vec3d direction = map((float) angleSize, cameraDirection, horizontalRotationAxis, verticalRotationAxis, x, y,
 				width, height);
 		
-		return raycastInDirection(client.getCameraEntity(), client.getTickDelta(), direction, 100, true);
+		return raycastInDirection(client.getCameraEntity(), client.getTickDelta(), direction, distance, collide);
 	}
 
 	private static Vec3d map(float anglePerPixel, Vec3d center, Vec3f horizontalRotationAxis,
@@ -86,7 +86,7 @@ public class RaycastUtils {
 		
 		if (!collide) {
 			Vec3d end = entity.getCameraPosVec(tickDelta).add(direction.multiply(distance));
-			return BlockHitResult.createMissed(end, Direction.UP, new BlockPos(end));
+			return BlockHitResult.createMissed(end, Direction.getFacing(direction.x, direction.y, direction.z), new BlockPos(end));
 		}
 
 		HitResult target = raycast(entity, distance, tickDelta, false, direction);

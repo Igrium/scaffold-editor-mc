@@ -10,6 +10,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 
 public class Toolbar {
 	
@@ -38,6 +39,7 @@ public class Toolbar {
 	
 	public Toolbar() {
 		root.setSpacing(5);
+		HBox.setHgrow(root, Priority.ALWAYS);
 		BorderPane.setMargin(root, new Insets(3, 20, 3, 20));
 
 	}

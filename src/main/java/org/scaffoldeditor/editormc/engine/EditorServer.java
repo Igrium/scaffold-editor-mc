@@ -105,7 +105,7 @@ public class EditorServer extends IntegratedServer {
 				fakeSession.deleteWorldFolder();
 			}
 		} catch (IOException e) {
-			LOGGER.error("Failed to unlock level {}", this.session.getDirectoryName(), e);
+			LOGGER.error("Failed to unlock level:", this.session.getDirectoryName(), e);
 		}
 		
 		ScaffoldEditorMod.getInstance().isInEditor = false;

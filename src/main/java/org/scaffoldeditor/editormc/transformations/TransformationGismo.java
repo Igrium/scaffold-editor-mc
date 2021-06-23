@@ -1,4 +1,4 @@
-package org.scaffoldeditor.editormc.gismos;
+package org.scaffoldeditor.editormc.transformations;
 
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 

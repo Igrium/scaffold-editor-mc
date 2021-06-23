@@ -199,7 +199,7 @@ public class ViewportControls {
 			if (!captureMouse) {
 				return;
 			}
-			
+			ui.getViewport().getParent().requestFocus();
 		    if(ignoreMouse) {
 		    	ignoreMouse = false;
 		    	mouseX = event.getSceneX();

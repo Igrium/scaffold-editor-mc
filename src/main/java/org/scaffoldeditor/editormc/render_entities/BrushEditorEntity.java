@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc.render_entities;
 
+import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.entity.BrushEntity;
 import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.scaffold.level.render.BrushRenderEntity;
@@ -9,8 +10,8 @@ import net.minecraft.world.World;
 
 public class BrushEditorEntity extends ClientSideEntity<BrushEntity, BrushRenderEntity> {
 
-	public BrushEditorEntity(World world) {
-		super(world, BrushRenderEntity.class);
+	public BrushEditorEntity(World world, ScaffoldEditor editor) {
+		super(world, editor, BrushRenderEntity.class);
 	}
 
 	@Override

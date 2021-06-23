@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
+import org.scaffoldeditor.editormc.tools.Toolbar;
+import org.scaffoldeditor.editormc.ui.controllers.ViewportHeader;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
@@ -22,6 +24,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import javafx.stage.Stage;
@@ -51,6 +54,14 @@ public class MainFXMLController {
 	
 	@FXML
 	private Label coordIndicator;
+	
+	@FXML
+	private HBox topBox;
+	
+	@FXML	
+	private ViewportHeader viewportHeaderController;
+	
+	private Toolbar toolbar;
 	
 	@FXML
 	public void initialize() {
@@ -222,6 +233,19 @@ public class MainFXMLController {
 			});
 			openRecentMenu.getItems().add(item);
 		}
+	}
+	
+	public void setToolbar(Toolbar toolbar) {
+		this.toolbar = toolbar;
+		topBox.getChildren().add(0, toolbar.root);
+	}
+	
+	public Toolbar getToolbar() {
+		return toolbar;
+	}
+
+	public ViewportHeader getViewportHeader() {
+		return viewportHeaderController;
 	}
 }
 	

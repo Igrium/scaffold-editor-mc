@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc.render_entities;
 
+import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.entity.ModelEntity;
 import org.scaffoldeditor.scaffold.level.render.ModelRenderEntity;
 
@@ -8,8 +9,8 @@ import net.minecraft.world.World;
 
 public class ModelEditorEntity extends ClientSideEntity<ModelEntity, ModelRenderEntity> {
 
-	public ModelEditorEntity(World world) {
-		super(world, ModelRenderEntity.class);
+	public ModelEditorEntity(World world, ScaffoldEditor editor) {
+		super(world, editor, ModelRenderEntity.class);
 	}
 
 	@Override

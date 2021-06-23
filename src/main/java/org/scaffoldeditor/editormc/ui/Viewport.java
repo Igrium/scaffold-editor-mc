@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
-import org.scaffoldeditor.editormc.gismos.TransformationGismo;
-import org.scaffoldeditor.editormc.gismos.TranslationGismo;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
+import org.scaffoldeditor.editormc.transformations.TransformManifest;
+import org.scaffoldeditor.editormc.transformations.TransformationGismo;
+import org.scaffoldeditor.editormc.transformations.TranslationGismo;
+import org.scaffoldeditor.editormc.transformations.ViewportTransformation;
 import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import javafx.scene.Cursor;
@@ -16,7 +18,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
 import javafx.scene.image.WritablePixelFormat;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import net.minecraft.client.MinecraftClient;
@@ -27,11 +31,12 @@ public class Viewport {
 	
 	protected ImageView imageView;
 	protected Pane parent;
-	private TransformationGismo activeGismo;
-	private int mouseX = 0;
-	private int mouseY = 0;
 	private ViewportTool activeTool;
+	private ViewportTransformation activeTransformation;
 	private boolean isMouseOverViewport;
+	
+	private int mouseX;
+	private int mouseY;
 	
 	private final WritablePixelFormat<ByteBuffer> PIXEL_FORMAT = PixelFormat.getByteBgraInstance();
 	
@@ -42,15 +47,15 @@ public class Viewport {
 		gismos.put("translate", new TranslationGismo(this));
 		parent.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
 			isMouseOverViewport = true;
-			if (activeTool != null && activeTool.overrideCursor()) {
-				parent.getScene().setCursor(activeTool.getCursor());
+			if (activeTransformation != null && activeTransformation.overrideCursor()) {
+				parent.getScene().setCursor(activeTransformation.getCursor());
+			} else {
+				parent.getScene().setCursor(getToolCursor());
 			}
 		});
 		parent.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
 			isMouseOverViewport = false;
-			if (activeTool != null) {
-				parent.getScene().setCursor(Cursor.DEFAULT);
-			}
+			parent.getScene().setCursor(Cursor.DEFAULT);
 		});
 	}
 	
@@ -91,19 +96,31 @@ public class Viewport {
 	}
 	
 	public void handleMousePressed(MouseEvent e) {
-		if (activeTool != null) {
+		if (activeTransformation != null) {
+			if (e.getButton() == MouseButton.PRIMARY) {
+				applyTransformation();
+			} else if (e.getButton() == MouseButton.SECONDARY) {
+				cancelTransformation();
+			} else {
+				activeTransformation.onMousePressed(e);
+			}
+		} else if (activeTool != null) {
 			activeTool.onMousePressed(e);
 		}
 	}
 	
 	public void handleMouseReleased(MouseEvent e) {
-		if (activeTool != null) {
+		if (activeTransformation != null) {
+			activeTransformation.onMouseReleased(e);
+		} else if (activeTool != null) {
 			activeTool.onMouseReleased(e);
 		}
 	}
 	
 	public void handleMouseClicked(MouseEvent e) {
-		if (activeTool != null) {
+		if (activeTransformation != null) {
+			activeTransformation.onMouseClicked(e);
+		} else if (activeTool != null) {
 			activeTool.onMouseClicked(e);
 		}
 	}
@@ -111,64 +128,62 @@ public class Viewport {
 	public void handleMouseMoved(int x, int y) {
 		mouseX = x;
 		mouseY = y;
+		
 		if (activeTool != null) {
 			activeTool.onMouseMoved(x, y);
 		}
-		if (activeGismo != null) {
-			activeGismo.mouseMoved(x, y);
+		if (activeTransformation != null) {
+			activeTransformation.onMouseMoved(x, y);
 		}
 	}
 	
 	public void handleMouseDragged(MouseEvent e) {
+		mouseX = (int) e.getX();
+		mouseY = (int) e.getY();
+		
 		if (activeTool != null) {
 			activeTool.onMouseDragged(e);
+		}
+		if (activeTransformation != null) {
+			activeTransformation.onMouseDragged(e);
 		}
 	}
 	
 	public void handleKeyPressed(KeyEvent e) {
-		if (activeTool != null) {
-			activeTool.onKeyPressed(e);
+		if (activeTransformation != null) {
+			if (e.getCode() == KeyCode.ESCAPE) {
+				cancelTransformation();
+				e.consume();
+			} else if (e.getCode() == KeyCode.ENTER) {
+				applyTransformation();
+				e.consume();
+			} else {
+				activeTransformation.onKeyPressed(e);
+			}	
+		} else {
+			ViewportTransformation transform = TransformManifest.getTransform(e);
+			if (transform != null) {
+				beginTransformation(transform);
+			} else if (activeTool != null) {
+				activeTool.onKeyPressed(e);
+			}
 		}
 	}
 	
 	public void handleKeyReleased(KeyEvent e) {
-		if (activeTool != null) {
+		if (activeTransformation != null) {
+			activeTransformation.onKeyReleased(e);
+		} else if (activeTool != null) {
 			activeTool.onKeyReleased(e);
 		}
 	}
 	
 	public void handleKeyTyped(KeyEvent e) {
-		if (activeTool != null) {
+		if (activeTransformation != null) {
+			activeTransformation.onKeyTyped(e);
+		} else if (activeTool != null) {
 			activeTool.onKeyTyped(e);
 		}
-	}
-	
-	public void beginTransformation(String gismoName, Entity target) {
-		if (activeGismo == null) {
-			TransformationGismo gismo = gismos.get(gismoName);
-			if (gismo != null) {
-				activeGismo = gismo;
-				gismo.activate(target, mouseX, mouseY);
-			}
-		}
-	}
-	
-	public void applyTransformation() {
-		if (activeGismo != null) {
-			activeGismo.apply();
-			activeGismo = null;
-		}
-	}
-	
-	public void cancelTransformation() {
-		if (activeGismo != null) {
-			activeGismo.cancel();
-			activeGismo = null;
-		}
-	}
-
-	public TransformationGismo getActiveGismo() {
-		return activeGismo;
 	}
 
 	public ViewportTool getActiveTool() {
@@ -181,17 +196,73 @@ public class Viewport {
 		}
 		this.activeTool = activeTool;
 		if (activeTool != null) {
-			LogManager.getLogger().info("Activating tool: "+activeTool.getClass().getName());
+			LogManager.getLogger().info("Activating tool: "+activeTool.getClass().getSimpleName());
 			activeTool.onActivate();
 			ScaffoldUI.getInstance().setToolVisual(activeTool);
 		}
 		if (isMouseOverViewport) {
-			if (activeTool != null && activeTool.overrideCursor()) {
-				parent.getScene().setCursor(activeTool.getCursor());	
-			} else {
-				parent.getScene().setCursor(Cursor.DEFAULT);
-			}
+			parent.getScene().setCursor(getToolCursor());
 		}
 	}
 	
+	private Cursor getToolCursor() {
+		if (activeTool != null && activeTool.overrideCursor()) {
+			return activeTool.getCursor();
+		} else {
+			return Cursor.DEFAULT;
+		}
+	}
+	
+	public ViewportTransformation getActiveTransformation() {
+		return activeTransformation;
+	}
+	
+	public void beginTransformation(ViewportTransformation transformation) {
+		if (activeTransformation != null) {
+			activeTransformation.cancel();
+		}
+		
+		this.activeTransformation = transformation;
+		LogManager.getLogger().info("Starting transformation: "+transformation.getClass().getSimpleName());
+		
+		if (isMouseOverViewport) {
+			if (transformation.overrideCursor()) {
+				parent.getScene().setCursor(transformation.getCursor());
+			} else {
+				parent.getScene().setCursor(getToolCursor());
+			}
+		}
+		
+		transformation.activate();
+	}
+	
+	public void cancelTransformation() {
+		if (activeTransformation == null) return;
+		
+		activeTransformation.cancel();
+		onTransformationStop();
+	}
+	
+	public void applyTransformation() {
+		if (activeTransformation == null) return;
+		
+		activeTransformation.apply();
+		onTransformationStop();
+	}
+	
+	private void onTransformationStop() {
+		activeTransformation = null;
+		
+		if (isMouseOverViewport) {
+			parent.getScene().setCursor(getToolCursor());
+		}
+	}
+	
+	public int getMouseX() {
+		return mouseX;
+	}
+	
+	public int getMouseY() {
+		return mouseY;
+	}
 }

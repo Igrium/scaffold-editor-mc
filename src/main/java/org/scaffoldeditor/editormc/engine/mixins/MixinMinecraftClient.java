@@ -41,7 +41,7 @@ public abstract class MixinMinecraftClient {
 	private static final String START_SERVER_METHOD =
 			"startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V";
 	
-	private static DynamicRegistryManager.Impl impl_holder;
+	private static DynamicRegistryManager.Impl registryTrackerHolder;
 	
 	@Shadow
 	private AtomicReference<WorldGenerationProgressTracker> worldGenProgressTracker;
@@ -60,8 +60,8 @@ public abstract class MixinMinecraftClient {
 	
 	@Inject(method = START_SERVER_METHOD, at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
 	@SuppressWarnings("rawtypes")
-	private void captureIMPL(String arg0, DynamicRegistryManager.Impl registryTracker, Function arg2, Function4 arg3, boolean arg4, MinecraftClient.WorldLoadAction arg5, CallbackInfo ci) {
-		MixinMinecraftClient.impl_holder = registryTracker;
+	private void captureRegistryTracker(String arg0, DynamicRegistryManager.Impl registryTracker, Function arg2, Function4 arg3, boolean arg4, MinecraftClient.WorldLoadAction arg5, CallbackInfo ci) {
+		MixinMinecraftClient.registryTrackerHolder = registryTracker;
 	}
 	
 	@Redirect(method = START_SERVER_METHOD,
@@ -69,7 +69,7 @@ public abstract class MixinMinecraftClient {
 	private LevelStorage.Session replaceSession(LevelStorage levelStorage, String worldName) throws IOException {
 
 		if (worldName.length() == 0) {
-			return new FakeSession(levelStorage, MixinMinecraftClient.impl_holder);
+			return new FakeSession(levelStorage, MixinMinecraftClient.registryTrackerHolder);
 		} else {
 			return levelStorage.createSession(worldName);
 		}

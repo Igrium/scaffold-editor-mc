@@ -30,6 +30,10 @@ public class RenderEntityManager {
 	
 	public RenderEntityManager(ScaffoldEditor editor) {
 		this.editor = editor;
+		
+		editor.onUpdateSelection(event -> {
+			editor.getLevel().updateRenderEntities();
+		});
 	}
 	
 	/**
@@ -71,10 +75,10 @@ public class RenderEntityManager {
 	// ADD RENDER ENTITIES HERE
 	protected EditorRenderEntity spawnEditorRenderEntity(RenderEntity in) {
 		EditorRenderEntity ent;
-		if (in instanceof MCRenderEntity) ent = new MCEditorEntity(world);
-		else if (in instanceof ModelRenderEntity) ent = new ModelEditorEntity(world);
+		if (in instanceof MCRenderEntity) ent = new MCEditorEntity(world, editor);
+		else if (in instanceof ModelRenderEntity) ent = new ModelEditorEntity(world, editor);
 		else if (in instanceof BillboardRenderEntity) ent = new BillboardEditorEntity();
-		else if (in instanceof BrushRenderEntity) ent = new BrushEditorEntity(world);
+		else if (in instanceof BrushRenderEntity) ent = new BrushEditorEntity(world, editor);
 		else {
 			throw new IllegalArgumentException(
 					"Render entity: " + in + " is not a subclass of any known render entity classes.");

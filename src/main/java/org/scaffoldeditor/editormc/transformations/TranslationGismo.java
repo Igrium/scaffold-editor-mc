@@ -1,4 +1,4 @@
-package org.scaffoldeditor.editormc.gismos;
+package org.scaffoldeditor.editormc.transformations;
 
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.ui.Viewport;
@@ -48,6 +48,7 @@ public class TranslationGismo implements TransformationGismo {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void apply() {
 		ScaffoldEditor.getInstance().getLevel().getOperationManager()

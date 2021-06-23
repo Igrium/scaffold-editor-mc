@@ -2,6 +2,7 @@ package org.scaffoldeditor.editormc.render_entities;
 
 import java.util.Optional;
 
+import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.scaffold_interface.NBTConverter;
 import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.nbt.util.MCEntity;
@@ -18,9 +19,11 @@ public class MCEditorEntity implements EditorRenderEntity {
 	
 	private Entity mcEntity;
 	private World world;
+	private ScaffoldEditor editor;
 	
-	public MCEditorEntity(World world) {
+	public MCEditorEntity(World world, ScaffoldEditor editor) {
 		this.world = world;
+		this.editor = editor;
 	}
 
 	@Override
@@ -72,6 +75,7 @@ public class MCEditorEntity implements EditorRenderEntity {
 			mcEntity.readNbt(newNBT);
 			
 			mcEntity.updatePositionAndAngles(pos.x, pos.y, pos.z, rot.x, rot.y);
+			mcEntity.setGlowing(editor.getSelectedEntities().contains(entity.getEntity()));
 			
 		} else {
 			despawn();

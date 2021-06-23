@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
@@ -136,6 +137,16 @@
                </BorderPane.margin>
             </AnchorPane>
          </bottom>
+         <top>
+            <HBox fx:id="topBox" spacing="10.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
+               <children>
+                  <fx:include id="viewportHeader" fx:id="viewportHeader" source="viewport_header.fxml" HBox.hgrow="NEVER" />
+               </children>
+            </HBox>
+         </top>
       </BorderPane>
   </children>
 </VBox>

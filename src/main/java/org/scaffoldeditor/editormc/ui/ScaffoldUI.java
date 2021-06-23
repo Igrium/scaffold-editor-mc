@@ -18,6 +18,7 @@ import org.scaffoldeditor.editormc.tools.ViewportTool;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLCompileController;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLOutlinerController;
 import org.scaffoldeditor.editormc.ui.controllers.MinecraftConsole;
+import org.scaffoldeditor.editormc.ui.controllers.ViewportHeader;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import javafx.application.Application;
@@ -92,8 +93,8 @@ public class ScaffoldUI extends Application {
 			
 			toolbar.addTool(new SelectTool(viewport), "select");
 			toolbar.addTool(new EntityTool(), "entity");
-			controller.getMainPanel().setTop(toolbar.root);
 			toolbar.setTool("select");
+			controller.setToolbar(toolbar);
 			
 			outliner = FXMLOutlinerController.load(this);
 			controller.getMainPanel().setRight(outliner.getRoot());
@@ -313,6 +314,10 @@ public class ScaffoldUI extends Application {
 	
 	public MainFXMLController getController() {
 		return controller;
+	}
+	
+	public ViewportHeader getViewportHeader() {
+		return controller.getViewportHeader();
 	}
 	
 	public void reloadRecentFiles() {

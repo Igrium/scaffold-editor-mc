@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc.render_entities;
 
+import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.scaffold.level.render.RenderEntity;
 
@@ -18,10 +19,12 @@ public abstract class ClientSideEntity<T extends Entity, R extends RenderEntity>
 	protected final Class<R> renderEntClass;
 	protected T entity;
 	private final MinecraftClient client = MinecraftClient.getInstance();
+	protected final ScaffoldEditor editor;
 	
-	public ClientSideEntity(World world, Class<R> renderEntClass) {
+	public ClientSideEntity(World world, ScaffoldEditor editor, Class<R> renderEntClass) {
 		this.world = world;
 		this.renderEntClass = renderEntClass;
+		this.editor = editor;
 	}
 
 	@Override
@@ -51,6 +54,7 @@ public abstract class ClientSideEntity<T extends Entity, R extends RenderEntity>
 	protected void updateImpl(R in) {
 		Vector3f pos = in.getPosition();
 		entity.updatePosition(pos.x, pos.y, pos.z);
+		entity.setGlowing(editor.getSelectedEntities().contains(in.getEntity()));
 	}
 
 	@Override
@@ -75,5 +79,9 @@ public abstract class ClientSideEntity<T extends Entity, R extends RenderEntity>
 	
 	public T getEntity() {
 		return entity;
+	}
+	
+	public ScaffoldEditor getEditor() {
+		return editor;
 	}
 }
