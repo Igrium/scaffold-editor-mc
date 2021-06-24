@@ -1,4 +1,4 @@
-package org.scaffoldeditor.editormc.engine;
+package org.scaffoldeditor.editormc.engine.world;
 
 import java.util.HashSet;
 import java.util.List;

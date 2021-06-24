@@ -3,7 +3,7 @@ package org.scaffoldeditor.editormc.scaffold_interface;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.scaffoldeditor.editormc.engine.EditorServerWorld;
+import org.scaffoldeditor.editormc.engine.world.EditorServerWorld;
 import org.scaffoldeditor.nbt.block.Block;
 import org.scaffoldeditor.nbt.block.BlockWorld;
 import org.scaffoldeditor.nbt.block.Chunk;

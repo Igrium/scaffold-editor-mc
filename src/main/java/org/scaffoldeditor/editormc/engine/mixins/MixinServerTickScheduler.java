@@ -1,6 +1,6 @@
 package org.scaffoldeditor.editormc.engine.mixins;
 
-import org.scaffoldeditor.editormc.engine.EditorServerWorld;
+import org.scaffoldeditor.editormc.engine.world.EditorServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
