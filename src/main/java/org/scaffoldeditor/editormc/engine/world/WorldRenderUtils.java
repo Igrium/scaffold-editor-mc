@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 public class WorldRenderUtils {
 	private static PlacementSimulationWorld renderWorld;
 	
+	
 	public static synchronized void buildBlockMesh(BlockCollection blocks, MatrixStack matrixStack, VertexConsumer vertexConsumer) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (renderWorld == null || renderWorld.getWorld() != client.world) {

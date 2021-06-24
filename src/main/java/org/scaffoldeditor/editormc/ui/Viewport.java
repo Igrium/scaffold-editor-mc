@@ -12,7 +12,6 @@ import org.scaffoldeditor.editormc.transformations.TransformationGismo;
 import org.scaffoldeditor.editormc.transformations.TranslationGismo;
 import org.scaffoldeditor.editormc.transformations.ViewportTransformation;
 import org.scaffoldeditor.nbt.math.Vector3f;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
@@ -97,13 +96,7 @@ public class Viewport {
 	
 	public void handleMousePressed(MouseEvent e) {
 		if (activeTransformation != null) {
-			if (e.getButton() == MouseButton.PRIMARY) {
-				applyTransformation();
-			} else if (e.getButton() == MouseButton.SECONDARY) {
-				cancelTransformation();
-			} else {
-				activeTransformation.onMousePressed(e);
-			}
+			activeTransformation.onMousePressed(e);
 		} else if (activeTool != null) {
 			activeTool.onMousePressed(e);
 		}
@@ -119,7 +112,13 @@ public class Viewport {
 	
 	public void handleMouseClicked(MouseEvent e) {
 		if (activeTransformation != null) {
-			activeTransformation.onMouseClicked(e);
+			if (e.getButton() == MouseButton.PRIMARY) {
+				applyTransformation();
+			} else if (e.getButton() == MouseButton.SECONDARY) {
+				cancelTransformation();
+			} else {
+				activeTransformation.onMouseClicked(e);
+			}
 		} else if (activeTool != null) {
 			activeTool.onMouseClicked(e);
 		}

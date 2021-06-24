@@ -1,15 +1,14 @@
 package org.scaffoldeditor.editormc.engine.world;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.light.LightingProvider;
 
@@ -18,16 +17,21 @@ import net.minecraft.world.chunk.light.LightingProvider;
  */
 public class PlacementSimulationWorld extends WrappedWorld {
 	
-	public Map<BlockPos, BlockState> blocksAdded;
-	public Map<BlockPos, BlockEntity> entsAdded;
+	public Map<BlockPos, BlockState> blocksAdded = new HashMap<>();
+	public Map<BlockPos, BlockEntity> entsAdded = new HashMap<>();
 	
-	public Set<ChunkSectionPos> spannedChunks;
 	public LightingProvider lighter;
 	
 	public PlacementSimulationWorld(World base) {
 		super(base);
+		lighter = new LightingProvider(getChunkManager(), true, true) {
+			@Override
+			public int getLight(BlockPos pos, int ambientDarkness) {
+				return 15;
+			}
+		};
 	}
-	
+
 	@Override
 	public LightingProvider getLightingProvider() {
 		return lighter;

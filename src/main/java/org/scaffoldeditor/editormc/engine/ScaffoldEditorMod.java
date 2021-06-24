@@ -8,6 +8,7 @@ import org.scaffoldeditor.editormc.engine.entity.BillboardEntityRenderer;
 import org.scaffoldeditor.editormc.engine.entity.BrushEntityRenderer;
 import org.scaffoldeditor.editormc.engine.entity.ModelEntityRenderer;
 import org.scaffoldeditor.editormc.engine.mixins.MainWindowAccessor;
+import org.scaffoldeditor.editormc.engine.world.BlockRenderDispatcher;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -20,6 +21,7 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 	private static ScaffoldEditorMod instance;
 	public boolean isInEditor = false;
 	private MinecraftClient client;
+	private BlockRenderDispatcher blockRenderDispatcher;
 	protected ScaffoldEditor editor;
 
 	public void onInitializeClient() {
@@ -47,13 +49,16 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 						
 						client.gameRenderer.onResized(res.width, res.height);
 					}
-				} catch (Exception ex) {}			
+				} catch (Exception ex) {}
 			}
 		});
 		
 		WorldRenderEvents.LAST.register(context -> {
 			ViewportExporter.export();
 		});
+		
+		blockRenderDispatcher = new BlockRenderDispatcher(client);
+		blockRenderDispatcher.register();
 	}
 	
 	
@@ -72,6 +77,10 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 	
 	public ScaffoldEditor getEditor() {
 		return editor;
+	}
+	
+	public BlockRenderDispatcher getBlockRenderDispatcher() {
+		return blockRenderDispatcher;
 	}
 	
 	public static ScaffoldEditorMod getInstance() {

@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
+@SuppressWarnings("deprecation")
 public class TranslationGismo implements TransformationGismo {
 	
 	public final Pane pane;
@@ -48,7 +49,6 @@ public class TranslationGismo implements TransformationGismo {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void apply() {
 		ScaffoldEditor.getInstance().getLevel().getOperationManager()
