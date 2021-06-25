@@ -1,0 +1,7 @@
+# Blender MTL File: 'translation_gizmo.blend'
+# Material Count: 1
+
+newmtl gizmos
+texture scaffold:editor/gizmo_colors
+emissive true
+diffuse_shading false

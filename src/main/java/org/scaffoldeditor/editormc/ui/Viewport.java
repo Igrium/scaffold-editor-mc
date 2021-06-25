@@ -2,14 +2,9 @@ package org.scaffoldeditor.editormc.ui;
 
 import java.awt.Dimension;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
 import org.scaffoldeditor.editormc.transformations.TransformManifest;
-import org.scaffoldeditor.editormc.transformations.TransformationGismo;
-import org.scaffoldeditor.editormc.transformations.TranslationGismo;
 import org.scaffoldeditor.editormc.transformations.ViewportTransformation;
 import org.scaffoldeditor.nbt.math.Vector3f;
 import javafx.scene.Cursor;
@@ -25,9 +20,7 @@ import javafx.scene.layout.Pane;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.Vec3d;
 
-public class Viewport {
-	public final Map<String, TransformationGismo> gismos = new HashMap<>();
-	
+public class Viewport {	
 	protected ImageView imageView;
 	protected Pane parent;
 	private ViewportTool activeTool;
@@ -43,7 +36,6 @@ public class Viewport {
 		this.imageView = imageView;
 		this.parent = parent;
 		
-		gismos.put("translate", new TranslationGismo(this));
 		parent.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
 			isMouseOverViewport = true;
 			if (activeTransformation != null && activeTransformation.overrideCursor()) {
@@ -232,6 +224,11 @@ public class Viewport {
 			}
 		}
 		
+		// Tools aren't technically active during a transformation.
+		if (activeTool != null) {
+			activeTool.onDeactivate();
+		}
+		
 		transformation.activate();
 	}
 	
@@ -251,6 +248,10 @@ public class Viewport {
 	
 	private void onTransformationStop() {
 		activeTransformation = null;
+		
+		if (activeTool != null) {
+			activeTool.onActivate();
+		}
 		
 		if (isMouseOverViewport) {
 			parent.getScene().setCursor(getToolCursor());

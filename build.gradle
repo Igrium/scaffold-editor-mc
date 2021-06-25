@@ -22,6 +22,8 @@ repositories {
 		url 'https://repo.eclipse.org/content/groups/efxclipse'
 		url 'https://jitpack.io/'
 	}
+	// For some reason, including this in the block above breaks Querz NBT.
+	maven { url = "https://hephaestus.dev/release" }
 }
 
 javafx {
@@ -42,6 +44,13 @@ dependencies {
 	implementation(include ("org.scaffoldeditor:scaffold-nbt:0.3.0"))
 	implementation(include ("com.github.Querz:NBT:6.1"))
 	implementation(include ("org.json:json:20190722")) // Scaffold core uses org.json, not gson.
+
+	modImplementation "dev.monarkhes:myron:1.6.0"
+    include "dev.monarkhes:myron:1.6.0"
+
+	// modImplementation "dev.monarkhes:myron:1.6.0"
+    // include "dev.monarkhes:myron:1.6.0"
+
 }
 
 processResources {

@@ -7,6 +7,7 @@ import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.entity.BillboardEntityRenderer;
 import org.scaffoldeditor.editormc.engine.entity.BrushEntityRenderer;
 import org.scaffoldeditor.editormc.engine.entity.ModelEntityRenderer;
+import org.scaffoldeditor.editormc.engine.gizmos.GizmoManager;
 import org.scaffoldeditor.editormc.engine.mixins.MainWindowAccessor;
 import org.scaffoldeditor.editormc.engine.world.BlockRenderDispatcher;
 
@@ -22,6 +23,7 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 	public boolean isInEditor = false;
 	private MinecraftClient client;
 	private BlockRenderDispatcher blockRenderDispatcher;
+	private GizmoManager gizmoManager;
 	protected ScaffoldEditor editor;
 
 	public void onInitializeClient() {
@@ -59,6 +61,9 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 		
 		blockRenderDispatcher = new BlockRenderDispatcher(client);
 		blockRenderDispatcher.register();
+		
+		gizmoManager = new GizmoManager();
+		gizmoManager.register();
 	}
 	
 	
@@ -81,6 +86,10 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 	
 	public BlockRenderDispatcher getBlockRenderDispatcher() {
 		return blockRenderDispatcher;
+	}
+	
+	public GizmoManager getGizmoManager() {
+		return gizmoManager;
 	}
 	
 	public static ScaffoldEditorMod getInstance() {

@@ -18,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 public class SelectTool implements ViewportTool {
 	
 	public final Image icon;
-	private Viewport viewport;
+	protected Viewport viewport;
 	
 	public SelectTool(Viewport viewport) {
 		icon = new Image(getClass().getResourceAsStream("/assets/scaffold/tools/select.png"));

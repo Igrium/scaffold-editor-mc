@@ -236,6 +236,10 @@ public class ScaffoldEditor {
 		updateSelectionDispatcher.addListener(listener);
 	}
 	
+	public void removeOnUpdateSelection(EventListener<UpdateSelectionEvent> listener) {
+		updateSelectionDispatcher.removeListener(listener);
+	}
+	
 	public Project getProject() {
 		return project;
 	}
