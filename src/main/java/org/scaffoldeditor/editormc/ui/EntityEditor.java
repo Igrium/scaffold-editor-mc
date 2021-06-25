@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
 import org.scaffoldeditor.editormc.ui.attribute_types.DefaultAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.IRenderAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.RenderAttributeRegistry;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLEntityEditorController;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.level.entity.Macro;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.io.Output;
 import org.scaffoldeditor.scaffold.operation.ChangeAttributesOperation;
@@ -18,6 +21,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
@@ -62,6 +69,7 @@ public class EntityEditor {
 		controller.entityTypeLabel.setText(entity.registryName);
 		attributePane = controller.attributePane;
 		loadAttributes();
+		loadMacros();
 		
 		scene.addEventHandler(ChangeAttributeEvent.ATTRIBUTE_CHANGED, e -> {
 			cachedAttributes.put(e.name, e.newValue);
@@ -91,6 +99,27 @@ public class EntityEditor {
 			attributePane.add(setter, 2, i);
 			
 			i++;
+		}
+	}
+	
+	protected void loadMacros() {
+		for (Macro macro : entity.getMacros()) {
+			Button button = new Button(macro.name);
+			controller.macroBox.getChildren().add(button);
+			button.setOnAction(event -> {
+				if (macro.confirmation != null) {
+					Alert alert = new Alert(AlertType.CONFIRMATION);
+					alert.setTitle("Execute macro");
+					alert.setHeaderText(macro.confirmation.header);
+					alert.setContentText(macro.confirmation.body);
+					Optional<ButtonType> result = alert.showAndWait();
+					if (result.isEmpty() || result.get() != ButtonType.OK) {
+						return;
+					}
+				}
+				
+				macro.run();
+			});
 		}
 	}
 	

@@ -19,6 +19,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 
 public class FXMLEntityEditorController {
@@ -39,6 +40,9 @@ public class FXMLEntityEditorController {
 	
 	@FXML
 	public Label entityTypeLabel;
+	
+	@FXML
+	public HBox macroBox;
 	
 	@FXML
 	public TableView<Output> outputTable;
