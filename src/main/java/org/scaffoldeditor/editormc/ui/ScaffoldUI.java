@@ -100,6 +100,8 @@ public class ScaffoldUI extends Application {
 			outliner = FXMLOutlinerController.load(this);
 			controller.getMainPanel().setRight(outliner.getRoot());
 			
+			controller.getViewportHeader().init(editor);
+			
 			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 				
 				@Override
