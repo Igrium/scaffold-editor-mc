@@ -13,6 +13,7 @@ import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
 import org.scaffoldeditor.editormc.tools.EntityTool;
 import org.scaffoldeditor.editormc.tools.MoveTool;
+import org.scaffoldeditor.editormc.tools.ResizeTool;
 import org.scaffoldeditor.editormc.tools.SelectTool;
 import org.scaffoldeditor.editormc.tools.Toolbar;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
@@ -95,6 +96,7 @@ public class ScaffoldUI extends Application {
 			
 			toolbar.addTool(new SelectTool(viewport), "select");
 			toolbar.addTool(new MoveTool(viewport, editor), "move");
+			toolbar.addTool(new ResizeTool(this), "resize");
 			toolbar.addTool(new EntityTool(), "entity");
 			toolbar.setTool("select");
 			controller.setToolbar(toolbar);

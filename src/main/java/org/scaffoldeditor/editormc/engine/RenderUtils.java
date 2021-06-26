@@ -18,5 +18,6 @@ public final class RenderUtils {
 		model.getQuads(null, null, new Random()).forEach(quad -> {
 			consumer.quad(matrices.peek(), quad, red, green, blue, light, OverlayTexture.DEFAULT_UV);
 		});
+		
 	}
 }

@@ -224,9 +224,8 @@ public class Viewport {
 			}
 		}
 		
-		// Tools aren't technically active during a transformation.
 		if (activeTool != null) {
-			activeTool.onDeactivate();
+			activeTool.onTransformationStarted(transformation);
 		}
 		
 		transformation.activate();
@@ -247,15 +246,15 @@ public class Viewport {
 	}
 	
 	private void onTransformationStop() {
-		activeTransformation = null;
-		
 		if (activeTool != null) {
-			activeTool.onActivate();
+			activeTool.onTransformationEnded(activeTransformation);
 		}
+		activeTransformation = null;
 		
 		if (isMouseOverViewport) {
 			parent.getScene().setCursor(getToolCursor());
 		}
+		
 	}
 	
 	public int getMouseX() {

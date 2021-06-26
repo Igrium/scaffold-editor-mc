@@ -10,7 +10,7 @@ public final class TransformManifest {
 	
 	public static ViewportTransformation getTransform(KeyEvent e) {
 		if (e.getCode() == KeyCode.G) {
-			return new Translation(ScaffoldUI.getInstance());
+			return new ViewportTranslation(ScaffoldUI.getInstance());
 		}
 		
 		return null;

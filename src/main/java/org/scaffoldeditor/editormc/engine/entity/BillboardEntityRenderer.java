@@ -66,6 +66,7 @@ public class BillboardEntityRenderer extends EntityRenderer<BillboardEntity> {
 		
 	}
 	
+	@SuppressWarnings("unused")
 	public void render(BillboardEntity entity, float yaw, float tickDelta, MatrixStack matrices,
 			VertexConsumerProvider vertexConsumers, int light) {
 		super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);

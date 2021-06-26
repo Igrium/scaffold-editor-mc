@@ -28,13 +28,14 @@ public class GizmoManager {
 		if (!RenderSystem.isOnRenderThread()) {
 			throw new IllegalStateException("Rendering can only happen on the render thread!");
 		}
-		
+		RenderSystem.disableDepthTest();
 		matrices.push();
 		matrices.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
 		for (Gizmo gizmo : gizmos) {
 			renderGizmo(gizmo, matrices, vertices);
 		}
 		matrices.pop();
+		RenderSystem.enableDepthTest();
 	}
 	
 	protected void renderGizmo(Gizmo gizmo, MatrixStack matrices, VertexConsumerProvider vertices) {

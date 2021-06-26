@@ -1,132 +1,45 @@
 package org.scaffoldeditor.editormc.transformations;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.scaffoldeditor.editormc.ui.ScaffoldUI;
+import org.scaffoldeditor.editormc.ui.Viewport;
 import org.scaffoldeditor.editormc.util.RaycastUtils;
 import org.scaffoldeditor.nbt.math.Vector3f;
-import org.scaffoldeditor.scaffold.level.Level;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.operation.MoveEntitiesOperation;
 
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
-public class Translation implements ViewportTransformation {
-	
-	private ScaffoldUI ui;
-	private double distance;
-	private Map<Entity, Vector3f> entities;
-	private Vector3f target = new Vector3f(0, 0, 0);
-	private String lock = "";
-	private Vector3f startPos = new Vector3f(0, 0, 0);
+/**
+ * Interprets 2d mouse movements as a 3d transformation.
+ * @author Igrium
+ */
+public class Translation {
+	public final Viewport viewport;
 	public boolean castMode = false;
-
-	public Translation(ScaffoldUI ui) {
-		this.ui = ui;
+	private String lock = "";
+	private double distance;
+	private Vector3f startPos;
+	
+	public Translation(Viewport viewport, Vector3f startPos) {
+		this.viewport = viewport;
+		this.startPos = startPos;
+		distance = startPos.subtract(viewport.getCameraPos()).length();
 	}
 	
-	@Override
-	public void activate() {
-		Set<Entity> selected = ui.getEditor().getSelectedEntities();
-		Vector3f avg = new Vector3f(0, 0, 0);
-		for (Entity ent : selected) {
-			avg = avg.add(ent.getPosition());
-		}
-		avg = avg.divide(selected.size());
-		
-		int mouseX = ui.getViewport().getMouseX();
-		int mouseY = ui.getViewport().getMouseY();
-				
-		distance = avg.subtract(ui.getViewport().getCameraPos()).length();
-		startPos = parseVector(performRaycast(mouseX, mouseY).getPos());
-		if (ui.getViewportHeader().snapToGrid()) startPos = startPos.floor().toFloat();
-		target = startPos;
-		entities = new HashMap<>();
-		for (Entity ent : selected) {
-			entities.put(ent, ent.getPosition().subtract(startPos));
-		}
-	}
-	
-	@Override
-	public void onMouseMoved(int x, int y) {
-		ViewportTransformation.super.onMouseMoved(x, y);
-		
-		target = parseVector(performRaycast(x, y).getPos());
-		if (ui.getViewportHeader().snapToGrid()) target = target.floor().toFloat();
-		target = applyLock(target);
-		for (Entity ent : entities.keySet()) {
-			ent.setPreviewPosition(target.add(entities.get(ent)));
-		}
-	}
-	
-	@Override
-	public void onKeyPressed(KeyEvent event) {
-		ViewportTransformation.super.onKeyPressed(event);
-		
-		if (event.getCode() == KeyCode.X) {
-			if (event.isShiftDown()) {
-				setLock("YZ");
-			} else {
-				setLock("X");
-			}
-			event.consume();
-		} else if (event.getCode() == KeyCode.Y) {
-			if (event.isShiftDown()) {
-				setLock("XZ");
-			} else {
-				setLock("Y");
-			}
-		} else if (event.getCode() == KeyCode.Z) {
-			if (event.isShiftDown()) {
-				setLock("XY");
-			} else {
-				setLock("Z");
-			}
-		} else if (event.getCode() == KeyCode.CONTROL) {
-			castMode = false;
-		}
-	}
-	
-	@Override
-	public void onKeyReleased(KeyEvent event) {
-		ViewportTransformation.super.onKeyReleased(event);
-		
-		if (event.getCode() == KeyCode.CONTROL) {
-			castMode = true;
-		}
+	public Vector3f getTranslation(int mouseX, int mouseY) {
+		Vector3f target = parseVector(performRaycast(mouseX, mouseY).getPos());
+		return applyLock(target);
 	}
 
-	@Override
-	public void cancel() {
-		for (Entity ent : entities.keySet()) {
-			ent.disableTransformPreview();
-		}
-	}
-
-	@Override
-	public void apply() {
-		Map<Entity, Vector3f> targets = new HashMap<>();
-		entities.keySet().stream().forEach(ent -> {
-			targets.put(ent, target.add(entities.get(ent)));
-			ent.disableTransformPreview();
-		});
-		
-		Level level = ui.getEditor().getLevel();
-		level.getOperationManager().execute(new MoveEntitiesOperation(targets, level));
-	}
-	
-	public void setLock(String lock) {
-		this.lock = lock.toUpperCase();
-	}
-	
 	public String getLock() {
 		return lock;
+	}
+
+	public void setLock(String lock) {
+		this.lock = lock;
+	}
+	
+	public Vector3f getStartPos() {
+		return startPos;
 	}
 	
 	private Vector3f applyLock(Vector3f in) {
@@ -138,7 +51,7 @@ public class Translation implements ViewportTransformation {
 	}
 	
 	private HitResult performRaycast(int x, int y) {
-		Pane pane = ui.getViewport().getParent();
+		Pane pane = viewport.getParent();
 		if (castMode) {
 			return RaycastUtils.raycastPixel(x, y, (int) pane.getWidth(), (int) pane.getHeight(), 500, true);
 		} else {

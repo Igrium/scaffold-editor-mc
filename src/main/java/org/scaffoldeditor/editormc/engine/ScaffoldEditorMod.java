@@ -10,6 +10,7 @@ import org.scaffoldeditor.editormc.engine.entity.ModelEntityRenderer;
 import org.scaffoldeditor.editormc.engine.gizmos.GizmoManager;
 import org.scaffoldeditor.editormc.engine.mixins.MainWindowAccessor;
 import org.scaffoldeditor.editormc.engine.world.BlockRenderDispatcher;
+import org.scaffoldeditor.editormc.engine.world.ScaffoldRenderEvents;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -59,6 +60,7 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 			ViewportExporter.export();
 		});
 		
+		ScaffoldRenderEvents.register();
 		blockRenderDispatcher = new BlockRenderDispatcher(client);
 		blockRenderDispatcher.register();
 		

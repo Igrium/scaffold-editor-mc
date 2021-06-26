@@ -1,5 +1,7 @@
 package org.scaffoldeditor.editormc.tools;
 
+import org.scaffoldeditor.editormc.transformations.ViewportTransformation;
+
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.Node;
@@ -64,6 +66,16 @@ public interface ViewportTool {
 	 * Called when the tool is active and a key is typed.
 	 */
 	default void onKeyTyped(KeyEvent event) {};
+	
+	/*
+	 * Called when the tool is active and a viewport transformation has started.
+	 */
+	default void onTransformationStarted(ViewportTransformation transform) {};
+	
+	/**
+	 * Called when the tool is active and a viewport transformation has ended.
+	 */
+	default void onTransformationEnded(ViewportTransformation transform) {};
 	
 	/**
 	 * Get the icon this tool should use.

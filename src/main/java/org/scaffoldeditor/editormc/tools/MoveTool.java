@@ -74,4 +74,9 @@ public class MoveTool extends SelectTool {
 	public Image getIcon() {
 		return ICON;
 	}
+	
+	@Override
+	public String getName() {
+		return "Move Tool";
+	}
 }
