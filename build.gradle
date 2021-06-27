@@ -11,6 +11,7 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+
 repositories {
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
@@ -26,10 +27,23 @@ repositories {
 	maven { url = "https://hephaestus.dev/release" }
 }
 
-javafx {
-    version = "15.0.1"
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics' ]
+// javafx {
+//     version = "15.0.1"
+//     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics' ]
+// }
+
+def currentOS = org.gradle.internal.os.OperatingSystem.current()
+def platform
+if (currentOS.isWindows()) {
+    platform = 'win'
+} else if (currentOS.isLinux()) {
+    platform = 'linux'
+} else if (currentOS.isMacOsX()) {
+    platform = 'mac'
 }
+
+def javaFX_version = '17-ea+13'
+
 
 dependencies {
 	// To change the versions see the gradle.properties file
@@ -40,13 +54,18 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	implementation(include ("org.scaffoldeditor:scaffold-core:0.3.0"))
-	implementation(include ("org.scaffoldeditor:scaffold-nbt:0.3.0"))
-	implementation(include ("com.github.Querz:NBT:6.1"))
-	implementation(include ("org.json:json:20190722")) // Scaffold core uses org.json, not gson.
+	implementation(include("org.scaffoldeditor:scaffold-core:0.3.0"))
+	implementation(include("org.scaffoldeditor:scaffold-nbt:0.3.0"))
+	implementation(include("com.github.Querz:NBT:6.1"))
+	implementation(include("org.json:json:20190722")) // Scaffold core uses org.json, not gson.
 
-	modImplementation "dev.monarkhes:myron:1.6.0"
-    include "dev.monarkhes:myron:1.6.0"
+	implementation(include("org.openjfx:javafx-base:${javaFX_version}:${platform}"))
+	implementation(include("org.openjfx:javafx-controls:${javaFX_version}:${platform}"))
+	implementation(include("org.openjfx:javafx-graphics:${javaFX_version}:${platform}"))
+	implementation(include("org.openjfx:javafx-fxml:${javaFX_version}:${platform}"))
+
+	// modImplementation "dev.monarkhes:myron:1.6.0"
+    // include "dev.monarkhes:myron:1.6.0"
 
 	// modImplementation "dev.monarkhes:myron:1.6.0"
     // include "dev.monarkhes:myron:1.6.0"
