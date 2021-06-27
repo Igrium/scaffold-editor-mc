@@ -45,7 +45,7 @@ public class SettingsWindow {
 			return;
 		}
 		
-		scene = new Scene(root, 1280, 800);
+		scene = new Scene(root, 640, 480);
 		stage.setTitle("Scaffold Settings");
 		stage.setScene(scene);
 		stage.initModality(Modality.APPLICATION_MODAL);

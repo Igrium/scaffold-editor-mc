@@ -51,6 +51,7 @@ public class ScaffoldEditor {
 	
 	public static final String CACHE_FILE_NAME = "editorcache.json";
 	
+	
 	private Level level;
 	protected MinecraftClient client = MinecraftClient.getInstance();
 	protected EditorServer server;

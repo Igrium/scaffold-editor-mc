@@ -26,6 +26,8 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import net.minecraft.client.MinecraftClient;
@@ -91,9 +93,34 @@ public final class Config {
 		document = builder.parse(configFile);
 		
 		// Check all values are there.
+		Element defElement = defaultConfig.getDocumentElement();
+		List<String> items = new ArrayList<>();
+		scanElement(defElement, "", items);
 		
+		for (String item : items) {
+			if (getElement(item) == null) {
+				try {
+					Element def = (Element) xPath.evaluate(item, defaultConfig, XPathConstants.NODE);
+					setValue(item, def.getTagName(), def.getAttribute("value"));
+				} catch (XPathExpressionException e) {
+					throw new AssertionError("Unable to load config", e);
+				}
+			}
+		}
 		
-		return null;
+		return document;
+	}
+	
+	private static void scanElement(Element element, String baseString, List<String> childStrings) {
+		NodeList children = element.getChildNodes();
+		for (int i = 0; i < children.getLength(); i++) {
+			Node child = children.item(i);
+			if (child.getNodeType() != Node.ELEMENT_NODE) continue;
+			Element childElement = (Element) child;
+			String id = childElement.getAttribute("id");
+			childStrings.add(baseString + id);
+			scanElement(childElement, baseString + id + '.', childStrings);
+		}
 	}
 	
 	public static void save() throws IOException {
@@ -141,9 +168,11 @@ public final class Config {
 	
 	public static Element getElement(String[] path) {
 		String expression = generateXPathExpression(path);
-
+		
 		try {
-			return (Element) xPath.evaluate(expression, document, XPathConstants.NODE);
+			var obj = xPath.evaluate(expression, document, XPathConstants.NODE);
+			if (obj == null) return null;
+			return (Element) obj;
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 			return null;
@@ -196,6 +225,10 @@ public final class Config {
 			newElement.setAttribute("id", splitPath[splitPath.length-1]);
 			parent.appendChild(newElement);
 		}
+		
+	}
+	
+	protected static void createGroup(String page, String id) {
 		
 	}
 	

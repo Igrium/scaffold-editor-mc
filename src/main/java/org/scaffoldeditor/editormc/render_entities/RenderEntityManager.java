@@ -78,7 +78,7 @@ public class RenderEntityManager {
 		EditorRenderEntity ent;
 		if (in instanceof MCRenderEntity) ent = new MCEditorEntity(world, editor);
 		else if (in instanceof ModelRenderEntity) ent = new ModelEditorEntity(world, editor);
-		else if (in instanceof BillboardRenderEntity) ent = new BillboardEditorEntity();
+		else if (in instanceof BillboardRenderEntity) ent = new BillboardEditorEntity(world, editor);
 		else if (in instanceof BrushRenderEntity) ent = new BrushEditorEntity(world, editor);
 		else if (in instanceof BlockRenderEntity) ent = new BlockEditorEntity();
 		else {
