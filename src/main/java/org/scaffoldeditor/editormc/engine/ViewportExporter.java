@@ -53,17 +53,19 @@ public class ViewportExporter {
 		
 		
 		Platform.runLater(() -> {
-			viewport.updateViewport(buffer, x, y);
-			MemoryUtil.memFree(buffer);
-			
-			MinecraftClient client = MinecraftClient.getInstance();
-			ScaffoldUI.getInstance().setFPSIndicator(MinecraftClientAccessor.getFPS());
-			
-			Vec3d coords = client.player.getPos();
-			DecimalFormat format = new DecimalFormat("#.0");
-			ScaffoldUI.getInstance().setCoordIndicator("<" + format.format(coords.x) + ", " + format.format(coords.y)
-					+ ", " + format.format(coords.z) + ">");
-
+			try {
+				viewport.updateViewport(buffer, x, y);
+				
+				MinecraftClient client = MinecraftClient.getInstance();
+				ScaffoldUI.getInstance().setFPSIndicator(MinecraftClientAccessor.getFPS());
+				
+				Vec3d coords = client.player.getPos();
+				DecimalFormat format = new DecimalFormat("#.0");
+				ScaffoldUI.getInstance().setCoordIndicator("<" + format.format(coords.x) + ", " + format.format(coords.y)
+						+ ", " + format.format(coords.z) + ">");
+			} finally {
+				MemoryUtil.memFree(buffer);
+			}
 		});
 	}
 	
