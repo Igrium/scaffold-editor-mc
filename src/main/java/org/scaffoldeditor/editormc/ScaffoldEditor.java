@@ -249,6 +249,10 @@ public class ScaffoldEditor {
 		this.project = project;
 	}
 	
+	public RenderEntityManager getRenderEntityManager() {
+		return renderEntityManager;
+	}
+	
 	/**
 	 * Copy the current selection to the clipboard.
 	 */

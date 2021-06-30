@@ -11,6 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.hit.HitResult.Type;
 import net.minecraft.util.math.BlockPos;
@@ -63,6 +64,13 @@ public class SelectTool implements ViewportTool {
 			Object owner = editor.getLevel().getBlockWorld().getBlockOwner(pos.getX(), pos.getY(), pos.getZ());
 			if (owner instanceof Entity) {
 				editor.getSelectedEntities().add((Entity) owner);
+			}
+		} else if (hitResult.getType() == Type.ENTITY) {
+			EntityHitResult entHit = (EntityHitResult) hitResult;
+			net.minecraft.entity.Entity ent = entHit.getEntity();
+			Entity owner = editor.getRenderEntityManager().findOwner(ent);
+			if (owner != null) {
+				editor.getSelectedEntities().add(owner);
 			}
 		}
 		editor.updateSelection();

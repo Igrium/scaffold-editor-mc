@@ -84,4 +84,9 @@ public abstract class ClientSideEntity<T extends Entity, R extends RenderEntity>
 	public ScaffoldEditor getEditor() {
 		return editor;
 	}
+	
+	@Override
+	public boolean ownsEntity(Entity entity) {
+		return entity == getEntity();
+	}
 }

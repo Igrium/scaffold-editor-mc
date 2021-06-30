@@ -92,5 +92,10 @@ public class MCEditorEntity implements EditorRenderEntity {
 		}
 		if (mcEntity != null) mcEntity.remove(RemovalReason.DISCARDED);
 	}
+	
+	@Override
+	public boolean ownsEntity(Entity entity) {
+		return mcEntity == entity;
+	}
 
 }

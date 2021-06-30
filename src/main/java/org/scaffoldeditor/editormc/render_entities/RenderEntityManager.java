@@ -41,7 +41,7 @@ public class RenderEntityManager {
 	 * Represents a single Scaffold entity.
 	 */
 	public class EntityEntry {
-		private Map<String, EditorRenderEntity> entities = new HashMap<>();
+		public Map<String, EditorRenderEntity> entities = new HashMap<>();
 		
 		public void handleUpdate(Set<RenderEntity> renderEntities) {
 			Set<String> newEntities = new HashSet<>();
@@ -109,6 +109,23 @@ public class RenderEntityManager {
 				entry.handleUpdate(event.renderEntities);
 			}
 		});
+	}
+	
+	/**
+	 * Determine which Scaffold entity is responsible for rendering a Minecraft
+	 * entity.
+	 * 
+	 * @param entity The Minecraft entity.
+	 * @return Owning Scaffold entity, or <code>null</code> if this Minecraft entity
+	 *         wasn't spawned by a Scaffold entity.
+	 */
+	public Entity findOwner(net.minecraft.entity.Entity entity) {
+		for (Entity scaffold : renderEntities.keySet()) {
+			for (EditorRenderEntity render : renderEntities.get(scaffold).entities.values()) {
+				if (render.ownsEntity(entity)) return scaffold;
+			}
+		}
+		return null;
 	}
 
 	public Level getLevel() {

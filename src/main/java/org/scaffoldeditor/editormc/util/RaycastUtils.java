@@ -103,15 +103,9 @@ public class RaycastUtils {
 
 		if (entityHitResult == null) {
 			return target;
+		} else {
+			return entityHitResult;
 		}
-
-		Vec3d vec3d2 = entityHitResult.getPos();
-		double g = cameraPos.squaredDistanceTo(vec3d2);
-		if (g < reach || target == null) {
-			target = entityHitResult;
-		}
-
-		return target;
 	}
 
 	private static HitResult raycast(Entity entity, double maxDistance, float tickDelta, boolean includeFluids,
