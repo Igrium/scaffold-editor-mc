@@ -11,9 +11,13 @@ import org.json.JSONObject;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.scaffold.compile.Compiler.CompileEndStatus;
 import org.scaffoldeditor.scaffold.level.Level;
+import org.scaffoldeditor.scaffold.level.LevelData.GameType;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.BooleanAttribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.EnumAttribute;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,6 +26,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
@@ -32,6 +37,8 @@ public class FXMLCompileController {
 		
 	@FXML
 	private TextField compilePathField;
+	@FXML
+	private ChoiceBox<String> gamemodeBox;
 	@FXML
 	private CheckBox enableCheats;
 	@FXML
@@ -54,6 +61,16 @@ public class FXMLCompileController {
 	private void initialize() {
 		editor = ScaffoldEditor.getInstance();
 		level = editor.getLevel();
+		
+		String[] gamemodes = new String[] { "Adventure", "Creative", "Survival", "Spectator" };
+		gamemodeBox.getItems().addAll(gamemodes);
+		gamemodeBox.getSelectionModel().select(0);
+		
+		gamemodeBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				enableCheats.setSelected(newValue.equals("Creative") || newValue.equals("Spectator"));
+			}
+		});
 		
 		JSONObject levelCache = editor.getLevelCache();
 		if (levelCache.has("export_path")) {
@@ -127,6 +144,8 @@ public class FXMLCompileController {
 		Map<String, Attribute<?>> args = new HashMap<>();
 		args.put("cheats", new BooleanAttribute(enableCheats.isSelected()));
 		args.put("full", new BooleanAttribute(fullCompile.isSelected()));
+		args.put("gameType", new EnumAttribute<GameType>(
+				GameType.valueOf(gamemodeBox.getSelectionModel().getSelectedItem().toUpperCase())));
 		
 		controller.compile(level, Paths.get(compilePathField.getText()), args);
 	}
