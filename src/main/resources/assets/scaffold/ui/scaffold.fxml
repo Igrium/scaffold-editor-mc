@@ -74,6 +74,7 @@
             <MenuItem mnemonicParsing="false" text="Unselect All" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#recompileWorld" text="Recompile World" />
+                  <MenuItem mnemonicParsing="false" onAction="#openLevelProperties" text="Level Properties" />
           </items>
         </Menu>
             <Menu mnemonicParsing="false" text="Dev">

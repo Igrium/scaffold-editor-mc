@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
+import org.scaffoldeditor.editormc.sub_editors.LevelPropertiesEditor;
 import org.scaffoldeditor.editormc.tools.Toolbar;
 import org.scaffoldeditor.editormc.ui.controllers.ViewportHeader;
 import org.scaffoldeditor.scaffold.level.Level;
@@ -157,6 +158,11 @@ public class MainFXMLController {
 	@FXML
 	private void paste() {
 		ScaffoldEditor.getInstance().paste();
+	}
+	
+	@FXML
+	public void openLevelProperties() {
+		LevelPropertiesEditor.open(ScaffoldUI.getInstance().getStage(), getLevel());
 	}
 	
 	// VIEWPORT
