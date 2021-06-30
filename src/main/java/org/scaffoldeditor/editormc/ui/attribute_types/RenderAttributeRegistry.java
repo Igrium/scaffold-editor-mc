@@ -6,6 +6,7 @@ import java.util.Map;
 import org.scaffoldeditor.editormc.ui.EntityEditor;
 import org.scaffoldeditor.scaffold.level.entity.attribute.AssetAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.BlockAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.BlockTextureAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.BooleanAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.ContainerAttribute;
@@ -52,5 +53,6 @@ public final class RenderAttributeRegistry {
 		registry.put(AssetAttribute.REGISTRY_NAME, new AssetAttributeType());
 		registry.put(EnumAttribute.REGISTRY_NAME, new EnumAttributeType());
 		registry.put(ContainerAttribute.REGISTRY_NAME, new ContainerAttributeType());
+		registry.put(BlockAttribute.REGISTRY_NAME, new BlockAttributeType());
 	}
 }

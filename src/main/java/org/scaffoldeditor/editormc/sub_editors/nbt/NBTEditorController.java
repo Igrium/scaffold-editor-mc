@@ -9,6 +9,8 @@ import org.scaffoldeditor.editormc.util.Constants;
 import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
 import org.scaffoldeditor.scaffold.util.event.EventListener;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeItem;
@@ -42,11 +45,14 @@ public class NBTEditorController {
 	private Button editButton;
 	@FXML
 	private Button editSNBTButton;
-
+	@FXML
+	private ButtonBar buttonBar;
+	
 	private NBTBrowserController nbtBrowser;
 	private Parent root;
 	private Stage stage;
 	private EventDispatcher<NamedTag> updateNBTDispatcher = new EventDispatcher<>();
+	private BooleanProperty buttonBarEnabledProperty = new SimpleBooleanProperty(true);
 	
 	public void loadNBT(NamedTag tag) {
 		nbtBrowser.loadNBT(tag);
@@ -90,6 +96,9 @@ public class NBTEditorController {
 				event.consume();
 			}
 		});
+		
+		buttonBar.managedProperty().bind(buttonBarEnabledProperty);
+		buttonBar.visibleProperty().bind(buttonBarEnabledProperty);
 	}
 	
 	@FXML
@@ -143,29 +152,6 @@ public class NBTEditorController {
 			});
 		}
 	}
-	
-	/**
-	 * Force-replace an entry on the tree. Very unstable.
-	 */
-//	private void replaceEntry(TreeItem<NamedTag> item, Tag<?> newValue) {
-//		String name = item.getValue().getName();
-//		item.setValue(new NamedTag(name, newValue));
-//		
-//		if (item.getParent() != null) {
-//			Tag<?> parent = item.getParent().getValue().getTag();
-//			if (parent instanceof CompoundTag) {
-//				((CompoundTag) parent).put(name, newValue);
-//			} else if (parent instanceof ListTag) {
-//				@SuppressWarnings("unchecked")
-//				ListTag<Tag<?>> list = (ListTag<Tag<?>>) parent;
-//				list.set(list.indexOf(item.getValue().getTag()), newValue);
-//			} else {
-//				throw new IllegalStateException("Tag's parent doesn't include it as a child!");
-//			}
-//		} else {
-//			nbtBrowser.loadNBT(new NamedTag(name, newValue));
-//		}
-//	}
 	
 	@FXML
 	public void newEntry() {
@@ -342,6 +328,18 @@ public class NBTEditorController {
 		if (stage != null) {
 			stage.close();
 		}
+	}
+	
+	public void setButtonBarEnabled(boolean value) {
+		buttonBarEnabledProperty.set(value);
+	}
+	
+	public boolean isButtonBarEnabled() {
+		return buttonBarEnabledProperty.getValue();
+	}
+	
+	public BooleanProperty buttonBarEnabledProperty() {
+		return buttonBarEnabledProperty;
 	}
 	
 	protected boolean isEditable(Tag<?> tag) {
