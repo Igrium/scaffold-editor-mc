@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc.ui.attribute_types;
 
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 
 import javafx.scene.Node;
@@ -9,6 +10,6 @@ import javafx.scene.Node;
  * @author Igrium
  */
 public interface IRenderAttributeType {
-	public Node createSetter(String name, Attribute<?> defaultValue);	
+	public Node createSetter(String name, Attribute<?> defaultValue, Entity entity);	
 }
 

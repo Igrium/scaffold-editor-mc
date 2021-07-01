@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.scaffoldeditor.editormc.ui.EntityEditor;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.AssetAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.BlockAttribute;
@@ -11,6 +12,7 @@ import org.scaffoldeditor.scaffold.level.entity.attribute.BlockTextureAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.BooleanAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.ContainerAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.DoubleAttribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.EntityAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.EnumAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.FloatAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.IntAttribute;
@@ -27,15 +29,15 @@ public final class RenderAttributeRegistry {
 	
 	public static final Map<String, IRenderAttributeType> registry = new HashMap<>();
 	
-	public static Node createSetter(String attributeName, Attribute<?> defaultValue) {
+	public static Node createSetter(String attributeName, Attribute<?> defaultValue, Entity entity) {
 		if (defaultValue == null) {
-			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(attributeName, null);
+			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(attributeName, null, entity);
 		}
 		
 		if (registry.containsKey(defaultValue.registryName)) {
-			return registry.get(defaultValue.registryName).createSetter(attributeName, defaultValue);
+			return registry.get(defaultValue.registryName).createSetter(attributeName, defaultValue, entity);
 		} else {
-			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(attributeName, defaultValue);
+			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(attributeName, defaultValue, entity);
 		}
 	}
 	
@@ -54,5 +56,6 @@ public final class RenderAttributeRegistry {
 		registry.put(EnumAttribute.REGISTRY_NAME, new EnumAttributeType());
 		registry.put(ContainerAttribute.REGISTRY_NAME, new ContainerAttributeType());
 		registry.put(BlockAttribute.REGISTRY_NAME, new BlockAttributeType());
+		registry.put(EntityAttribute.REGISTRY_NAME, new EntityAttributeType());
 	}
 }

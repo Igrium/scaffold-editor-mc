@@ -2,6 +2,7 @@ package org.scaffoldeditor.editormc.ui.attribute_types;
 
 import org.scaffoldeditor.editormc.sub_editors.blocktexture.BlockTextureEditor;
 import org.scaffoldeditor.editormc.ui.EntityEditor;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.BlockTextureAttribute;
 
@@ -13,15 +14,15 @@ public class BlockTextureAttributeType implements IRenderAttributeType {
 	private BlockTextureAttribute old;
 	
 	@Override
-	public Node createSetter(String name, Attribute<?> defaultValue) {
+	public Node createSetter(String name, Attribute<?> defaultValue, Entity entity) {
 		if (!(defaultValue instanceof BlockTextureAttribute)) {
-			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(name, defaultValue);
+			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(name, defaultValue, entity);
 		}
 		old = (BlockTextureAttribute) defaultValue;
 		
 		Button button = new Button("Edit BlockTexture");
 		button.setOnAction(e -> {
-			BlockTextureEditor editor = BlockTextureEditor.open(button.getScene().getWindow());
+			BlockTextureEditor editor = BlockTextureEditor.open(button.getScene().getWindow(), entity);
 			if (old.isExternal()) {
 				editor.loadBlockTexture(old.getExternalPath());
 			} else {

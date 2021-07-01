@@ -2,6 +2,7 @@ package org.scaffoldeditor.editormc.ui.attribute_types;
 
 import org.scaffoldeditor.editormc.ui.EntityEditor;
 import org.scaffoldeditor.nbt.math.Vector3f;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.VectorAttribute;
 import javafx.scene.Node;
@@ -13,9 +14,9 @@ import javafx.scene.layout.Priority;
 public class VectorAttributeType implements IRenderAttributeType {
 
 	@Override
-	public Node createSetter(String name, Attribute<?> defaultValue) {
+	public Node createSetter(String name, Attribute<?> defaultValue, Entity entity) {
 		if (!(defaultValue instanceof VectorAttribute)) {
-			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(name, defaultValue);
+			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(name, defaultValue, entity);
 		}
 		VectorAttribute attribute = (VectorAttribute) defaultValue;
 		

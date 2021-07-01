@@ -92,7 +92,7 @@ public class EntityEditor {
 		for (String name : entity.getAttributes()) {
 			Attribute<?> attribute = entity.getAttribute(name);
 			
-			Node setter = RenderAttributeRegistry.createSetter(name, attribute);
+			Node setter = RenderAttributeRegistry.createSetter(name, attribute, entity);
 			Label label = new Label(name);
 			
 			attributePane.add(label, 1, i);

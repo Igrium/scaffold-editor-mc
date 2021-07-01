@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
 import org.scaffoldeditor.editormc.ui.attribute_types.RenderAttributeRegistry;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.AttributeRegistry;
 import org.scaffoldeditor.scaffold.level.entity.attribute.ListAttribute;
@@ -39,6 +40,7 @@ public class ListAttributeEditor {
 	private Map<AttributeEntry, Node> setterCache = new HashMap<>();
 	private EventDispatcher<ListAttribute> dispatcher = new EventDispatcher<>();
 	private Stage stage;
+	private Entity entity;
 	
 	@FXML
 	private void initialize() {
@@ -121,7 +123,7 @@ public class ListAttributeEditor {
 	
 	private Node createSetter(AttributeEntry item) {
 		Attribute<?> attribute = item.value;
-		Node setter = RenderAttributeRegistry.createSetter(attribute.registryName, attribute);
+		Node setter = RenderAttributeRegistry.createSetter(attribute.registryName, attribute, entity);
 		setter.addEventHandler(ChangeAttributeEvent.ATTRIBUTE_CHANGED, event -> {
 			item.value = event.newValue;
 		});
@@ -132,7 +134,7 @@ public class ListAttributeEditor {
 		return stage;
 	}
 	
-	public static ListAttributeEditor open(Window parent) {
+	public static ListAttributeEditor open(Window parent, Entity entity) {
 		FXMLLoader loader = new FXMLLoader(ListAttributeEditor.class.getResource("/assets/scaffold/ui/list_attribute_editor.fxml"));
 		Parent root;
 		try {
@@ -153,6 +155,7 @@ public class ListAttributeEditor {
 			
 		ListAttributeEditor controller = loader.getController();
 		controller.stage = stage;
+		controller.entity = entity;
 		
 		return controller;
 	}

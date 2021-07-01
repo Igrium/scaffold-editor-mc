@@ -1,6 +1,7 @@
 package org.scaffoldeditor.editormc.ui.attribute_types;
 
 import org.scaffoldeditor.editormc.ui.EntityEditor;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.EnumAttribute;
 
@@ -15,9 +16,9 @@ public class EnumAttributeType implements IRenderAttributeType {
 	// to what class it is, so typing or checking it won't do anything.
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Node createSetter(String name, Attribute<?> defaultValue) {
+	public Node createSetter(String name, Attribute<?> defaultValue, Entity entity) {
 		if (!(defaultValue instanceof EnumAttribute)) {
-			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(name, defaultValue);
+			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(name, defaultValue, entity);
 		}
 		
 		EnumAttribute<?> attribute = (EnumAttribute<?>) defaultValue;

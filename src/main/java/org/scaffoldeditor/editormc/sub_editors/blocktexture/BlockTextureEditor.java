@@ -19,6 +19,7 @@ import org.scaffoldeditor.scaffold.block_textures.BlockTextureRegistry;
 import org.scaffoldeditor.scaffold.block_textures.SerializableBlockTexture;
 import org.scaffoldeditor.scaffold.io.AssetLoader;
 import org.scaffoldeditor.scaffold.io.AssetManager;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.serialization.BlockTextureWriter;
 import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
@@ -81,6 +82,7 @@ public class BlockTextureEditor {
 	private EventDispatcher<SaveBlockTextureEvent> dispatcher = new EventDispatcher<>();
 	private String assetPath = "";
 	private Stage stage;
+	private Entity parentEntity;
 	
 	@FXML
 	private void initialize() {
@@ -324,7 +326,7 @@ public class BlockTextureEditor {
 		int i = 1;
 		for (String name : texture.getAttributes()) {
 			Attribute<?> attribute = texture.getAttribute(name);
-			Node setter = RenderAttributeRegistry.createSetter(name, attribute);
+			Node setter = RenderAttributeRegistry.createSetter(name, attribute, parentEntity);
 			Label label = new Label(name);
 			
 			attributesPane.add(label, 0, i);
@@ -381,9 +383,10 @@ public class BlockTextureEditor {
 	/**
 	 * Open the block texture editor.
 	 * @param parent Parent window.
+	 * @param parentEntity The entity that is currently being edited.
 	 * @return The opened editor.
 	 */
-	public static BlockTextureEditor open(Window parent) {
+	public static BlockTextureEditor open(Window parent, Entity parentEntity) {
 		FXMLLoader loader = new FXMLLoader(BlockTextureEditor.class.getResource("/assets/scaffold/ui/blocktexture_editor.fxml"));
 		Parent root;
 		try {
@@ -404,6 +407,7 @@ public class BlockTextureEditor {
 		
 		BlockTextureEditor controller = loader.getController();
 		controller.stage = stage;
+		controller.parentEntity = parentEntity;
 		
 		return controller;
 	}

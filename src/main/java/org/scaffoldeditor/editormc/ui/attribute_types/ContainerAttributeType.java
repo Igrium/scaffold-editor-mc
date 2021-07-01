@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.scaffoldeditor.editormc.sub_editors.ContainerEditor;
 import org.scaffoldeditor.editormc.ui.EntityEditor;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.ContainerAttribute;
 import javafx.scene.Node;
@@ -12,9 +13,9 @@ import javafx.scene.control.Button;
 public class ContainerAttributeType implements IRenderAttributeType {
 
 	@Override
-	public Node createSetter(String name, Attribute<?> defaultValue) {
+	public Node createSetter(String name, Attribute<?> defaultValue, Entity entity) {
 		if (!(defaultValue instanceof ContainerAttribute)) {
-			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(name, defaultValue);
+			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(name, defaultValue, entity);
 		}
 		ContainerAttribute attribute = (ContainerAttribute) defaultValue;
 		return new SetterInstance(name, attribute.clone()).getSetter();

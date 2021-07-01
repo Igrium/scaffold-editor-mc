@@ -9,6 +9,7 @@ import org.scaffoldeditor.editormc.ui.EntityEditor;
 import org.scaffoldeditor.scaffold.io.AssetLoader;
 import org.scaffoldeditor.scaffold.io.AssetLoaderRegistry;
 import org.scaffoldeditor.scaffold.io.AssetManager;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.AssetAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 
@@ -25,9 +26,9 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class AssetAttributeType implements IRenderAttributeType {
 
 	@Override
-	public Node createSetter(String name, Attribute<?> defaultValue) {
+	public Node createSetter(String name, Attribute<?> defaultValue, Entity entity) {
 		if (!(defaultValue instanceof AssetAttribute)) {
-			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(name, defaultValue);
+			return EntityEditor.DEFAULT_ATTRIBUTE_TYPE.createSetter(name, defaultValue, entity);
 		}
 		
 		AssetAttribute attribute = (AssetAttribute) defaultValue;
