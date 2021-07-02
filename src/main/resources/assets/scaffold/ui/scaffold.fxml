@@ -7,6 +7,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -148,6 +149,23 @@
                </children>
             </HBox>
          </top>
+         <right>
+            <VBox fx:id="outlinerBox" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox spacing="5.0">
+                     <children>
+                        <ImageView focusTraversable="true" onMouseClicked="#newGroup">
+                           <image>
+                              <Image url="@images/new_group.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+               </children></VBox>
+         </right>
       </BorderPane>
   </children>
 </VBox>

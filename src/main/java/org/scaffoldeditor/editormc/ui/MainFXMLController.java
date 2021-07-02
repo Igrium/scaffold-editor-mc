@@ -2,6 +2,7 @@ package org.scaffoldeditor.editormc.ui;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.scaffoldeditor.editormc.ScaffoldEditor;
@@ -11,6 +12,7 @@ import org.scaffoldeditor.editormc.tools.Toolbar;
 import org.scaffoldeditor.editormc.ui.controllers.ViewportHeader;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.operation.AddGroupOperation;
 import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
 
 import javafx.animation.PauseTransition;
@@ -20,6 +22,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -27,6 +30,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import javafx.stage.Stage;
 
@@ -61,6 +65,9 @@ public class MainFXMLController {
 	
 	@FXML	
 	private ViewportHeader viewportHeaderController;
+	
+	@FXML
+	private VBox outlinerBox;
 	
 	private Toolbar toolbar;
 	
@@ -161,6 +168,18 @@ public class MainFXMLController {
 	}
 	
 	@FXML
+	private void newGroup() {
+		TextInputDialog dialog = new TextInputDialog();
+		dialog.setTitle("New Entity Group");
+		dialog.setHeaderText("Enter Group Name");
+		Optional<String> name = dialog.showAndWait();
+		if (name.isEmpty() || name.get().length() == 0) return;
+		
+		getLevel().getOperationManager().execute(new AddGroupOperation(
+				ScaffoldUI.getInstance().getOutliner().getSelectedGroup(), name.get(), getLevel()));
+	}
+	
+	@FXML
 	public void openLevelProperties() {
 		LevelPropertiesEditor.open(ScaffoldUI.getInstance().getStage(), getLevel());
 	}
@@ -206,6 +225,10 @@ public class MainFXMLController {
 	
 	public Label getToolPropertiesLabel() {
 		return toolPropertiesLabel;
+	}
+	
+	public VBox getOutlinerBox() {
+		return outlinerBox;
 	}
 	
 	public Level getLevel() {

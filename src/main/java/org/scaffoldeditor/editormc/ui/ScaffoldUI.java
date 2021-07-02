@@ -31,6 +31,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
@@ -102,7 +104,8 @@ public class ScaffoldUI extends Application {
 			controller.setToolbar(toolbar);
 			
 			outliner = Outliner.load(this);
-			controller.getMainPanel().setRight(outliner.getRoot());
+			VBox.setVgrow(outliner.getRoot(), Priority.ALWAYS);
+			controller.getOutlinerBox().getChildren().add(outliner.getRoot());
 			
 			controller.getViewportHeader().init(editor);
 			
@@ -324,6 +327,10 @@ public class ScaffoldUI extends Application {
 	
 	public ViewportHeader getViewportHeader() {
 		return controller.getViewportHeader();
+	}
+	
+	public Outliner getOutliner() {
+		return outliner;
 	}
 	
 	public void reloadRecentFiles() {
