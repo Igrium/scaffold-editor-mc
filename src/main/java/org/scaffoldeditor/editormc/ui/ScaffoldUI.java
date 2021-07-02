@@ -18,7 +18,7 @@ import org.scaffoldeditor.editormc.tools.SelectTool;
 import org.scaffoldeditor.editormc.tools.Toolbar;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLCompileController;
-import org.scaffoldeditor.editormc.ui.controllers.FXMLOutlinerController;
+import org.scaffoldeditor.editormc.ui.controllers.Outliner;
 import org.scaffoldeditor.editormc.ui.controllers.MinecraftConsole;
 import org.scaffoldeditor.editormc.ui.controllers.ViewportHeader;
 import org.scaffoldeditor.scaffold.level.Level;
@@ -53,7 +53,7 @@ public class ScaffoldUI extends Application {
 	protected Viewport viewport;
 	protected ViewportControls viewportControls = new ViewportControls();
 	protected Toolbar toolbar = new Toolbar();
-	protected FXMLOutlinerController outliner;
+	protected Outliner outliner;
 	protected MinecraftConsole console;
 	
 	private boolean isExiting = false;
@@ -101,7 +101,7 @@ public class ScaffoldUI extends Application {
 			toolbar.setTool("select");
 			controller.setToolbar(toolbar);
 			
-			outliner = FXMLOutlinerController.load(this);
+			outliner = Outliner.load(this);
 			controller.getMainPanel().setRight(outliner.getRoot());
 			
 			controller.getViewportHeader().init(editor);
@@ -278,8 +278,7 @@ public class ScaffoldUI extends Application {
 	public void updateEntityList() {
 		Platform.runLater(() -> {
 			Level level = getEditor().getLevel();
-			List<String> entityStack = level.getEntityStack();
-			outliner.setEntities(entityStack);
+			outliner.setEntities(level.getLevelStack());
 		});
 	}
 	

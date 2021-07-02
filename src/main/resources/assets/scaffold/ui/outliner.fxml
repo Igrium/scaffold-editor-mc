@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.TreeView?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@css/scaffold.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.scaffoldeditor.editormc.ui.controllers.FXMLOutlinerController">
-   <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" BorderPane.alignment="CENTER">
-         <content>
-            <ListView fx:id="entityList" prefWidth="185.0" />
-         </content>
-      </ScrollPane>
-   </center>
-</BorderPane>
+
+<TreeView fx:id="entityList" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/scaffold.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" />

@@ -1,5 +1,7 @@
 package org.scaffoldeditor.editormc.ui.attribute_types;
 
+import java.util.stream.Collectors;
+
 import org.scaffoldeditor.editormc.ui.EntityEditor;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
@@ -19,7 +21,8 @@ public class EntityAttributeType implements IRenderAttributeType {
 		
 		EntityAttribute attribute = (EntityAttribute) defaultValue;
 		ComboBox<String> box = new ComboBox<>();
-		box.getItems().addAll(entity.getLevel().getEntities().keySet());
+		box.getItems().addAll(
+				entity.getLevel().getLevelStack().stream().map(ent -> ent.getName()).collect(Collectors.toList()));
 		box.setEditable(true);
 		box.setValue(attribute.getValue());
 		
