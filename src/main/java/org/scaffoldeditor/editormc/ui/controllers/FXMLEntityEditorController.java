@@ -109,7 +109,7 @@ public class FXMLEntityEditorController {
 		outputTable.getItems().addAll(entity.getOutputs().stream().map(output -> output.clone()).collect(Collectors.toList()));
 		
 		outputBox.getItems().addAll(entity.getDeclaredOutputs().stream().map(output -> output.getName()).collect(Collectors.toList()));
-		targetBox.getItems().addAll(entity.getLevel().getEntities().keySet());
+		targetBox.getItems().addAll(entity.getLevel().listEntityNames());
 	}
 	
 	private void setDisableOutputControls(boolean disable) {

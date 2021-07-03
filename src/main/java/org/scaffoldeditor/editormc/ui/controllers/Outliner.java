@@ -18,6 +18,7 @@ import org.scaffoldeditor.scaffold.level.stack.StackItem.ItemType;
 import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
 import org.scaffoldeditor.scaffold.operation.DeleteGroupOperation;
 import org.scaffoldeditor.scaffold.operation.ModifyStackOperation;
+import org.scaffoldeditor.scaffold.util.ClipboardManager;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -321,6 +322,11 @@ public class Outliner {
 			updateSelection();
 		});
 		
+		MenuItem copy = new MenuItem("Copy Group");
+		copy.setOnAction(e -> {
+			ClipboardManager.getInstance().copyGroup(group);
+		});
+		
 		MenuItem delete = new MenuItem("Delete");
 		delete.setOnAction(e -> {
 			if (group.size() > 0) {
@@ -334,7 +340,7 @@ public class Outliner {
 			getLevel().getOperationManager().execute(new DeleteGroupOperation(getLevel(), Collections.singleton(group)));
 		});
 		
-		return new ContextMenu(selectChildren, delete);
+		return new ContextMenu(selectChildren, copy, delete);
 	}
 	
 	public TreeView<StackItem> getRoot() {

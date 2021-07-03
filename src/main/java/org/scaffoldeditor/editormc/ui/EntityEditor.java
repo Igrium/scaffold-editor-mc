@@ -136,8 +136,10 @@ public class EntityEditor {
 		List<Output> newOutputs = null;
 		if (cachedAttributes.size() > 0) newAttributes = cachedAttributes;
 		if (controller.hasBeenUpdated) newOutputs = controller.outputTable.getItems();
-		if (newAttributes != null || newOutputs != null) {
-			entity.getLevel().getOperationManager().execute(new ChangeAttributesOperation(entity, newAttributes, newOutputs));
+		String newName = controller.nameField.getText();
+		if (newAttributes != null || newOutputs != null || !newName.equals(entity.getName())) {
+			entity.getLevel().getOperationManager().execute(new ChangeAttributesOperation(entity, newAttributes,
+					newOutputs, newName.equals(entity.getName()) ? null : newName, true));
 			controller.hasBeenUpdated = false;
 		}
 	}
