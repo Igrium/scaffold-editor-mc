@@ -32,6 +32,7 @@ import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
 import org.scaffoldeditor.scaffold.core.Project;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.level.stack.StackItem;
 import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
 import org.scaffoldeditor.scaffold.operation.PasteEntitiesOperation;
 import org.scaffoldeditor.scaffold.util.ClipboardManager;
@@ -257,7 +258,14 @@ public class ScaffoldEditor {
 	 * Copy the current selection to the clipboard.
 	 */
 	public void copySelection() {
-		ClipboardManager.getInstance().copyEntities(selectedEntities);
+		List<StackItem> copy = new ArrayList<>();
+		for (Entity ent : level.getLevelStack()) {
+			if (selectedEntities.contains(ent)) {
+				copy.add(new StackItem(ent));
+			}
+		}
+		
+		ClipboardManager.getInstance().copyItems(copy);
 	}
 	
 	/**
@@ -272,7 +280,7 @@ public class ScaffoldEditor {
 	 * Paste the current clipboard into the level.
 	 */
 	public void paste() {
-		level.getOperationManager().execute(new PasteEntitiesOperation(getLevel()));
+		level.getOperationManager().execute(new PasteEntitiesOperation(getLevel(), ui.getOutliner().getSelectedGroup()));
 	}
 	
 	/**
