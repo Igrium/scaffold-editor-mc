@@ -93,8 +93,7 @@ public class ScaffoldEditor {
 			setLevel(level);
 		}
 		
-		ui = ScaffoldUI.open();
-		ui.setEditor(this);
+		ui = ScaffoldUI.open(this);
 		
 		RenderAttributeRegistry.initDefaults();
 		renderEntityManager = new RenderEntityManager(this);
@@ -128,6 +127,7 @@ public class ScaffoldEditor {
 			e.printStackTrace();
 		}
 		project.close();
+		project = null;
 	}
 
 	public void setLevel(Level level) {

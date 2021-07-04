@@ -1,6 +1,7 @@
 package org.scaffoldeditor.editormc.engine;
 
 import org.scaffoldeditor.editormc.controls.CameraController;
+import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -22,6 +23,7 @@ public class EditorCameraEntity extends ClientPlayerEntity implements CameraCont
 	public EditorCameraEntity(MinecraftClient client, ClientWorld world, ClientPlayNetworkHandler networkHandler,
 			StatHandler stats, ClientRecipeBook recipeBook, boolean lastSneaking, boolean lastSprinting) {
 		super(client, world, networkHandler, stats, recipeBook, lastSneaking, lastSprinting);
+		ScaffoldUI.getInstance().playerSpawnLatch.countDown();
 	}
 
 	@Override

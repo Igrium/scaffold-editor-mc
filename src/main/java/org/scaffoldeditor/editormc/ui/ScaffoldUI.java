@@ -48,13 +48,14 @@ public class ScaffoldUI extends Application {
 	private static final CountDownLatch latch = new CountDownLatch(1);
 	private static ScaffoldUI instance;
 	
+	public CountDownLatch playerSpawnLatch = new CountDownLatch(1);
 	private ScaffoldEditor editor;
 	private MainFXMLController controller;
 	protected Stage stage;
 	protected Scene mainScene;
 	protected Viewport viewport;
 	protected ViewportControls viewportControls = new ViewportControls();
-	protected Toolbar toolbar = new Toolbar();
+	protected Toolbar toolbar;
 	protected Outliner outliner;
 	protected MinecraftConsole console;
 	
@@ -93,9 +94,9 @@ public class ScaffoldUI extends Application {
 			
 			System.setProperty("java.awt.headless", "false");
 			stage.show();
-			viewportControls.init(this);
 			controller.init();
 			
+			toolbar = new Toolbar();
 			toolbar.addTool(new SelectTool(viewport), "select");
 			toolbar.addTool(new MoveTool(viewport, editor), "move");
 			toolbar.addTool(new ResizeTool(this), "resize");
@@ -109,6 +110,7 @@ public class ScaffoldUI extends Application {
 			
 			controller.getViewportHeader().init(editor);
 			
+			isExiting = false;
 			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 				
 				@Override
@@ -121,6 +123,10 @@ public class ScaffoldUI extends Application {
 					}
 				}
 			});
+			
+			LogManager.getLogger().info("Awaiting player spawn...");
+			playerSpawnLatch.await();
+			viewportControls.init(this);
 			
 			if (getEditor().getProject() == null) {
 				openSplashScreen();
@@ -264,17 +270,24 @@ public class ScaffoldUI extends Application {
 	 * this method returns the original instance. Otherwise,
 	 * it launches a new instance and holds the thread until
 	 * it has initialized.
+	 * @param editor Editor instance.
 	 * @return Scaffold UI instance.
 	 */
-	public static ScaffoldUI open() {
+	public static ScaffoldUI open(ScaffoldEditor editor) {
 		if (instance != null) {
-			Platform.runLater(() -> instance.initUI(instance.stage));
+			instance.playerSpawnLatch = new CountDownLatch(1);
+			Platform.runLater(() -> {
+				instance.setEditor(editor);
+				instance.initUI(instance.stage);
+			});
 			return instance;
 		} else {
 			new Thread(() -> {
 				Application.launch(ScaffoldUI.class, new String[] {});
 			}).start();
-			return ScaffoldUI.waitForinit();
+			ScaffoldUI instance = ScaffoldUI.waitForinit();
+			instance.setEditor(editor);
+			return instance;
 		}
 	}
 

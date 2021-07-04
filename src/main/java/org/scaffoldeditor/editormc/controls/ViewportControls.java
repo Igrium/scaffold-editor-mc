@@ -91,7 +91,7 @@ public class ViewportControls {
 		
 		scene.addEventHandler(MouseEvent.MOUSE_DRAGGED, new MouseListener());
 		scene.addEventHandler(MouseEvent.MOUSE_MOVED, new MouseListener());
-
+		
 		
 		Entity cameraEntity = client.getCameraEntity();
 		if (!(cameraEntity instanceof CameraController)) {
