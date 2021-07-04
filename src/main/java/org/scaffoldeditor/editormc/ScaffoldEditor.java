@@ -67,7 +67,7 @@ public class ScaffoldEditor {
 	private RenderEntityManager renderEntityManager;
 	
 	public ScaffoldEditor() {
-
+		
 	}
 	
 	public static ScaffoldEditor getInstance() {
@@ -105,7 +105,11 @@ public class ScaffoldEditor {
 	 * Gracefully exit from the editor.
 	 */
 	public void exit() {
-		client.getServer().stop(true);
+		client.execute(() -> {
+			client.world.disconnect();
+			client.disconnect();
+			client.openScreen(null);
+		});
 	}
 	
 	/**
@@ -119,7 +123,6 @@ public class ScaffoldEditor {
 	}
 	
 	protected void onClose() {
-		client.onResolutionChanged();
 		client.options.pauseOnLostFocus = pauseCache;
 		try {
 			saveCache();
@@ -128,6 +131,7 @@ public class ScaffoldEditor {
 		}
 		project.close();
 		project = null;
+		client.execute(() -> client.onResolutionChanged());
 	}
 
 	public void setLevel(Level level) {

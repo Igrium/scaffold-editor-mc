@@ -132,8 +132,7 @@ public class ScaffoldUI extends Application {
 				openSplashScreen();
 			}
 		} catch (Exception e) {
-			LogManager.getLogger().error("Unable to initialize scaffold ui!");
-			e.printStackTrace();
+			LogManager.getLogger().error("Unable to initialize scaffold ui!", e);
 		}
 
 	}
