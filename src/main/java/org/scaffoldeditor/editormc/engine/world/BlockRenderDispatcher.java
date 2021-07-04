@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc.engine.world;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,7 +56,7 @@ public class BlockRenderDispatcher {
 		}
 	}
 	
-	public final Set<BlockCollectionRenderer> blockCollections = new HashSet<>();
+	public final Set<BlockCollectionRenderer> blockCollections = Collections.synchronizedSet(new HashSet<>()); 
 	
 	public BlockRenderDispatcher(MinecraftClient client) {
 		this.client = client;
@@ -73,10 +74,14 @@ public class BlockRenderDispatcher {
 		}
 		matrixStack.push();
 		matrixStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-		for (BlockCollectionRenderer blocks : blockCollections) {
-			Vec3d pos = blocks.getPos();
-			renderBlocks(blocks.getBlockCollection(), pos.x, pos.y, pos.z, blocks.getRot(), matrixStack, vertexConsumers);
+		
+		synchronized (blockCollections) {
+			for (BlockCollectionRenderer blocks : blockCollections) {
+				Vec3d pos = blocks.getPos();
+				renderBlocks(blocks.getBlockCollection(), pos.x, pos.y, pos.z, blocks.getRot(), matrixStack, vertexConsumers);
+			}
 		}
+		
 		matrixStack.pop();
 	}
 	

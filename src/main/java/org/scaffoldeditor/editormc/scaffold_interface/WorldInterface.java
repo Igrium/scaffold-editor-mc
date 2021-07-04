@@ -41,23 +41,21 @@ public final class WorldInterface {
 	 * @param offset Coordinates of the section.
 	 */
 	public static void loadScaffoldSection(Section section, EditorServerWorld world, SectionCoordinate offset) {
-		if (!world.getServer().isOnThread()) {
-			world.getServer().execute(() -> loadScaffoldSection(section, world, offset));
-			return;
-		}
-		if (world.occupiedSections.contains(offset)) {
-			world.clearSection(offset);
-		}
-		
-		for (int y = 0; y < Section.HEIGHT; y++) {
-			for (int z = 0; z < Chunk.LENGTH; z++) {
-				for (int x = 0; x < Chunk.WIDTH; x++) {
-					loadBlock(section.blockAt(x, y, z), x, y, z, world,
-							new BlockPos(offset.x * Chunk.WIDTH, offset.y * Section.HEIGHT, offset.z * Chunk.LENGTH));
+		world.getServer().execute(() -> {
+			if (world.occupiedSections.contains(offset)) {
+				world.clearSection(offset);
+			}
+			
+			for (int y = 0; y < Section.HEIGHT; y++) {
+				for (int z = 0; z < Chunk.LENGTH; z++) {
+					for (int x = 0; x < Chunk.WIDTH; x++) {
+						loadBlock(section.blockAt(x, y, z), x, y, z, world,
+								new BlockPos(offset.x * Chunk.WIDTH, offset.y * Section.HEIGHT, offset.z * Chunk.LENGTH));
+					}
 				}
 			}
-		}
-		world.occupiedSections.add(offset);
+			world.occupiedSections.add(offset);
+		});
 	}
 	
 	private static void loadBlock(Block block, int x, int y, int z, EditorServerWorld world, BlockPos offset) {
