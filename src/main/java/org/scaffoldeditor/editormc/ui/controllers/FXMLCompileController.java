@@ -2,6 +2,7 @@ package org.scaffoldeditor.editormc.ui.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import net.minecraft.client.MinecraftClient;
 
 public class FXMLCompileController {
 		
@@ -56,6 +58,7 @@ public class FXMLCompileController {
 	protected Stage stage;
 	
 	boolean isCompiling = false;
+	private MinecraftClient client = MinecraftClient.getInstance();
 	
 	@FXML
 	private void initialize() {
@@ -80,14 +83,17 @@ public class FXMLCompileController {
 			compilePathField.setText(path);
 		}
 		
-		compilePathField.focusedProperty().addListener(e -> {
+		compilePathField.textProperty().addListener(e -> {
 			updateButton();
 		});
 		updateButton();
 	}
 	
 	public void updateButton() {
-		if (Paths.get(compilePathField.getText()).resolve("level.dat").toFile().isFile()) {
+		Path compilePath = Paths.get(compilePathField.getText()).resolve("level.dat");
+		
+		Path saves = client.runDirectory.toPath().resolve("saves").normalize();
+		if (compilePath.startsWith(saves) && compilePath.toFile().isFile()) {
 			launchButton.setDisable(false);
 		} else {
 			launchButton.setDisable(true);
@@ -96,7 +102,7 @@ public class FXMLCompileController {
 	
 	@FXML
 	public void launch() {
-		LogManager.getLogger().info("If this was implemented, we would launch the game to: "+compilePathField.getText());
+		editor.openWorld(new File(compilePathField.getText()).getName());
 	}
 	
 	@FXML

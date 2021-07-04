@@ -420,18 +420,16 @@ public class ScaffoldEditor {
 		}
 	}
 	
-//	public static ScaffoldEditor startWithTestProject() {
-//		@SuppressWarnings("resource")
-//		Project project = Project.init(MinecraftClient.getInstance().runDirectory.toPath().resolve("testProject").toString(), "testProject");
-//		Level level = new Level(project, "Test Level");
-//		level.setName("testLevel");
-//		
-//		WorldStatic prop = (WorldStatic) level.newEntity("world_static", "propStatic", new Vector(5, 5, 5));
-//		prop.setAttribute("model", new StringAttribute("schematics/smiley.nbt"));
-//		
-//		level.saveFile(project.getProjectFolder().resolve("maps/testlevel.mclevel").toFile());
-//		ScaffoldEditor editor = new ScaffoldEditor();
-//		editor.start(level);
-//		return editor;
-//	}
+	/**
+	 * Close the editor and open a Minecraft world ingame.
+	 * @param worldName World to load.
+	 */
+	public void openWorld(String worldName) {
+		LogManager.getLogger().info("Shutting down editor and opening world: "+worldName);
+		client.execute(() -> {
+			client.world.disconnect();
+			client.disconnect();
+			client.startIntegratedServer(worldName);
+		});
+	}
 }
