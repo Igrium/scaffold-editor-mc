@@ -87,6 +87,7 @@ public class Viewport {
 	}
 	
 	public void handleMousePressed(MouseEvent e) {
+		parent.requestFocus();
 		if (activeTransformation != null) {
 			activeTransformation.onMousePressed(e);
 		} else if (activeTool != null) {

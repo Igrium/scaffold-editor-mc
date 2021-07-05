@@ -88,15 +88,15 @@ public class MainFXMLController {
 				isShiftPressed = true;
 			}
 		});
-		viewport_pane.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
+		mainPanel.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
 			ScaffoldUI.getInstance().viewport.handleKeyPressed(e);
 			if (e.getCode().equals(KeyCode.SHIFT)) {
 				isShiftPressed = false;
 			}
 		});
-		viewport_pane.addEventHandler(KeyEvent.KEY_TYPED, ui.viewport::handleKeyTyped);
+		mainPanel.addEventHandler(KeyEvent.KEY_TYPED, ui.viewport::handleKeyTyped);
 		
-		viewport_pane.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
+		mainPanel.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
 			ScaffoldUI.getInstance().viewport.handleMouseMoved((int) e.getX(), (int) e.getY());
 		});
 		
