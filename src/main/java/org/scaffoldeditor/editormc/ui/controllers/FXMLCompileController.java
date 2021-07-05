@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
 import org.json.JSONObject;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.scaffold.compile.Compiler.CompileEndStatus;
