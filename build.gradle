@@ -43,7 +43,7 @@ if (currentOS.isWindows()) {
 }
 
 def javaFX_version = '17-ea+13'
-def scaffold_version = '0.4.0-SNAPSHOT'
+def scaffold_version = '0.4.0'
 
 dependencies {
 	// To change the versions see the gradle.properties file
