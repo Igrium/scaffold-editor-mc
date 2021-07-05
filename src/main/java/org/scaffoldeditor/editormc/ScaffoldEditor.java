@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.lwjgl.glfw.GLFW;
 import org.scaffoldeditor.editormc.engine.EditorServer;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.engine.world.EditorServerWorld;
@@ -40,6 +41,7 @@ import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
 import org.scaffoldeditor.scaffold.util.event.EventListener;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.Window;
 import net.minecraft.util.math.Vec3d;
 
 public class ScaffoldEditor {
@@ -129,9 +131,20 @@ public class ScaffoldEditor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		project.close();
+		if (project != null) project.close();
 		project = null;
-		client.execute(() -> client.onResolutionChanged());
+		client.execute(() -> {
+			// Reset framebuffer
+			Window window = client.getWindow();
+			int[] width = new int[1];
+			int[] height = new int[1];
+			GLFW.glfwGetFramebufferSize(window.getHandle(), width, height);
+			LogManager.getLogger().info("Framebuffer size: "+width[0]+", "+height[0]);
+			window.setFramebufferWidth(width[0]);
+			window.setFramebufferHeight(height[0]);
+			
+			client.onResolutionChanged();
+		});
 	}
 
 	public void setLevel(Level level) {

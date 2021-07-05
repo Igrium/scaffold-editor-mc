@@ -8,7 +8,6 @@ import org.scaffoldeditor.editormc.engine.entity.BillboardEntityRenderer;
 import org.scaffoldeditor.editormc.engine.entity.BrushEntityRenderer;
 import org.scaffoldeditor.editormc.engine.entity.ModelEntityRenderer;
 import org.scaffoldeditor.editormc.engine.gizmos.GizmoManager;
-import org.scaffoldeditor.editormc.engine.mixins.MainWindowAccessor;
 import org.scaffoldeditor.editormc.engine.world.BlockRenderDispatcher;
 import org.scaffoldeditor.editormc.engine.world.ScaffoldRenderEvents;
 
@@ -17,6 +16,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.util.Window;
 
 public class ScaffoldEditorMod implements ClientModInitializer {
 	
@@ -46,7 +46,7 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 					if (fb.viewportWidth != res.width || fb.viewportHeight != res.height) {
 						fb.resize(res.width, res.height, false);
 						
-						MainWindowAccessor window = (MainWindowAccessor) (Object) client.getWindow();
+						Window window = client.getWindow();
 						window.setFramebufferWidth(res.width);
 						window.setFramebufferHeight(res.height);
 						
