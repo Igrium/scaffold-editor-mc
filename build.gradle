@@ -43,7 +43,6 @@ if (currentOS.isWindows()) {
 }
 
 def javaFX_version = '17-ea+13'
-def scaffold_version = '0.4.0'
 
 dependencies {
 	// To change the versions see the gradle.properties file
@@ -54,7 +53,7 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	implementation(include("org.scaffoldeditor:scaffold-core:${scaffold_version}"))
+	implementation(include("org.scaffoldeditor:scaffold-core:${project.scaffold_version}"))
 	implementation(include("org.scaffoldeditor:scaffold-nbt:${scaffold_version}"))
 	implementation(include("com.github.Querz:NBT:6.1"))
 	implementation(include("org.json:json:20190722")) // Scaffold core uses org.json, not gson.
