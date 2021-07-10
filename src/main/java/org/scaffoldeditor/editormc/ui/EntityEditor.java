@@ -16,6 +16,8 @@ import org.scaffoldeditor.scaffold.level.entity.Macro;
 import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
 import org.scaffoldeditor.scaffold.level.io.Output;
 import org.scaffoldeditor.scaffold.operation.ChangeAttributesOperation;
+import org.scaffoldeditor.scaffold.sdoc.ComponentDoc;
+import org.scaffoldeditor.scaffold.sdoc.SDoc;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -26,6 +28,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,6 +36,7 @@ import javafx.stage.Stage;
 public class EntityEditor {
 	public final Stage parent;
 	public final Entity entity;
+	protected SDoc doc;
 	protected Scene scene;
 	protected Stage stage;
 	protected Map<String, Attribute<?>> cachedAttributes = new HashMap<>();
@@ -57,7 +61,7 @@ public class EntityEditor {
 			return;
 		}		
 		
-		scene = new Scene(root, 600, 400);
+		scene = new Scene(root);
 		stage.setTitle("Edit "+entity.getName());
 		stage.setScene(scene);
 		stage.initModality(Modality.APPLICATION_MODAL);
@@ -68,8 +72,10 @@ public class EntityEditor {
 		controller.nameField.setText(entity.getName());	
 		controller.entityTypeLabel.setText(entity.registryName);
 		attributePane = controller.attributePane;
+		doc = entity.getDocumentation();
 		loadAttributes();
 		loadMacros();
+		controller.updateDoc(doc.getDescription());
 		
 		scene.addEventHandler(ChangeAttributeEvent.ATTRIBUTE_CHANGED, e -> {
 			cachedAttributes.put(e.name, e.newValue);
@@ -93,10 +99,15 @@ public class EntityEditor {
 			Attribute<?> attribute = entity.getAttribute(name);
 			
 			Node setter = RenderAttributeRegistry.createSetter(name, attribute, entity);
-			Label label = new Label(name);
+			ComponentDoc comp = doc.attributes.get(name);
+			Label label = new Label(comp != null ? comp.getPrettyName() : name);
 			
 			attributePane.add(label, 1, i);
 			attributePane.add(setter, 2, i);
+			
+			if (comp != null) {
+				label.setTooltip(new Tooltip(comp.getDescription()));
+			}
 			
 			i++;
 		}

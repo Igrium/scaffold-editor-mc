@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.io.Output;
+import org.scaffoldeditor.scaffold.sdoc.SDoc;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
@@ -20,6 +21,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 
 public class FXMLEntityEditorController {
@@ -70,6 +73,9 @@ public class FXMLEntityEditorController {
 	
 	@FXML
 	public Button selectTargetButton;
+	
+	@FXML
+	public TextFlow documentation;
 	
 	public boolean hasBeenUpdated = false;
 	
@@ -218,6 +224,13 @@ public class FXMLEntityEditorController {
 				onUpdate();
 			}	
 		});
+	}
+	
+	public void updateDoc(String str) {
+		Text text = new Text(str);
+		text.getStyleClass().add("text");
+		documentation.getChildren().clear();
+		documentation.getChildren().add(text);
 	}
 	
 	private void onUpdate() {
