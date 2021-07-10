@@ -4,13 +4,15 @@ import java.util.stream.Collectors;
 
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.io.Output;
-import org.scaffoldeditor.scaffold.sdoc.SDoc;
+
+import com.sandec.mdfx.MarkdownView;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -21,6 +23,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
@@ -74,8 +77,10 @@ public class FXMLEntityEditorController {
 	@FXML
 	public Button selectTargetButton;
 	
+	public MarkdownView documentation;
+	
 	@FXML
-	public TextFlow documentation;
+	public VBox center;
 	
 	public boolean hasBeenUpdated = false;
 	
@@ -224,13 +229,17 @@ public class FXMLEntityEditorController {
 				onUpdate();
 			}	
 		});
+		
+		documentation = new MarkdownView();
+		documentation.setPadding(new Insets(10));
+		documentation.setPrefHeight(100);
+		VBox.setMargin(documentation, new Insets(10));
+		documentation.getStyleClass().add("output-field");
+		center.getChildren().add(documentation);
 	}
 	
 	public void updateDoc(String str) {
-		Text text = new Text(str);
-		text.getStyleClass().add("text");
-		documentation.getChildren().clear();
-		documentation.getChildren().add(text);
+		documentation.setMdString(str);
 	}
 	
 	private void onUpdate() {

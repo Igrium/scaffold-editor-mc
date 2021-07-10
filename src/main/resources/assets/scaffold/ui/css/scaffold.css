@@ -15,7 +15,7 @@
 }
 
 .text {
-    -fx-fill: lightgray; 
+    -fx-fill: lightgray;
 }
 
 .output-text {
@@ -106,4 +106,34 @@
 
 .drop-hint-group {
     -fx-background-color: derive(-fx-accent, 60%);
+}
+
+* {
+    -mdfx-font-color: lightgray;
+    -mdfx-link-color: rgb(109, 109, 255);
+    -mdfx-border-color-1: #888;
+    -mdfx-bg-color-1: derive(-fx-base, 35%);
+    -mdfx-bg-color-2: derive(-mdfx-bg-color-1, 80%);
+    -mdfx-bg-color-3: derive(-mdfx-bg-color-1, 50%);
+    -mdfx-bq-color-border: #4488cc;
+    /* the blockquote's border color */
+    -mdfx-bq-color-background: #0000ff0c;
+    /* the blockquote's background color */
+}
+
+.markdown-text {
+    -fx-font-family: ARIAL;
+    -fx-font-size: 12
+}
+
+.markdown-italic {
+    -fx-font-style: italic;
+}
+
+.markdown-bold {
+    -fx-font-weight: bold;
+}
+
+.markdown-strikethrough {
+    -fx-strikethrough: true;
 }
