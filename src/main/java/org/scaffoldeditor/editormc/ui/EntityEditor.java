@@ -1,11 +1,11 @@
 package org.scaffoldeditor.editormc.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
 import org.scaffoldeditor.editormc.ui.attribute_types.DefaultAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.IRenderAttributeType;
@@ -95,11 +95,21 @@ public class EntityEditor {
 	
 	protected void loadAttributes() {
 		int i = 2;
+		List<String> ordered = new ArrayList<>();
+		
+		for (ComponentDoc att : doc.attributes) {
+			ordered.add(att.getName());
+		}
+		
 		for (String name : entity.getAttributes()) {
+			if (!ordered.contains(name)) ordered.add(name);
+		}
+		
+		for (String name : ordered) {
 			Attribute<?> attribute = entity.getAttribute(name);
 			
 			Node setter = RenderAttributeRegistry.createSetter(name, attribute, entity);
-			ComponentDoc comp = doc.attributes.get(name);
+			ComponentDoc comp = doc.attributes.stream().filter(val -> val.getName().equals(name)).findFirst().orElse(null);
 			Label label = new Label(comp != null ? comp.getPrettyName() : name);
 			
 			attributePane.add(label, 1, i);
