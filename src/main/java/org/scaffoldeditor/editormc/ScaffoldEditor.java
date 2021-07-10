@@ -145,6 +145,7 @@ public class ScaffoldEditor {
 			
 			client.onResolutionChanged();
 		});
+		renderEntityManager.clear();
 	}
 
 	public void setLevel(Level level) {

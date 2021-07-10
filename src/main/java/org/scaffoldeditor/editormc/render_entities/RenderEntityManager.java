@@ -13,6 +13,7 @@ import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.render.BillboardRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.BlockRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.BrushRenderEntity;
+import org.scaffoldeditor.scaffold.level.render.LineRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.MCRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.ModelRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.RenderEntity;
@@ -81,6 +82,7 @@ public class RenderEntityManager {
 		else if (in instanceof BillboardRenderEntity) ent = new BillboardEditorEntity(world, editor);
 		else if (in instanceof BrushRenderEntity) ent = new BrushEditorEntity(world, editor);
 		else if (in instanceof BlockRenderEntity) ent = new BlockEditorEntity();
+		else if (in instanceof LineRenderEntity) ent = new LineEditorEntity();
 		else {
 			throw new IllegalArgumentException(
 					"Render entity: " + in + " is not a subclass of any known render entity classes.");
