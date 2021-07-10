@@ -345,6 +345,10 @@ public class ScaffoldUI extends Application {
 		return outliner;
 	}
 	
+	public Toolbar getToolbar() {
+		return toolbar;
+	}
+	
 	public void reloadRecentFiles() {
 		if (editor.getCache().has("recentLevels")) {
 			List<String> recent = new ArrayList<String>();

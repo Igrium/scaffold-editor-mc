@@ -70,6 +70,7 @@ public class EntityTool implements ViewportTool {
 			if (hitResult.getType() == HitResult.Type.MISS) return;		
 			Vec3d pos = hitResult.getPos();
 			spawn(new Vector3f((float) pos.x, (float) pos.y, (float) pos.z), uiController.shouldSnapToBlock());
+			ScaffoldUI.getInstance().getToolbar().setTool("select");
 		}
 	}
 	
