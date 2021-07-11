@@ -6,8 +6,6 @@ import java.nio.file.Paths;
 
 import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
-import org.scaffoldeditor.editormc.ui.ScaffoldUI;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;

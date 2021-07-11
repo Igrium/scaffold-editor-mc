@@ -2,13 +2,19 @@ package org.scaffoldeditor.editormc.ui.controllers;
 
 import java.util.stream.Collectors;
 
+import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.io.Output;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.html.HTMLAnchorElement;
 
 import com.github.rjeschke.txtmark.Processor;
 
+import javafx.application.HostServices;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -239,14 +245,27 @@ public class FXMLEntityEditorController {
 		webEngine.setUserStyleSheetLocation(
 				getClass().getResource("/assets/scaffold/ui/css/scaffold_web.css").toString());
 		
-		// Inject font.
 		webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
 			if (newState == State.SUCCEEDED) {
+				// Inject font.
 				Document doc = webEngine.getDocument();
 				Element styleNode = doc.createElement("style");
 				styleNode.setTextContent("body { font-family: '" + Font.getDefault().getFamily() + "';}");
 				
 				doc.getDocumentElement().getElementsByTagName("head").item(0).appendChild(styleNode);
+				
+				// Deal with links.
+				NodeList links = doc.getElementsByTagName("a");
+				for (int i = 0; i < links.getLength(); i++) {
+					EventTarget item = (EventTarget) links.item(i);
+					item.addEventListener("click", event -> {
+						HTMLAnchorElement element = (HTMLAnchorElement) event.getCurrentTarget();
+						String href = element.getHref();
+						event.preventDefault();
+						
+						ScaffoldUI.getInstance().getHostServices().showDocument(href);
+					}, false);
+				}
 			}
 		});
 	}
