@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,6 +30,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -135,6 +139,14 @@ public class ScaffoldUI extends Application {
 			LogManager.getLogger().error("Unable to initialize scaffold ui!", e);
 		}
 
+	}
+	
+	public boolean showUnsavedDialog() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setHeaderText("Unsaved Changes");
+		alert.setContentText("You have unsaved changes! Are you sure you want to continue?");
+		Optional<ButtonType> pressed = alert.showAndWait();
+		return pressed.isPresent() && pressed.get() == ButtonType.OK;
 	}
 	
 	public void openSplashScreen() {

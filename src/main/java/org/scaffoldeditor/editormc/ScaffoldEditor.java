@@ -107,6 +107,10 @@ public class ScaffoldEditor {
 	 * Gracefully exit from the editor.
 	 */
 	public void exit() {
+		if (level != null && level.hasUnsavedChanges()) {
+			if (!ui.showUnsavedDialog()) return;
+		}
+		
 		client.execute(() -> {
 			client.world.disconnect();
 			client.disconnect();

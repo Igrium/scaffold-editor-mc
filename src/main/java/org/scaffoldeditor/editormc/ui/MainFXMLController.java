@@ -126,6 +126,9 @@ public class MainFXMLController {
 	
 	@FXML
 	private void compile() {
+		if (ScaffoldEditor.getInstance().getLevel().hasUnsavedChanges()) {
+			if (!ScaffoldUI.getInstance().showUnsavedDialog()) return;
+		}
 		ScaffoldUI.getInstance().openCompiler();
 	}
 	
