@@ -119,7 +119,7 @@
                         <HBox spacing="5.0">
                            <children>
                               <Button mnemonicParsing="false" onAction="#addOutput" prefWidth="25.0" text="+" textAlignment="CENTER" />
-                              <Button fx:id="deleteOutputButton" disable="true" mnemonicParsing="false" prefWidth="25.0" text="-" />
+                              <Button fx:id="deleteOutputButton" disable="true" mnemonicParsing="false" onAction="#deleteSelected" prefWidth="25.0" text="-" />
                            </children>
                         </HBox>
                         <GridPane hgap="10.0">

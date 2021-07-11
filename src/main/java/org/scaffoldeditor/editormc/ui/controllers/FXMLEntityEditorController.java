@@ -1,5 +1,7 @@
 package org.scaffoldeditor.editormc.ui.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
@@ -7,14 +9,12 @@ import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.io.Output;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.html.HTMLAnchorElement;
 
 import com.github.rjeschke.txtmark.Processor;
 
-import javafx.application.HostServices;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -130,7 +130,11 @@ public class FXMLEntityEditorController {
 		outputTable.getItems().addAll(entity.getOutputs().stream().map(output -> output.clone()).collect(Collectors.toList()));
 		
 		outputBox.getItems().addAll(entity.getDeclaredOutputs().stream().map(output -> output.getName()).collect(Collectors.toList()));
-		targetBox.getItems().addAll(entity.getLevel().listEntityNames());
+		List<String> entNames = new ArrayList<>();
+		entNames.add("!this");
+		entNames.add("!instigator");
+		entNames.addAll(entity.getLevel().listEntityNames());
+		targetBox.getItems().addAll(entNames);
 	}
 	
 	private void setDisableOutputControls(boolean disable) {
@@ -162,7 +166,13 @@ public class FXMLEntityEditorController {
 			return;
 		}
 		
-		Entity target = entity.getLevel().getEntity(targetBox.getValue());
+		Entity target;
+		if ("!this".equals(targetBox.getValue())) {
+			target = entity;
+		} else {
+			target = entity.getLevel().getEntity(targetBox.getValue());
+		}
+		
 		if (target == null) {
 			return;
 		}
