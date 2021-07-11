@@ -4,15 +4,17 @@ import java.util.stream.Collectors;
 
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.io.Output;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-import com.sandec.mdfx.MarkdownView;
+import com.github.rjeschke.txtmark.Processor;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -24,6 +26,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.util.Callback;
 
 public class FXMLEntityEditorController {
@@ -75,8 +80,9 @@ public class FXMLEntityEditorController {
 	@FXML
 	public Button selectTargetButton;
 	
-	public MarkdownView documentation;
-	
+	@FXML
+	public WebView docView;
+		
 	@FXML
 	public VBox center;
 	
@@ -227,17 +233,26 @@ public class FXMLEntityEditorController {
 				onUpdate();
 			}	
 		});
+
+		docView.setContextMenuEnabled(false);
+		WebEngine webEngine = docView.getEngine();
+		webEngine.setUserStyleSheetLocation(
+				getClass().getResource("/assets/scaffold/ui/css/scaffold_web.css").toString());
 		
-		documentation = new MarkdownView();
-		documentation.setPadding(new Insets(10));
-		documentation.setPrefHeight(100);
-		VBox.setMargin(documentation, new Insets(10));
-		documentation.getStyleClass().add("output-field");
-		center.getChildren().add(documentation);
+		// Inject font.
+		webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+			if (newState == State.SUCCEEDED) {
+				Document doc = webEngine.getDocument();
+				Element styleNode = doc.createElement("style");
+				styleNode.setTextContent("body { font-family: '" + Font.getDefault().getFamily() + "';}");
+				
+				doc.getDocumentElement().getElementsByTagName("head").item(0).appendChild(styleNode);
+			}
+		});
 	}
-	
+
 	public void updateDoc(String str) {
-		documentation.setMdString(str);
+		docView.getEngine().loadContent(Processor.process(str));
 	}
 	
 	private void onUpdate() {

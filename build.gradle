@@ -65,7 +65,9 @@ dependencies {
 	implementation(include("org.openjfx:javafx-controls:${javaFX_version}:${platform}"))
 	implementation(include("org.openjfx:javafx-graphics:${javaFX_version}:${platform}"))
 	implementation(include("org.openjfx:javafx-fxml:${javaFX_version}:${platform}"))
+	implementation(include("org.openjfx:javafx-web:${javaFX_version}:${platform}"))
 	implementation(include("com.sandec:mdfx:0.2.4"))
+	implementation(include("es.nitaur.markdown:txtmark:0.16"))
 
 	// modImplementation "dev.monarkhes:myron:1.6.0"
     // include "dev.monarkhes:myron:1.6.0"
