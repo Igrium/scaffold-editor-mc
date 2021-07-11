@@ -189,21 +189,12 @@ public class ScaffoldUI extends Application {
 	
 	public void newLevel() {
 		if (editor.getProject() == null) return;
-		FileChooser chooser = new FileChooser();
-		chooser.setInitialDirectory(editor.getProject().getProjectFolder().resolve("maps").toFile());
-		chooser.getExtensionFilters().add(new ExtensionFilter("Scaffold Level Files", "*.mclevel"));
-		chooser.setInitialFileName("*.mclevel");
 		
-		File level = chooser.showSaveDialog(stage);
-		if (level != null) {
-			File level2;
-			if (!level.getName().endsWith(".mclevel")) {
-				level2 = new File(level.getParentFile(), level.getName()+".mclevel");
-			} else {
-				level2 = level;
-			}
-			editor.newLevel(level2);
+		if (editor.getLevel() != null && editor.getLevel().hasUnsavedChanges()) {
+			if (!showUnsavedDialog()) return;
 		}
+		
+		editor.newLevel();
 	}
 	
 	/**

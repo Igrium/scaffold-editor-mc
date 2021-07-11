@@ -197,14 +197,14 @@ public class ScaffoldEditor {
 	
 	/**
 	 * Create a new level and open it. Only works if the project is not null.
-	 * @param levelFile File to save the level as.
 	 */
-	public void newLevel(File levelFile) {
-		if (project == null) return;
+	public void newLevel() {
+		if (project == null) {
+			throw new IllegalStateException("Project cannot be null");
+		};
+		levelFile = null;
 		Level level = new Level(getProject());
-		this.levelFile = levelFile;
 		setLevel(level);
-		project.getLevelService().execute(() -> level.saveFile(levelFile));
 	}
 	
 	protected void loadLevel(boolean compile) {
@@ -333,6 +333,10 @@ public class ScaffoldEditor {
 	 * @return Loaded level.
 	 */
 	public CompletableFuture<Level> openLevelFile(File file) {
+		if (level != null && level.hasUnsavedChanges()) {
+			if (!ui.showUnsavedDialog()) return null;
+		}
+		
 		CompletableFuture<Level> future = new CompletableFuture<Level>();
 		project.getLevelService().execute(() -> {
 			Level level = Level.loadFile(project, file);
@@ -367,7 +371,12 @@ public class ScaffoldEditor {
 	}
 	
 	public void save() {
-		if (level != null && levelFile != null) {
+		if (level != null) {
+			if (levelFile == null) {
+				throw new IllegalStateException(
+						"Attempted to save a level that doesn't have a corrisponding file. Use saveAs() instead.");
+			}
+			
 			project.getLevelService().execute(() -> level.saveFile(levelFile));
 		}
 		try {
@@ -375,6 +384,30 @@ public class ScaffoldEditor {
 		} catch (IOException e) {
 			LogManager.getLogger().error("Error saving cache ", e);
 		}
+	}
+	
+	public void saveAs(File newFile) {
+		levelFile = newFile;
+		level.setName(FilenameUtils.getBaseName(newFile.getName()));
+		save();
+		ui.reloadRecentFiles();
+		{
+			List<Object> recentLevels = cache.has("recentLevels") ? cache.getJSONArray("recentLevels").toList() : new ArrayList<>();
+			String filename = project.assetManager().relativise(newFile);
+			if (recentLevels.contains(filename)) {
+				recentLevels.remove(filename);
+			}
+			recentLevels.add(0, filename);
+			cache.put("recentLevels", recentLevels);
+		}
+	}
+	
+	/**
+	 * Get the file the level was last saved to.
+	 * @return The file, or {@code null} if it was never saved.
+	 */
+	public File getLevelFile() {
+		return levelFile;
 	}
 	
 	/**

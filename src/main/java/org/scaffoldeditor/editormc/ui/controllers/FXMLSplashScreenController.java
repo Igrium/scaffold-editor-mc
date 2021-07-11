@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 import org.scaffoldeditor.editormc.Config;
+import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 
 import javafx.fxml.FXML;
@@ -56,7 +57,7 @@ public class FXMLSplashScreenController {
 		}
 		
 		((Stage) textField.getScene().getWindow()).close();
-		ScaffoldUI.getInstance().getEditor().openProject(Paths.get(textField.getText()));
-		ScaffoldUI.getInstance().openLevel();
+		ScaffoldEditor.getInstance().openProject(Paths.get(textField.getText()));
+		ScaffoldEditor.getInstance().newLevel();
 	}
 }

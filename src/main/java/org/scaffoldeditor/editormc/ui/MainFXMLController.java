@@ -32,6 +32,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 
@@ -120,8 +122,36 @@ public class MainFXMLController {
 	}
 	
 	@FXML
-	private void save() {
-		ScaffoldUI.getInstance().getEditor().save();
+	public void save() {
+		ScaffoldEditor editor = ScaffoldEditor.getInstance();
+		if (editor.getLevelFile() == null) {
+			saveAs();
+		} else {
+			editor.save();
+		}
+	}
+	
+	@FXML
+	public void saveAs() {
+		FileChooser chooser = new FileChooser();
+		chooser.setInitialDirectory(
+				ScaffoldEditor.getInstance().getProject().getProjectFolder().resolve("maps").toFile());
+		chooser.setTitle("Save level file");
+		File old = ScaffoldEditor.getInstance().getLevelFile();
+		chooser.setInitialFileName(old != null ? old.getName() : "*.mclevel");
+		chooser.getExtensionFilters().add(new ExtensionFilter("Scaffold Level Files", "*.mclevel"));
+		
+		File file = chooser.showSaveDialog(ScaffoldUI.getInstance().stage);
+		if (file != null) {
+			File level2;
+			if (!file.getName().endsWith(".mclevel")) {
+				level2 = new File(file.getParentFile(), file.getName()+".mclevel");
+			} else {
+				level2 = file;
+			}
+			
+			ScaffoldEditor.getInstance().saveAs(level2);
+		}
 	}
 	
 	@FXML
