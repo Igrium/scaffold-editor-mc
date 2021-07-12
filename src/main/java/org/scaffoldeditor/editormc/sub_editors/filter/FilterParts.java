@@ -33,6 +33,13 @@ public final class FilterParts {
 		public void setValue(T value) {
 			setter.setText(getString(value));
 		}
+		
+		@Override
+		public void onUpdate(Runnable callback) {
+			setter.textProperty().addListener((observable, val, old) -> {
+				callback.run();
+			});
+		}
 	}
 	
 	public static abstract class SelectorLike<T extends SubCommand> extends FilterPart<T> {
@@ -58,6 +65,13 @@ public final class FilterParts {
 		public void setValue(T value) {
 			setter.setText(getSelector(value).compile());
 		}
+		
+		@Override
+		public void onUpdate(Runnable callback) {
+			setter.textProperty().addListener((observable, val, old) -> {
+				callback.run();
+			});
+		}
 	}
 	
 	public static abstract class VectorLike<T extends SubCommand> extends FilterPart<T> {
@@ -79,9 +93,16 @@ public final class FilterParts {
 		public void setValue(T value) {
 			setter.setVector(getVector(value));
 		}
+		
+		@Override
+		public void onUpdate(Runnable callback) {
+			setter.onUpdate(callback);
+		}
 	}
 	
 	public static abstract class ConditionalFilter<T extends SubCommand> extends FilterPart<T> {
+		
+		protected Conditional conditional;
 		
 		protected abstract T get(Conditional value);
 		public abstract Conditional getConditional(T val);
@@ -93,12 +114,16 @@ public final class FilterParts {
 		
 		@Override
 		public T getValue() {
-			return get(new EntityConditional(TargetSelector.fromString("@s")));
+			return get(conditional);
 		}
 		
 		@Override
 		public void setValue(T value) {
-			getConditional(value);
+			conditional = getConditional(value);
+		}
+		
+		@Override
+		public void onUpdate(Runnable callback) {
 		}
 		
 	}
@@ -214,8 +239,6 @@ public final class FilterParts {
 			
 			box.getChildren().add(target);
 			box.getChildren().add(anchor);
-			
-			
 		}
 		
 		@Override
@@ -237,6 +260,17 @@ public final class FilterParts {
 		public void setValue(FacingEnt value) {
 			target.setText(value.target.compile());
 			anchor.setText(value.anchor);
+		}
+		
+		@Override
+		public void onUpdate(Runnable callback) {
+			target.textProperty().addListener((prop, val, old) -> {
+				callback.run();
+			});
+			
+			anchor.textProperty().addListener((prop, val, old) -> {
+				callback.run();
+			});
 		}
 
 	}
@@ -298,6 +332,10 @@ public final class FilterParts {
 
 		@Override
 		public void setValue(Rotated value) {
+		}
+		
+		@Override
+		public void onUpdate(Runnable callback) {
 		}
 	}
 	

@@ -10,6 +10,8 @@ public abstract class FilterPart<T extends SubCommand> {
 	public abstract String getRegistryName();
 	public abstract void setValue(T value);
 	
+	public abstract void onUpdate(Runnable callback);
+	
 	@SuppressWarnings("unchecked")
 	public void setSubCommand(SubCommand value) {
 		setValue((T) value);

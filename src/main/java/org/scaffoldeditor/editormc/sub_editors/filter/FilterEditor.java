@@ -3,7 +3,9 @@ package org.scaffoldeditor.editormc.sub_editors.filter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.scaffoldeditor.scaffold.logic.datapack.commands.ExecuteCommandBuilder;
 import org.scaffoldeditor.scaffold.logic.datapack.commands.ExecuteCommand.SubCommand;
 import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
 import org.scaffoldeditor.scaffold.util.event.EventListener;
@@ -16,9 +18,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -28,6 +33,8 @@ public class FilterEditor {
 	
 	@FXML
 	public ListView<FilterPart<?>> listView;
+	@FXML
+	public TextField commandString;
 	
 	public final FilterPartRegistry registry = new FilterPartRegistry();
 	protected EventDispatcher<List<SubCommand>> dispatcher = new EventDispatcher<>();
@@ -55,8 +62,10 @@ public class FilterEditor {
 						public void changed(ObservableValue<? extends String> observable, String oldValue,
 								String newValue) {
 							if (newValue.equals(oldValue)) return;
-							
-							getListView().getItems().set(getIndex(), registry.create(newValue));
+							FilterPart<?> part = registry.create(newValue);
+							getListView().getItems().set(getIndex(), part);
+							part.onUpdate(FilterEditor.this::updateCommandText);
+							updateCommandText();
 						}
 					});
 					
@@ -72,10 +81,14 @@ public class FilterEditor {
 		for (SubCommand command : commands) {
 			listView.getItems().add(registry.create(command));
 		}
+		updateCommandText();
 	}
 	
 	public void newPart() {
-		listView.getItems().add(new AsFilter());
+		AsFilter part = new AsFilter();
+		listView.getItems().add(part);
+		part.onUpdate(this::updateCommandText);
+		updateCommandText();
 	}
 	
 	public void removePart() {
@@ -101,6 +114,33 @@ public class FilterEditor {
 		stage.close();
 	}
 	
+	public void updateCommandText() {
+		String text = listView.getItems().stream().map(item -> ((SubCommand) item.getValue()).get())
+				.collect(Collectors.joining(" "));
+		
+		commandString.setText(text);
+	}
+	
+	@FXML
+	public void parseCommandText() {
+		String text = commandString.getText();
+		ExecuteCommandBuilder builder;
+		try {
+			builder = ExecuteCommandBuilder.parse(text);
+		} catch (IllegalArgumentException e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText("Improperly formatted command");
+			alert.setContentText(e.getLocalizedMessage());
+			alert.show();
+			return;
+		}
+		listView.getItems().clear();
+		for (SubCommand command : builder.getSubCommands()) {
+			listView.getItems().add(registry.create(command));
+		}
+		updateCommandText();
+	}
+	
 	public void onApply(EventListener<List<SubCommand>> listener) {
 		dispatcher.addListener(listener);
 	}
@@ -121,7 +161,6 @@ public class FilterEditor {
 		
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
-		stage.setResizable(false);
 		stage.show();
 		
 		FilterEditor controller = loader.getController();

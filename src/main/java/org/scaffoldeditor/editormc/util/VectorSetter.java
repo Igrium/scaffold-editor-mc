@@ -40,4 +40,18 @@ public class VectorSetter extends HBox {
 		y.setText(Float.toString(vector.y));
 		z.setText(Float.toString(vector.z));
 	}
+	
+	public void onUpdate(Runnable callback) {
+		x.textProperty().addListener((prop, val, old) -> {
+			callback.run();
+		});
+		
+		y.textProperty().addListener((prop, val, old) -> {
+			callback.run();
+		});
+		
+		z.textProperty().addListener((prop, val, old) -> {
+			callback.run();
+		});
+	}
 }
