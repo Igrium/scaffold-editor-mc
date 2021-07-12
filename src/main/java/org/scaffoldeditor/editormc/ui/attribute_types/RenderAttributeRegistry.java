@@ -14,6 +14,7 @@ import org.scaffoldeditor.scaffold.level.entity.attribute.ContainerAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.DoubleAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.EntityAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.EnumAttribute;
+import org.scaffoldeditor.scaffold.level.entity.attribute.FilterAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.FloatAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.IntAttribute;
 import org.scaffoldeditor.scaffold.level.entity.attribute.ListAttribute;
@@ -57,5 +58,6 @@ public final class RenderAttributeRegistry {
 		registry.put(ContainerAttribute.REGISTRY_NAME, new ContainerAttributeType());
 		registry.put(BlockAttribute.REGISTRY_NAME, new BlockAttributeType());
 		registry.put(EntityAttribute.REGISTRY_NAME, new EntityAttributeType());
+		registry.put(FilterAttribute.REGISTRY_NAME, new FilterAttributeType());
 	}
 }
