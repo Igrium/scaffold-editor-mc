@@ -147,16 +147,17 @@ public class FXMLEntityEditorController {
 	
 	private void handleOutputSelected() {
 		Output output = outputTable.getSelectionModel().getSelectedItem();
-		reloadInputBox();
 		if (output == null) {
 			setDisableOutputControls(true);
 			return;
 		}
 		setDisableOutputControls(false);
 		
+		suppressUpdate = true;
 		outputBox.setValue(output.getTrigger());
 		targetBox.setValue(output.getTarget());
 		inputBox.setValue(output.getInputName());
+		suppressUpdate = false;
 	}
 	
 	private void reloadInputBox() {
@@ -176,7 +177,6 @@ public class FXMLEntityEditorController {
 		if (target == null) {
 			return;
 		}
-		
 		inputBox.getItems().addAll(target.getDeclaredInputs().stream().map(input -> input.getName()).collect(Collectors.toList()));
 	}
 	
@@ -191,6 +191,8 @@ public class FXMLEntityEditorController {
 		outputTable.getItems().remove(outputTable.getSelectionModel().getSelectedIndex());
 		hasBeenUpdated = true;
 	}
+	
+	private boolean suppressUpdate = false;
 	
 	@FXML
 	private void initialize() {
@@ -213,6 +215,7 @@ public class FXMLEntityEditorController {
 		outputBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				if (suppressUpdate) return;
 				getSelected().setTrigger(outputBox.getValue());
 				onUpdate();
 			}
@@ -229,6 +232,7 @@ public class FXMLEntityEditorController {
 		targetBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				if (suppressUpdate) return;
 				getSelected().setTarget(targetBox.getValue());
 				reloadInputBox();
 				onUpdate();
@@ -245,6 +249,7 @@ public class FXMLEntityEditorController {
 		inputBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				if (suppressUpdate) return;
 				getSelected().setInputName(inputBox.getValue());
 				onUpdate();
 			}	
