@@ -23,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -40,9 +41,6 @@ import javafx.stage.Stage;
 public class MainFXMLController {
 	
 	public boolean isShiftPressed;
-	
-	@FXML
-	private Pane viewport_pane;
 	
 	@FXML
 	private BorderPane mainPanel;
@@ -71,6 +69,11 @@ public class MainFXMLController {
 	@FXML
 	private VBox outlinerBox;
 	
+	@FXML
+	private ImageView viewport;
+	@FXML
+	private Pane viewportPane;
+	
 	private Toolbar toolbar;
 	
 	@FXML
@@ -80,11 +83,11 @@ public class MainFXMLController {
 	
 	public void init() {
 		ScaffoldUI ui = ScaffoldUI.getInstance();
-		addPressAndHoldHandler(viewport_pane, ViewportControls.HOLD_TIME, e -> handleViewportMousePressed(e));
-		viewport_pane.addEventHandler(MouseEvent.MOUSE_PRESSED, ui.viewport::handleMousePressed);
-		viewport_pane.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> handleViewportMouseReleased(e));
-		viewport_pane.addEventHandler(MouseEvent.MOUSE_CLICKED, ui.viewport::handleMouseClicked);
-		viewport_pane.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+		addPressAndHoldHandler(viewportPane, ViewportControls.HOLD_TIME, e -> handleViewportMousePressed(e));
+		viewportPane.addEventHandler(MouseEvent.MOUSE_PRESSED, ui.viewport::handleMousePressed);
+		viewportPane.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> handleViewportMouseReleased(e));
+		viewportPane.addEventHandler(MouseEvent.MOUSE_CLICKED, ui.viewport::handleMouseClicked);
+		viewportPane.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			ScaffoldUI.getInstance().viewport.handleKeyReleased(e);
 			if (e.getCode().equals(KeyCode.SHIFT)) {
 				isShiftPressed = true;
@@ -102,12 +105,12 @@ public class MainFXMLController {
 			ScaffoldUI.getInstance().viewport.handleMouseMoved((int) e.getX(), (int) e.getY());
 		});
 		
-		viewport_pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, ui.viewport::handleMouseDragged);
+		viewportPane.addEventHandler(MouseEvent.MOUSE_DRAGGED, ui.viewport::handleMouseDragged);
 	}
 	
 	@FXML
 	private void showSettings() {
-		SettingsWindow window = new SettingsWindow((Stage) viewport_pane.getScene().getWindow());
+		SettingsWindow window = new SettingsWindow((Stage) viewportPane.getScene().getWindow());
 		window.show();
 	}
 	
@@ -304,6 +307,14 @@ public class MainFXMLController {
 
 	public ViewportHeader getViewportHeader() {
 		return viewportHeaderController;
+	}
+	
+	public Pane getViewportPane() {
+		return viewportPane;
+	}
+	
+	public ImageView getViewportImage() {
+		return viewport;
 	}
 }
 	

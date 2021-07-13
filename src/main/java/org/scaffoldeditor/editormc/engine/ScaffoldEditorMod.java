@@ -14,7 +14,6 @@ import org.scaffoldeditor.editormc.engine.world.ScaffoldRenderEvents;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.util.Window;
@@ -57,11 +56,7 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 				} catch (Exception ex) {}
 			}
 		});
-		
-		WorldRenderEvents.LAST.register(context -> {
-			ViewportExporter.export();
-		});
-		
+				
 		ScaffoldRenderEvents.register();
 		blockRenderDispatcher = new BlockRenderDispatcher(client);
 		blockRenderDispatcher.register();

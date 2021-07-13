@@ -10,7 +10,6 @@ import org.scaffoldeditor.editormc.engine.mixins.MinecraftClientAccessor;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.editormc.ui.Viewport;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import javafx.application.Platform;
@@ -30,6 +29,8 @@ public class ViewportExporter {
 			return;
 		};
 		
+		MinecraftClient client = MinecraftClient.getInstance();
+		
 		Viewport viewport;
 		try {
 			viewport = ScaffoldEditorMod.getInstance().editor.getUI().getViewport();	
@@ -45,9 +46,8 @@ public class ViewportExporter {
 		
 		ByteBuffer buffer = MemoryUtil.memAlloc(x * y * 4);
 		
-		frameBuffer.beginWrite(true);
-		GlStateManager._readPixels(0, 0, x, y, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, buffer);
-		frameBuffer.endWrite();
+		RenderSystem.bindTexture(frameBuffer.getColorAttachment());
+		RenderSystem.readPixels(0, 0, x, y, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, buffer);
 		
 		buffer.rewind();
 		
@@ -56,7 +56,6 @@ public class ViewportExporter {
 			try {
 				viewport.updateViewport(buffer, x, y);
 				
-				MinecraftClient client = MinecraftClient.getInstance();
 				ScaffoldUI.getInstance().setFPSIndicator(MinecraftClientAccessor.getFPS());
 				
 				Vec3d coords = client.player.getPos();

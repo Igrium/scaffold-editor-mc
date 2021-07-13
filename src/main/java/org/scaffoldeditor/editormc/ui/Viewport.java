@@ -11,7 +11,6 @@ import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
-import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -30,7 +29,7 @@ public class Viewport {
 	private int mouseX;
 	private int mouseY;
 	
-	private final WritablePixelFormat<ByteBuffer> PIXEL_FORMAT = PixelFormat.getByteBgraInstance();
+	private final PixelFormat<ByteBuffer> PIXEL_FORMAT = PixelFormat.getByteBgraInstance();
 	
 	public Viewport(ImageView imageView, Pane parent) {
 		this.imageView = imageView;

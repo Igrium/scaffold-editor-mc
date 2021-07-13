@@ -33,8 +33,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -81,20 +79,15 @@ public class ScaffoldUI extends Application {
 		try {
 			this.stage = stage;
 			Parent root;
-			try {
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("/assets/scaffold/ui/scaffold.fxml"));
-				root = loader.load();
-				controller = loader.getController();
-			} catch (IOException e) {
-				e.printStackTrace();
-				return;
-			}
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/assets/scaffold/ui/scaffold.fxml"));
+			root = loader.load();
+			controller = loader.getController();
 			mainScene = new Scene(root, 1280, 800);
 			
 			stage.setTitle("Scaffold Editor");
 			stage.setScene(mainScene);
 			
-			viewport = new Viewport((ImageView) mainScene.lookup("#viewport"), (Pane) mainScene.lookup("#viewport_pane"));
+			viewport = new Viewport(controller.getViewportImage(), controller.getViewportPane());
 			
 			System.setProperty("java.awt.headless", "false");
 			stage.show();

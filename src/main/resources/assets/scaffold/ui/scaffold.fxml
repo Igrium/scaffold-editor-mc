@@ -95,7 +95,7 @@
     </MenuBar>
       <BorderPane fx:id="mainPanel" VBox.vgrow="ALWAYS">
          <center>
-            <Pane id="viewport_pane" fx:id="viewport_pane" minHeight="50.0" minWidth="50.0" BorderPane.alignment="CENTER">
+            <Pane id="viewport_pane" fx:id="viewportPane" minHeight="50.0" minWidth="50.0" BorderPane.alignment="CENTER">
                <children>
                   <ImageView id="viewport" fx:id="viewport" pickOnBounds="true" preserveRatio="true" scaleY="-1.0" />
                </children>

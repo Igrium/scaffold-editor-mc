@@ -13,6 +13,7 @@
     "MixinPlayerController",
     "MixinClientPlayNetworkHandler",
     "MixinTitleScreen",
+    "MixinGameRenderer",
     "HudAccessor"
   ],
   "injectors": {
