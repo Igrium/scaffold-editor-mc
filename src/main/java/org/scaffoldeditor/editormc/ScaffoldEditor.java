@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -217,7 +218,7 @@ public class ScaffoldEditor {
 			return;
 		}
 
-		project.getLevelService().execute(() -> {
+		project.execute(() -> {
 			if (compile) {
 				level.compileBlockWorld(false);
 			} else {
@@ -275,6 +276,16 @@ public class ScaffoldEditor {
 
 	public void setProject(Project project) {
 		this.project = project;
+		
+		project.getThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				if (getUI() != null) {
+					UIUtils.showError("Exception in level thread", e);
+				}
+			}
+		});
 	}
 
 	public RenderEntityManager getRenderEntityManager() {
@@ -349,7 +360,7 @@ public class ScaffoldEditor {
 		File oldLevel = levelFile;
 		levelFile = file;
 		CompletableFuture<Level> future = new CompletableFuture<Level>();
-		project.getLevelService().execute(() -> {
+		project.execute(() -> {
 			Level level;
 			try {
 				level = Level.loadFile(project, file);
@@ -397,7 +408,7 @@ public class ScaffoldEditor {
 						"Attempted to save a level that doesn't have a corrisponding file. Use saveAs() instead.");
 			}
 
-			project.getLevelService().execute(() -> {
+			project.execute(() -> {
 				try {
 					level.saveFile(levelFile);
 				} catch (IOException e) {

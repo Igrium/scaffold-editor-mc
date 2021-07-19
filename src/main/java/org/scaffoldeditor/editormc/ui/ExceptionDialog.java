@@ -96,7 +96,7 @@ public class ExceptionDialog extends Alert {
 		Throwable e = getException();
 		
 		StackTraceElement element = e.getStackTrace()[0];
-		LogManager.getLogger(element.getClassName()).error(e);
+		LogManager.getLogger(element.getClassName()).error(getHeaderText(), e);
 		show();
 	}
 }
