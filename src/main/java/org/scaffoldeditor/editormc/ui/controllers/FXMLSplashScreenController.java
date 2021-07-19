@@ -4,8 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.Config;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
+import org.scaffoldeditor.editormc.util.UIUtils;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -55,7 +58,13 @@ public class FXMLSplashScreenController {
 		}
 		
 		((Stage) textField.getScene().getWindow()).close();
-		ScaffoldEditor.getInstance().openProject(Paths.get(textField.getText()));
+		try {
+			ScaffoldEditor.getInstance().openProject(Paths.get(textField.getText()));
+			
+		} catch (IOException e) {
+			LogManager.getLogger().error(e);
+			UIUtils.showError("Error opening project", e.getLocalizedMessage());
+		}
 		ScaffoldEditor.getInstance().newLevel();
 	}
 }
