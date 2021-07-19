@@ -346,17 +346,18 @@ public class ScaffoldEditor {
 			if (!ui.showUnsavedDialog())
 				return null;
 		}
-
+		File oldLevel = levelFile;
+		levelFile = file;
 		CompletableFuture<Level> future = new CompletableFuture<Level>();
 		project.getLevelService().execute(() -> {
 			Level level;
 			try {
 				level = Level.loadFile(project, file);
 			} catch (IOException e) {
-				LogManager.getLogger().error(e);
 				Platform.runLater(() -> {
-					UIUtils.showError("Error loading level", e.getLocalizedMessage());
+					UIUtils.showError("Error loading level", e);
 				});
+				levelFile = oldLevel;
 				return;
 			}
 			setLevel(level);
@@ -374,7 +375,6 @@ public class ScaffoldEditor {
 				});
 			}
 		});
-		levelFile = file;
 		ui.reloadRecentFiles();
 		{
 			List<Object> recentLevels = cache.has("recentLevels") ? cache.getJSONArray("recentLevels").toList()
@@ -401,8 +401,7 @@ public class ScaffoldEditor {
 				try {
 					level.saveFile(levelFile);
 				} catch (IOException e) {
-					LogManager.getLogger().error(e);
-					UIUtils.showError("Error saving level", e.getLocalizedMessage());
+					UIUtils.showError("Error saving level", e);
 				}
 			});
 		}

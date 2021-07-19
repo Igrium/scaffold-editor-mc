@@ -1,5 +1,7 @@
 package org.scaffoldeditor.editormc.util;
 
+import org.scaffoldeditor.editormc.ui.ExceptionDialog;
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -15,6 +17,13 @@ public final class UIUtils {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setHeaderText(title);
 		alert.setContentText(message);
-		alert.showAndWait();
+		alert.show();
+	}
+	
+	public static void showError(String title, Throwable exception) {
+		ExceptionDialog dialog = new ExceptionDialog();
+		dialog.setException(exception);
+		dialog.setHeaderText(title);
+		dialog.showAndPrint();
 	}
 }

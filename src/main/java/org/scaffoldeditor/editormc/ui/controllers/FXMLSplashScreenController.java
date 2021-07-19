@@ -63,7 +63,7 @@ public class FXMLSplashScreenController {
 			
 		} catch (IOException e) {
 			LogManager.getLogger().error(e);
-			UIUtils.showError("Error opening project", e.getLocalizedMessage());
+			UIUtils.showError("Error opening project", e);
 		}
 		ScaffoldEditor.getInstance().newLevel();
 	}
