@@ -24,7 +24,6 @@ public class ChangeSettingEvent extends Event {
 	@SuppressWarnings("unchecked")
 	@Override
 	public EventType<? extends ChangeSettingEvent> getEventType() {
-		// TODO Auto-generated method stub
 		return (EventType<? extends ChangeSettingEvent>) super.getEventType();
 	}
 	

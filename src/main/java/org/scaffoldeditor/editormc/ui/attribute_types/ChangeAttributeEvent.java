@@ -30,7 +30,6 @@ public class ChangeAttributeEvent extends Event {
 	@SuppressWarnings("unchecked")
 	@Override
 	public EventType<? extends ChangeAttributeEvent> getEventType() {
-		// TODO Auto-generated method stub
 		return (EventType<? extends ChangeAttributeEvent>) super.getEventType();
 	}
 	
