@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.scaffoldeditor.editormc.EditorOperationManager;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.controls.ViewportControls;
 import org.scaffoldeditor.editormc.sub_editors.LevelPropertiesEditor;
@@ -167,12 +168,12 @@ public class MainFXMLController {
 	
 	@FXML
 	private void undo() {
-		ScaffoldUI.getInstance().getEditor().getLevel().getOperationManager().undo();
+		EditorOperationManager.getInstance().undo();
 	}
 	
 	@FXML
 	private void redo() {
-		ScaffoldUI.getInstance().getEditor().getLevel().getOperationManager().redo();
+		EditorOperationManager.getInstance().redo();
 	}
 	
 	@FXML
@@ -185,22 +186,22 @@ public class MainFXMLController {
 	@FXML
 	private void delete() {
 		Set<Entity> entities = ScaffoldEditor.getInstance().getSelectedEntities();
-		getLevel().getOperationManager().execute(new DeleteEntityOperation(getLevel(), entities));
+		EditorOperationManager.getInstance().runOperation(new DeleteEntityOperation(getLevel(), entities));
 	}
 	
 	@FXML
 	private void copy() {
-		ScaffoldEditor.getInstance().copySelection();
+		EditorOperationManager.getInstance().copySelection();
 	}
 	
 	@FXML
 	private void cut() {
-		ScaffoldEditor.getInstance().cutSelection();
+		EditorOperationManager.getInstance().cutSelection();
 	}
 	
 	@FXML
 	private void paste() {
-		ScaffoldEditor.getInstance().paste();
+		EditorOperationManager.getInstance().paste();
 	}
 	
 	@FXML
@@ -211,7 +212,7 @@ public class MainFXMLController {
 		Optional<String> name = dialog.showAndWait();
 		if (name.isEmpty() || name.get().length() == 0) return;
 		
-		getLevel().getOperationManager().execute(new AddGroupOperation(
+		EditorOperationManager.getInstance().runOperation(new AddGroupOperation(
 				ScaffoldUI.getInstance().getOutliner().getSelectedGroup(), name.get(), getLevel()));
 	}
 	

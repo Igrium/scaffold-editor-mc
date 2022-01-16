@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.scaffoldeditor.editormc.EditorOperationManager;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.scaffold.level.Level;
@@ -267,7 +268,7 @@ public class Outliner {
 		if (updated == null) return;
 		
 		Level level = ScaffoldEditor.getInstance().getLevel();
-		level.getOperationManager().execute(new ModifyStackOperation(level, updated));
+		EditorOperationManager.getInstance().runOperation(new ModifyStackOperation(level, updated));
 	}
 	
 	protected void updateSelection() {
@@ -301,7 +302,7 @@ public class Outliner {
 		
 		MenuItem delete = new MenuItem("Delete");
 		delete.setOnAction(e -> {
-			getLevel().getOperationManager().execute(new DeleteEntityOperation(getLevel(),
+			EditorOperationManager.getInstance().runOperation(new DeleteEntityOperation(getLevel(),
 					Collections.singleton(entity)));
 		});
 
@@ -337,7 +338,7 @@ public class Outliner {
 				if (response.isEmpty() || response.get() != ButtonType.OK) return;
 			}
 			
-			getLevel().getOperationManager().execute(new DeleteGroupOperation(getLevel(), Collections.singleton(group)));
+			EditorOperationManager.getInstance().runOperation(new DeleteGroupOperation(getLevel(), Collections.singleton(group)));
 		});
 		
 		return new ContextMenu(selectChildren, copy, delete);

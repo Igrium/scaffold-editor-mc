@@ -6,8 +6,8 @@ import java.util.Set;
 
 import org.joml.Vector3d;
 import org.joml.Vector3dc;
+import org.scaffoldeditor.editormc.EditorOperationManager;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
-import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.operation.MoveEntitiesOperation;
 
@@ -112,8 +112,7 @@ public class ViewportTranslation implements ViewportTransformation {
 			ent.disableTransformPreview();
 		});
 		
-		Level level = ui.getEditor().getLevel();
-		level.getOperationManager().execute(new MoveEntitiesOperation(targets, level));
+		EditorOperationManager.getInstance().runOperation(new MoveEntitiesOperation(targets));
 		translation = null;
 	}
 

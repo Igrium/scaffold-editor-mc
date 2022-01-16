@@ -35,10 +35,6 @@ import org.scaffoldeditor.nbt.block.WorldMath.SectionCoordinate;
 import org.scaffoldeditor.scaffold.core.Project;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.level.stack.StackItem;
-import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
-import org.scaffoldeditor.scaffold.operation.PasteEntitiesOperation;
-import org.scaffoldeditor.scaffold.util.ClipboardManager;
 import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
 import org.scaffoldeditor.scaffold.util.event.EventListener;
 
@@ -57,6 +53,8 @@ public class ScaffoldEditor {
 	}
 
 	public static final String CACHE_FILE_NAME = "editorcache.json";
+
+	public final EditorOperationManager operationManager = new EditorOperationManager(this);
 
 	private Level level;
 	protected MinecraftClient client = MinecraftClient.getInstance();
@@ -170,7 +168,7 @@ public class ScaffoldEditor {
 					for (SectionCoordinate c : e.updatedSections) {
 						try {
 							WorldInterface.loadScaffoldSection(
-									level.getBlockWorld().getChunks().get(new ChunkCoordinate(c.x, c.z)).sections[c.y],
+									level.getBlockWorld().getChunks().get(new ChunkCoordinate(c.x(), c.z())).sections[c.y()],
 									world, c);
 						} catch (NullPointerException ex) {
 							world.clearSection(c);
@@ -290,36 +288,6 @@ public class ScaffoldEditor {
 
 	public RenderEntityManager getRenderEntityManager() {
 		return renderEntityManager;
-	}
-
-	/**
-	 * Copy the current selection to the clipboard.
-	 */
-	public void copySelection() {
-		List<StackItem> copy = new ArrayList<>();
-		for (Entity ent : level.getLevelStack()) {
-			if (selectedEntities.contains(ent)) {
-				copy.add(new StackItem(ent));
-			}
-		}
-
-		ClipboardManager.getInstance().copyItems(copy);
-	}
-
-	/**
-	 * Cut the current selection to the clipboard
-	 */
-	public void cutSelection() {
-		copySelection();
-		level.getOperationManager().execute(new DeleteEntityOperation(level, selectedEntities));
-	}
-
-	/**
-	 * Paste the current clipboard into the level.
-	 */
-	public void paste() {
-		level.getOperationManager()
-				.execute(new PasteEntitiesOperation(getLevel(), ui.getOutliner().getSelectedGroup()));
 	}
 
 	/**

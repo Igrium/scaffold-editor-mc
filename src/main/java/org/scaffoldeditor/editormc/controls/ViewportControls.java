@@ -69,8 +69,7 @@ public class ViewportControls {
 		try {
 			mouseMover = new Robot();
 		} catch (AWTException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			LogManager.getLogger().error("Unable to initialize viewport controls.", e1);
 		}
 		
 		scene.addEventHandler(KeyEvent.KEY_PRESSED, e -> {

@@ -2,10 +2,10 @@ package org.scaffoldeditor.editormc.tools;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import org.joml.Vector3d;
 import org.joml.Vector3dc;
+import org.scaffoldeditor.editormc.EditorOperationManager;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.editormc.ui.Viewport;
@@ -105,15 +105,11 @@ public class EntityTool implements ViewportTool {
 		}
 		
 		Level level = ScaffoldEditor.getInstance().getLevel();
-		CompletableFuture<Boolean> success = level.getOperationManager().execute(new AddEntityOperation(level, registryName, name, position));
+		CompletableFuture<Boolean> success = EditorOperationManager.getInstance().runOperation(new AddEntityOperation(level, registryName, name, position));
 		
-		success.thenRun(() -> {
-			try {
-				if (!success.get()) {
-					uiController.setWarningText("Unable to spawn entity! See console for details.");
-				}
-			} catch (InterruptedException | ExecutionException e) {
-				e.printStackTrace();
+		success.thenAccept(bool -> {
+			if (!bool) {
+				uiController.setWarningText("Unable to spawn entity! See console for details.");
 			}
 		});
 

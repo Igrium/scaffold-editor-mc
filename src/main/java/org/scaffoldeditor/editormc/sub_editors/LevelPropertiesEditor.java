@@ -3,6 +3,7 @@ package org.scaffoldeditor.editormc.sub_editors;
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
+import org.scaffoldeditor.editormc.EditorOperationManager;
 import org.scaffoldeditor.editormc.sub_editors.nbt.NBTEditorController;
 import org.scaffoldeditor.editormc.ui.controllers.CompileProgressUI;
 import org.scaffoldeditor.scaffold.level.Level;
@@ -47,7 +48,7 @@ public class LevelPropertiesEditor {
 	
 	@FXML
 	public void apply() {
-		level.getOperationManager().execute(new ChangeLevelPropertiesOperation(level, prettyNameField.getText(), data));
+		EditorOperationManager.getInstance().runOperation(new ChangeLevelPropertiesOperation(level, prettyNameField.getText(), data));
 		stage.close();
 	}
 	

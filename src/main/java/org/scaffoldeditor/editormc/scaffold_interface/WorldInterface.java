@@ -50,7 +50,7 @@ public final class WorldInterface {
 				for (int z = 0; z < Chunk.LENGTH; z++) {
 					for (int x = 0; x < Chunk.WIDTH; x++) {
 						loadBlock(section.blockAt(x, y, z), x, y, z, world,
-								new BlockPos(offset.x * Chunk.WIDTH, offset.y * Section.HEIGHT, offset.z * Chunk.LENGTH));
+								new BlockPos(offset.x() * Chunk.WIDTH, offset.y() * Section.HEIGHT, offset.z() * Chunk.LENGTH));
 					}
 				}
 			}

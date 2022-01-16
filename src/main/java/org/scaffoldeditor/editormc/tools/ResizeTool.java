@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.joml.Vector3d;
 import org.joml.Vector3dc;
+import org.scaffoldeditor.editormc.EditorOperationManager;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.world.ScaffoldRenderEvents;
 import org.scaffoldeditor.editormc.transformations.Translation;
@@ -245,7 +246,7 @@ public class ResizeTool implements ViewportTool {
 			Vector3dc[] brushBounds = brush.apply(bounds.getFirst(), bounds.getSecond());
 			map.put(brush.subject, brushBounds);
 		}
-		editor.getLevel().getOperationManager().execute(new ResizeBrushesOperation(map, editor.getLevel()));
+		EditorOperationManager.getInstance().runOperation(new ResizeBrushesOperation(map, editor.getLevel()));
 		
 		translation = null;
 	}

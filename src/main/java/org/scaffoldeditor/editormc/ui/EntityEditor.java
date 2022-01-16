@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.scaffoldeditor.editormc.EditorOperationManager;
 import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
 import org.scaffoldeditor.editormc.ui.attribute_types.DefaultAttributeType;
 import org.scaffoldeditor.editormc.ui.attribute_types.IRenderAttributeType;
@@ -158,9 +160,12 @@ public class EntityEditor {
 		if (cachedAttributes.size() > 0) newAttributes = cachedAttributes;
 		if (controller.hasBeenUpdated) newOutputs = controller.outputTable.getItems();
 		String newName = controller.nameField.getText();
+
 		if (newAttributes != null || newOutputs != null || !newName.equals(entity.getName())) {
-			entity.getLevel().getOperationManager().execute(new ChangeAttributesOperation(entity, newAttributes,
-					newOutputs, newName.equals(entity.getName()) ? null : newName, true));
+			EditorOperationManager.getInstance().runOperation(
+				new ChangeAttributesOperation(entity, newAttributes, newOutputs, newName.equals(entity.getName()) ? null : newName, true)
+			);
+			
 			controller.hasBeenUpdated = false;
 		}
 	}
