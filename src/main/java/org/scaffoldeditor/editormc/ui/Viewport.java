@@ -3,10 +3,10 @@ package org.scaffoldeditor.editormc.ui;
 import java.awt.Dimension;
 import java.nio.ByteBuffer;
 import org.apache.logging.log4j.LogManager;
+import org.joml.Vector3d;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
 import org.scaffoldeditor.editormc.transformations.TransformManifest;
 import org.scaffoldeditor.editormc.transformations.ViewportTransformation;
-import org.scaffoldeditor.nbt.math.Vector3f;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
@@ -80,9 +80,9 @@ public class Viewport {
 	}
 	
 	@SuppressWarnings("resource")
-	public Vector3f getCameraPos() {
+	public Vector3d getCameraPos() {
 		Vec3d entityPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
-		return new Vector3f((float) entityPos.x, (float) entityPos.y, (float) entityPos.z);
+		return new Vector3d(entityPos.x, entityPos.y, entityPos.z);
 	}
 	
 	public void handleMousePressed(MouseEvent e) {

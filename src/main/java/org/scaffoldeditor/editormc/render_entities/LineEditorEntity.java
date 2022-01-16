@@ -1,9 +1,9 @@
 package org.scaffoldeditor.editormc.render_entities;
 
+import org.joml.Vector3dc;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.engine.world.LineRenderDispatcher;
 import org.scaffoldeditor.editormc.engine.world.LineRenderDispatcher.LineRenderer;
-import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.scaffold.level.render.LineRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.RenderEntity;
 
@@ -44,7 +44,7 @@ public class LineEditorEntity implements EditorRenderEntity {
 		dispatcher.lines.remove(renderer);
 	}
 	
-	private Vec3d convertVec(Vector3f in) {
-		return new Vec3d(in.x, in.y, in.z);
+	private Vec3d convertVec(Vector3dc in) {
+		return new Vec3d(in.x(), in.y(), in.z());
 	}
 }

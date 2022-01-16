@@ -2,12 +2,12 @@ package org.scaffoldeditor.editormc.tools;
 
 import java.util.Set;
 
+import org.joml.Vector3d;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.ScaffoldEditor.UpdateSelectionEvent;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.engine.gizmos.TranslationGizmo;
 import org.scaffoldeditor.editormc.ui.Viewport;
-import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.util.event.EventListener;
 
@@ -49,11 +49,11 @@ public class MoveTool extends SelectTool {
 			return;
 		}
 		
-		Vector3f avg = new Vector3f(0, 0, 0);
+		Vector3d avg = new Vector3d();
 		for (Entity ent : selection) {
-			avg = avg.add(ent.getPosition());
+			avg.add(ent.getPosition());
 		}
-		avg = avg.divide(selection.size());
+		avg.div(selection.size());
 		
 		if (gizmo == null) {
 			gizmo = new TranslationGizmo();

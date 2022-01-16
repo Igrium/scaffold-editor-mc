@@ -1,8 +1,9 @@
 package org.scaffoldeditor.editormc.render_entities;
 
+import org.joml.Vector3d;
+import org.joml.Vector3dc;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.entity.BrushEntity;
-import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.scaffold.level.render.BrushRenderEntity;
 
 import net.minecraft.util.math.Vec3f;
@@ -22,8 +23,8 @@ public class BrushEditorEntity extends ClientSideEntity<BrushEntity, BrushRender
 	@Override
 	protected void updateImpl(BrushRenderEntity in) {
 		super.updateImpl(in);
-		Vector3f size = in.getEndPos().subtract(in.getPosition());
-		getEntity().setSize(new Vec3f(size.x, size.y, size.z));
+		Vector3dc size = in.getEndPos().sub(in.getPosition(), new Vector3d());
+		getEntity().setSize(new Vec3f((float) size.x(), (float) size.y(), (float) size.z()));
 		getEntity().setTexture(in.getTexture());
 	}
 

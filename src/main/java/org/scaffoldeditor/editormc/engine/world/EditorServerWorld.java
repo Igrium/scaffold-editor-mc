@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
-import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
+import org.scaffoldeditor.nbt.block.WorldMath.SectionCoordinate;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

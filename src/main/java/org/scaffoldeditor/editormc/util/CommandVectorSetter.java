@@ -1,6 +1,8 @@
 package org.scaffoldeditor.editormc.util;
 
-import org.scaffoldeditor.nbt.math.Vector3f;
+import org.joml.Vector3d;
+import org.joml.Vector3dc;
+import org.joml.Vector3fc;
 import org.scaffoldeditor.scaffold.logic.datapack.arguements.CommandVector.Mode;
 import org.scaffoldeditor.scaffold.logic.datapack.arguements.CommandVector3f;
 
@@ -16,7 +18,7 @@ public class CommandVectorSetter extends VectorSetter {
 	}
 	
 	public CommandVector3f getCommandVector() throws NumberFormatException {
-		Vector3f vec = getVector();
+		Vector3dc vec = getVector();
 		Mode mode;
 		String modeStr = this.mode.getSelectionModel().getSelectedItem();
 		
@@ -30,12 +32,11 @@ public class CommandVectorSetter extends VectorSetter {
 		return new CommandVector3f(vec, mode);
 	}
 	
-	@Override
-	public void setVector(Vector3f vector) {
+	public void setVector(Vector3fc vector) {
 		if (vector instanceof CommandVector3f) {
 			setCommandVector((CommandVector3f) vector);
 		} else {
-			super.setVector(vector);
+			super.setVector(new Vector3d(vector));
 		}
 	}
 	
@@ -52,6 +53,6 @@ public class CommandVectorSetter extends VectorSetter {
 			break;
 		}
 		
-		super.setVector(val);
+		super.setVector(new Vector3d(val));
 	}
 }

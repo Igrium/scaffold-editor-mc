@@ -1,6 +1,7 @@
 package org.scaffoldeditor.editormc.util;
 
-import org.scaffoldeditor.nbt.math.Vector3f;
+import org.joml.Vector3d;
+import org.joml.Vector3dc;
 
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -10,7 +11,7 @@ public class VectorSetter extends HBox {
 	TextField y = new TextField();
 	TextField z = new TextField();
 	
-	public VectorSetter(Vector3f initial) {
+	public VectorSetter(Vector3dc initial) {
 		setVector(initial);
 		
 		x.setPrefWidth(40);
@@ -25,20 +26,20 @@ public class VectorSetter extends HBox {
 	}
 	
 	public VectorSetter() {
-		this(new Vector3f(0, 0, 0));
+		this(new Vector3d(0, 0, 0));
 	}
 	
-	public Vector3f getVector() throws NumberFormatException {
+	public Vector3dc getVector() throws NumberFormatException {
 		float x = Float.parseFloat(this.x.getText());
 		float y = Float.parseFloat(this.y.getText());
 		float z = Float.parseFloat(this.z.getText());
-		return new Vector3f(x, y, z);
+		return new Vector3d(x, y, z);
 	}
 	
-	public void setVector(Vector3f vector) {
-		x.setText(Float.toString(vector.x));
-		y.setText(Float.toString(vector.y));
-		z.setText(Float.toString(vector.z));
+	public void setVector(Vector3dc vector) {
+		x.setText(Double.toString(vector.x()));
+		y.setText(Double.toString(vector.y()));
+		z.setText(Double.toString(vector.z()));
 	}
 	
 	public void onUpdate(Runnable callback) {

@@ -7,9 +7,9 @@ import org.scaffoldeditor.editormc.engine.world.EditorServerWorld;
 import org.scaffoldeditor.nbt.block.Block;
 import org.scaffoldeditor.nbt.block.BlockWorld;
 import org.scaffoldeditor.nbt.block.Chunk;
-import org.scaffoldeditor.nbt.block.Chunk.SectionCoordinate;
+import org.scaffoldeditor.nbt.block.WorldMath.SectionCoordinate;
 import org.scaffoldeditor.nbt.block.Section;
-import org.scaffoldeditor.nbt.block.BlockWorld.ChunkCoordinate;
+import org.scaffoldeditor.nbt.block.WorldMath.ChunkCoordinate;
 
 import net.minecraft.util.math.BlockPos;
 

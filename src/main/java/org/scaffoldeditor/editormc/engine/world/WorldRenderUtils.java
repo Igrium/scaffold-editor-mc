@@ -2,9 +2,9 @@ package org.scaffoldeditor.editormc.engine.world;
 
 import java.util.Random;
 
+import org.joml.Vector3ic;
 import org.scaffoldeditor.editormc.scaffold_interface.BlockConverter;
 import org.scaffoldeditor.nbt.block.BlockCollection;
-import org.scaffoldeditor.nbt.math.Vector3i;
 
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -31,18 +31,18 @@ public class WorldRenderUtils {
 		BlockModelRenderer renderer = dispatcher.getModelRenderer();
 		Random random = new Random();
 		
-		for (Vector3i pos : blocks) {
+		for (Vector3ic pos : blocks) {
 			renderWorld.setBlockState(scaffoldVec2MC(pos), BlockConverter.scaffoldToMinecraft(blocks.blockAt(pos)));
 		}
 		
-		for (Vector3i pos : blocks) {
+		for (Vector3ic pos : blocks) {
 			BlockState state = renderWorld.getBlockState(scaffoldVec2MC(pos));
 			
 			if (state.getRenderType() == BlockRenderType.ENTITYBLOCK_ANIMATED) continue;
 			
 			BakedModel originalModel = dispatcher.getModel(state);
 			matrixStack.push();
-			matrixStack.translate(pos.x, pos.y, pos.z);
+			matrixStack.translate(pos.x(), pos.y(), pos.z());
 			renderer.render(renderWorld, originalModel, state, scaffoldVec2MC(pos), matrixStack, vertexConsumer, true,
 					random, 32, OverlayTexture.DEFAULT_UV);
 			matrixStack.pop();
@@ -51,7 +51,7 @@ public class WorldRenderUtils {
 		renderWorld.clear();
 	}
 	
-	private static BlockPos scaffoldVec2MC(Vector3i vec) {
-		return new BlockPos(vec.x, vec.y, vec.z);
+	private static BlockPos scaffoldVec2MC(Vector3ic vec) {
+		return new BlockPos(vec.x(), vec.y(), vec.z());
 	}
 }

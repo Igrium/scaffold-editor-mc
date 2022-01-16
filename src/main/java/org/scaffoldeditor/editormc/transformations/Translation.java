@@ -1,8 +1,9 @@
 package org.scaffoldeditor.editormc.transformations;
 
+import org.joml.Vector3d;
+import org.joml.Vector3dc;
 import org.scaffoldeditor.editormc.ui.Viewport;
 import org.scaffoldeditor.editormc.util.RaycastUtils;
-import org.scaffoldeditor.nbt.math.Vector3f;
 
 import javafx.scene.layout.Pane;
 import net.minecraft.util.hit.HitResult;
@@ -17,16 +18,16 @@ public class Translation {
 	public boolean castMode = false;
 	private String lock = "";
 	private double distance;
-	private Vector3f startPos;
+	private Vector3dc startPos;
 	
-	public Translation(Viewport viewport, Vector3f startPos) {
+	public Translation(Viewport viewport, Vector3dc startPos) {
 		this.viewport = viewport;
 		this.startPos = startPos;
-		distance = startPos.subtract(viewport.getCameraPos()).length();
+		distance = startPos.sub(viewport.getCameraPos(), new Vector3d()).length();
 	}
 	
-	public Vector3f getTranslation(int mouseX, int mouseY) {
-		Vector3f target = parseVector(performRaycast(mouseX, mouseY).getPos());
+	public Vector3d getTranslation(int mouseX, int mouseY) {
+		Vector3dc target = parseVector(performRaycast(mouseX, mouseY).getPos());
 		return applyLock(target);
 	}
 
@@ -38,16 +39,17 @@ public class Translation {
 		this.lock = lock;
 	}
 	
-	public Vector3f getStartPos() {
+	public Vector3dc getStartPos() {
 		return startPos;
 	}
 	
-	private Vector3f applyLock(Vector3f in) {
-		if (lock.length() == 0) return in;
-		if (!lock.contains("X")) in = new Vector3f(startPos.x, in.y, in.z);
-		if (!lock.contains("Y")) in = new Vector3f(in.x, startPos.y, in.z);
-		if (!lock.contains("Z")) in = new Vector3f(in.x, in.y, startPos.z);
-		return in;
+	private Vector3d applyLock(Vector3dc in) {
+		Vector3d val = new Vector3d(in);
+		if (lock.length() == 0) return val;
+		if (!lock.contains("X")) val.x = startPos.x();
+		if (!lock.contains("Y")) val.y = startPos.y();
+		if (!lock.contains("z")) val.z = startPos.z();
+		return val;
 	}
 	
 	private HitResult performRaycast(int x, int y) {
@@ -59,7 +61,7 @@ public class Translation {
 		}
 	}
 	
-	private Vector3f parseVector(Vec3d in) {
-		return new Vector3f((float) in.x, (float) in.y, (float) in.z);
+	private Vector3d parseVector(Vec3d in) {
+		return new Vector3d(in.x, in.y, in.z);
 	}
 }

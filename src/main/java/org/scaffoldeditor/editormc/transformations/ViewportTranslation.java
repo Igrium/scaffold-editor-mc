@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.joml.Vector3d;
+import org.joml.Vector3dc;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
-import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.operation.MoveEntitiesOperation;
@@ -16,8 +17,8 @@ import javafx.scene.input.KeyEvent;
 public class ViewportTranslation implements ViewportTransformation {
 	
 	private ScaffoldUI ui;
-	private Map<Entity, Vector3f> entities;
-	private Vector3f target = new Vector3f(0, 0, 0);
+	private Map<Entity, Vector3dc> entities;
+	private Vector3dc target = new Vector3d();
 	private Translation translation;
 	
 	public ViewportTranslation(ScaffoldUI ui) {
@@ -27,19 +28,18 @@ public class ViewportTranslation implements ViewportTransformation {
 	@Override
 	public void activate() {
 		Set<Entity> selected = ui.getEditor().getSelectedEntities();
-		Vector3f avg = new Vector3f(0, 0, 0);
+		Vector3d startPos = new Vector3d();
 		for (Entity ent : selected) {
-			avg = avg.add(ent.getPosition());
+			startPos.add(ent.getPosition());
 		}
-		avg = avg.divide(selected.size());
+		startPos.div(selected.size());
 				
-		Vector3f startPos = avg;
-		if (ui.getViewportHeader().snapToGrid()) startPos = startPos.floor().toFloat();
+		if (ui.getViewportHeader().snapToGrid()) startPos.floor();
 		
 		target = startPos;
 		entities = new HashMap<>();
 		for (Entity ent : selected) {
-			entities.put(ent, ent.getPosition().subtract(startPos));
+			entities.put(ent, ent.getPosition().sub(startPos, new Vector3d()));
 		}
 		translation = new Translation(ui.getViewport(), startPos);
 	}
@@ -49,10 +49,11 @@ public class ViewportTranslation implements ViewportTransformation {
 		ViewportTransformation.super.onMouseMoved(x, y);
 		if (translation == null) return;
 		
-		target = translation.getTranslation(x, y);
-		if (ui.getViewportHeader().snapToGrid()) target = target.floor().toFloat();
+		Vector3d subject = translation.getTranslation(x, y);
+		target = subject;
+		if (ui.getViewportHeader().snapToGrid()) subject.floor();
 		for (Entity ent : entities.keySet()) {
-			ent.setPreviewPosition(target.add(entities.get(ent)));
+			ent.setPreviewPosition(target.add(entities.get(ent), new Vector3d()));
 		}
 	}
 	
@@ -105,9 +106,9 @@ public class ViewportTranslation implements ViewportTransformation {
 
 	@Override
 	public void apply() {
-		Map<Entity, Vector3f> targets = new HashMap<>();
+		Map<Entity, Vector3dc> targets = new HashMap<>();
 		entities.keySet().stream().forEach(ent -> {
-			targets.put(ent, target.add(entities.get(ent)));
+			targets.put(ent, target.add(entities.get(ent), new Vector3d()));
 			ent.disableTransformPreview();
 		});
 		

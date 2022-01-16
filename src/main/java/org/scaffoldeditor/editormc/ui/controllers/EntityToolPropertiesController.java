@@ -3,8 +3,8 @@ package org.scaffoldeditor.editormc.ui.controllers;
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
+import org.joml.Vector3d;
 import org.scaffoldeditor.editormc.tools.EntityTool;
-import org.scaffoldeditor.nbt.math.Vector3f;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -81,7 +81,7 @@ public class EntityToolPropertiesController {
 			float y = Float.valueOf(yField.getText());
 			float z = Float.valueOf(zField.getText());
 			
-			parentTool.spawn(new Vector3f(x, y, z), shouldSnapToBlock());
+			parentTool.spawn(new Vector3d(x, y, z), shouldSnapToBlock());
 		} catch (NumberFormatException e) {
 			LogManager.getLogger().error("Malformatted vector!");
 			return;

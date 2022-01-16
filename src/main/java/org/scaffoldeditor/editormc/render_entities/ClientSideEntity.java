@@ -1,7 +1,7 @@
 package org.scaffoldeditor.editormc.render_entities;
 
+import org.joml.Vector3dc;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
-import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.scaffold.level.render.RenderEntity;
 
 import net.minecraft.client.MinecraftClient;
@@ -37,8 +37,8 @@ public abstract class ClientSideEntity<T extends Entity, R extends RenderEntity>
 	
 	protected void spawnImpl(R in) {
 		entity = spawnEntity(world);
-		Vector3f pos = in.getPosition();
-		entity.updatePosition(pos.x, pos.y, pos.z);
+		Vector3dc pos = in.getPosition();
+		entity.updatePosition(pos.x(), pos.y(), pos.z());
 		world.spawnEntity(entity);
 		updateImpl(in);
 	}
@@ -52,8 +52,8 @@ public abstract class ClientSideEntity<T extends Entity, R extends RenderEntity>
 	}
 	
 	protected void updateImpl(R in) {
-		Vector3f pos = in.getPosition();
-		entity.updatePosition(pos.x, pos.y, pos.z);
+		Vector3dc pos = in.getPosition();
+		entity.updatePosition(pos.x(), pos.y(), pos.z());
 		entity.setGlowing(editor.getSelectedEntities().contains(in.getEntity()));
 	}
 

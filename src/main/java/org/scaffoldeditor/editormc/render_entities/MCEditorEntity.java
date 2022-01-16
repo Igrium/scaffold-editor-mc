@@ -2,9 +2,9 @@ package org.scaffoldeditor.editormc.render_entities;
 
 import java.util.Optional;
 
+import org.joml.Vector3dc;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.scaffold_interface.NBTConverter;
-import org.scaffoldeditor.nbt.math.Vector3f;
 import org.scaffoldeditor.nbt.util.MCEntity;
 import org.scaffoldeditor.scaffold.level.render.MCRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.RenderEntity;
@@ -38,11 +38,11 @@ public class MCEditorEntity implements EditorRenderEntity {
 		MCEntity ent = ((MCRenderEntity) entity).getMcEntity();
 		Optional<EntityType<?>> type = EntityType.get(ent.getID());
 		if (type.isPresent()) {
-			Vector3f pos = entity.getPosition();
-			Vector3f rot = entity.getRotation();
+			Vector3dc pos = entity.getPosition();
+			Vector3dc rot = entity.getRotation();
 			
 			mcEntity = type.get().create(world);
-			mcEntity.updatePositionAndAngles(pos.x, pos.y, pos.z, rot.x, rot.y);
+			mcEntity.updatePositionAndAngles(pos.x(), pos.y(), pos.z(), (float) rot.x(), (float) rot.y());
 			world.spawnEntity(mcEntity);
 			update(entity);
 		} else {
@@ -63,8 +63,8 @@ public class MCEditorEntity implements EditorRenderEntity {
 		if (mcEntity == null) return;
 		
 		if (EntityType.getId(mcEntity.getType()).toString().equals(ent.getID())) {		
-			Vector3f pos = entity.getPosition();
-			Vector3f rot = entity.getRotation();
+			Vector3dc pos = entity.getPosition();
+			Vector3dc rot = entity.getRotation();
 			
 			NbtCompound newNBT = NBTConverter.scaffoldCompoundToMinecraft(ent.getNBT());
 			newNBT.putBoolean("NoAI", true);
@@ -74,7 +74,7 @@ public class MCEditorEntity implements EditorRenderEntity {
 			
 			mcEntity.readNbt(newNBT);
 			
-			mcEntity.updatePositionAndAngles(pos.x, pos.y, pos.z, rot.x, rot.y);
+			mcEntity.updatePositionAndAngles(pos.x(), pos.y(), pos.z(), (float) rot.x(), (float) rot.y());
 			mcEntity.setGlowing(editor.getSelectedEntities().contains(entity.getEntity()));
 			
 		} else {

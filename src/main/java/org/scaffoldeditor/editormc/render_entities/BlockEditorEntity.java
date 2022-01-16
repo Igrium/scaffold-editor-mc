@@ -32,8 +32,8 @@ public class BlockEditorEntity implements EditorRenderEntity {
 		}
 		BlockRenderEntity ent = (BlockRenderEntity) entity;
 		renderer.setBlockCollection(ent.getBlocks());
-		renderer.setPos(new Vec3d(ent.getPosition().x, ent.getPosition().y, ent.getPosition().z));
-		renderer.setRot(ent.getRotation().y);
+		renderer.setPos(new Vec3d(ent.getPosition().x(), ent.getPosition().y(), ent.getPosition().z()));
+		renderer.setRot((float) ent.getRotation().y());
 	}
 
 	@Override
