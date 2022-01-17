@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,6 +32,7 @@ import org.scaffoldeditor.editormc.util.UIUtils;
 import org.scaffoldeditor.nbt.block.WorldMath.ChunkCoordinate;
 import org.scaffoldeditor.nbt.block.WorldMath.SectionCoordinate;
 import org.scaffoldeditor.scaffold.core.Project;
+import org.scaffoldeditor.scaffold.core.ServiceProvider;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
@@ -68,6 +68,7 @@ public class ScaffoldEditor {
 	private boolean pauseCache = true;
 	private JSONObject cache = new JSONObject();
 	private RenderEntityManager renderEntityManager;
+	private ServiceProvider serviceProvider;
 
 	public ScaffoldEditor() {
 
@@ -78,16 +79,26 @@ public class ScaffoldEditor {
 	}
 
 	/**
+	 * Get the service provider on which level operations should be performed.
+	 */
+	public ServiceProvider getServiceProvider() {
+		return serviceProvider;
+	}
+
+	/**
 	 * Launch the scaffold editor. Should be called when Minecraft is NOT ingame.
 	 */
 	public void start(@Nullable Level level) {
 		if (client.world != null) {
-			System.out.print("Warning: Scaffold Editor can only be launched when not ingame");
-			return;
+			throw new IllegalStateException("Scaffold Editor can only be launched when not ingame");
 		}
+
+		LogManager.getLogger().info("Starting Scaffold Service...");
+		serviceProvider = new ServiceProvider("Scaffold Thread");
+
 		pauseCache = client.options.pauseOnLostFocus;
 		client.options.pauseOnLostFocus = false;
-
+		
 		client.startIntegratedServer("");
 		server = (EditorServer) client.getServer();
 
@@ -152,11 +163,17 @@ public class ScaffoldEditor {
 			client.onResolutionChanged();
 		});
 		renderEntityManager.clear();
+		try {
+			serviceProvider.close();
+		} catch (Exception e) {
+			LogManager.getLogger().error("Exception closing scaffold service provicer", e);
+		}
 	}
 
 	public void setLevel(Level level) {
 		if (level != null) {
 			this.level = level;
+			level.getOperationManager().setServiceProvider(getServiceProvider());
 			this.setProject(level.getProject());
 			renderEntityManager.clear();
 
@@ -272,16 +289,6 @@ public class ScaffoldEditor {
 
 	public void setProject(Project project) {
 		this.project = project;
-		
-		project.getThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-			
-			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				if (getUI() != null) {
-					UIUtils.showError("Exception in level thread", e);
-				}
-			}
-		});
 	}
 
 	public RenderEntityManager getRenderEntityManager() {
@@ -326,7 +333,7 @@ public class ScaffoldEditor {
 		File oldLevel = levelFile;
 		levelFile = file;
 		CompletableFuture<Level> future = new CompletableFuture<Level>();
-		project.execute(() -> {
+		serviceProvider.execute(() -> {
 			try {
 				Level level;
 				level = Level.loadFile(project, file);
@@ -384,7 +391,7 @@ public class ScaffoldEditor {
 						"Attempted to save a level that doesn't have a corrisponding file. Use saveAs() instead.");
 			}
 
-			project.execute(() -> {
+			serviceProvider.execute(() -> {
 				try {
 					level.saveFile(levelFile);
 				} catch (IOException e) {
@@ -396,6 +403,7 @@ public class ScaffoldEditor {
 			saveCache();
 		} catch (IOException e) {
 			LogManager.getLogger().error("Error saving cache ", e);
+			UIUtils.showError("Error saving cache.", e);
 		}
 	}
 

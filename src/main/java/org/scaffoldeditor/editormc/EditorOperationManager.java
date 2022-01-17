@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.ui.controllers.ProgressWindow;
+import org.scaffoldeditor.editormc.util.UIUtils;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.stack.StackItem;
@@ -102,7 +103,7 @@ public class EditorOperationManager {
 	}
 
 	/**
-	 * Show the progress UI and recompile the block world. Must be called on the JavaFX thread!
+	 * Show the progress UI and recompile the block world.
 	 * @return A future that completes when the recompile is finished.
 	 */
 	public CompletableFuture<Void> compileLevel() {
@@ -110,7 +111,7 @@ public class EditorOperationManager {
 		CompletableFuture<Void> future = new CompletableFuture<>();
 		Platform.runLater(() -> {
 			ProgressWindow window = ProgressWindow.open(editor.getUI().getStage(), "Compiling blocks...");
-			editor.getProject().execute(() -> {
+			editor.getServiceProvider().execute(() -> {
 				try {
 					editor.getLevel().compileBlockWorld(false, window.getProgressListener());
 					future.complete(null);
@@ -119,9 +120,14 @@ public class EditorOperationManager {
 					future.completeExceptionally(e);
 				}
 			});
-
-			future.thenAccept(val -> {
-				Platform.runLater(() -> window.close());
+			
+			future.whenComplete((val, e) -> {
+				Platform.runLater(() -> {
+					window.close();
+					if (e != null) {
+						UIUtils.showError("Error compiling world", e);
+					}
+				});
 			});
 		});
 		
