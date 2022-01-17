@@ -215,16 +215,14 @@ public class ScaffoldEditor {
 		if (level == null) {
 			return;
 		}
-
-		project.execute(() -> {
-			if (compile) {
-				level.compileBlockWorld(false);
-			} else {
-				// World automatically loads on compile
-				EditorServerWorld world = server.getEditorWorld();
-				WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
-			}
-		});
+		
+		if (compile) {
+			operationManager.compileLevel();
+		} else {
+			// World automatically loads on compile
+			EditorServerWorld world = server.getEditorWorld();
+			WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
+		}
 
 	}
 
@@ -329,31 +327,41 @@ public class ScaffoldEditor {
 		levelFile = file;
 		CompletableFuture<Level> future = new CompletableFuture<Level>();
 		project.execute(() -> {
-			Level level;
 			try {
+				Level level;
 				level = Level.loadFile(project, file);
-			} catch (IOException e) {
+
+				setLevel(level);
+				level.setName(FilenameUtils.getBaseName(file.getName()));
+	
+				JSONArray cameraPos = getLevelCache().optJSONArray("cameraPos");
+				if (cameraPos != null) {
+					double x = cameraPos.getDouble(0);
+					double y = cameraPos.getDouble(1);
+					double z = cameraPos.getDouble(2);
+	
+					getServer().execute(() -> {
+						getServer().teleportPlayers(x, y, z);
+					});
+				}
+				future.complete(level);
+
+			} catch (Throwable e) {
 				Platform.runLater(() -> {
-					UIUtils.showError("Error loading level", e);
+					levelFile = oldLevel;
+					future.completeExceptionally(e);
 				});
-				levelFile = oldLevel;
-				return;
 			}
-			setLevel(level);
-			level.setName(FilenameUtils.getBaseName(file.getName()));
-			future.complete(level);
+			
+		});
 
-			JSONArray cameraPos = getLevelCache().optJSONArray("cameraPos");
-			if (cameraPos != null) {
-				double x = cameraPos.getDouble(0);
-				double y = cameraPos.getDouble(1);
-				double z = cameraPos.getDouble(2);
-
-				getServer().execute(() -> {
-					getServer().teleportPlayers(x, y, z);
-				});
+		future.whenComplete((level, e) -> {
+			if (e != null) {
+				UIUtils.showError("Error loading level.", e);
+				LogManager.getLogger().error("Error loading level.", e);
 			}
 		});
+
 		ui.reloadRecentFiles();
 		{
 			List<Object> recentLevels = cache.has("recentLevels") ? cache.getJSONArray("recentLevels").toList()
@@ -365,7 +373,7 @@ public class ScaffoldEditor {
 			recentLevels.add(0, filename);
 			cache.put("recentLevels", recentLevels);
 		}
-
+		
 		return future;
 	}
 

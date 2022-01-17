@@ -3,6 +3,7 @@ package org.scaffoldeditor.editormc.tools;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.logging.log4j.LogManager;
 import org.joml.Vector3d;
 import org.joml.Vector3dc;
 import org.scaffoldeditor.editormc.EditorOperationManager;
@@ -13,6 +14,7 @@ import org.scaffoldeditor.editormc.ui.controllers.EntityToolPropertiesController
 import org.scaffoldeditor.editormc.ui.controllers.CompileProgressUI;
 import org.scaffoldeditor.editormc.util.RaycastUtils;
 import org.scaffoldeditor.scaffold.level.Level;
+import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.entity.EntityRegistry;
 import org.scaffoldeditor.scaffold.operation.AddEntityOperation;
 
@@ -71,8 +73,9 @@ public class EntityTool implements ViewportTool {
 			HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height, 100);		
 			if (hitResult.getType() == HitResult.Type.MISS) return;		
 			Vec3d pos = hitResult.getPos();
-			spawn(new Vector3d(pos.x, pos.y, pos.z), uiController.shouldSnapToBlock());
-			ScaffoldUI.getInstance().getToolbar().setTool("select");
+			spawn(new Vector3d(pos.x, pos.y, pos.z), uiController.shouldSnapToBlock())
+				.thenAccept(ent -> ScaffoldUI.getInstance().getToolbar().setTool("select"));
+			
 		}
 	}
 	
@@ -82,19 +85,17 @@ public class EntityTool implements ViewportTool {
 	 * @param snapToBlock Snap to a grid increment (always rounds down).
 	 * @return Success.
 	 */
-	public CompletableFuture<Boolean> spawn(Vector3dc position, boolean snapToBlock) {
+	public CompletableFuture<Entity> spawn(Vector3dc position, boolean snapToBlock) {
 		if (uiController.getEnteredClass().length() == 0) {
-			CompletableFuture<Boolean> success = new CompletableFuture<>();
-			success.complete(false);
-			return success;
+			// This is a VERY high-level class, so we don't want to be throwing exceptions here.
+			uiController.setWarningText("Improper name.");
+			return CompletableFuture.failedFuture(new IllegalArgumentException("Improper name."));
 		}
 		
 		String registryName = uiController.getEnteredClass();
 		if (!EntityRegistry.registry.containsKey(registryName)) {
 			uiController.setWarningText("Unknown entity type: "+registryName);
-			CompletableFuture<Boolean> success = new CompletableFuture<>();
-			success.complete(false);
-			return success;
+			return CompletableFuture.failedFuture(new IllegalArgumentException("Unknown entity type: "+registryName));
 		}
 		String name = uiController.getEnteredName();
 		if (name.length() == 0) {
@@ -105,15 +106,17 @@ public class EntityTool implements ViewportTool {
 		}
 		
 		Level level = ScaffoldEditor.getInstance().getLevel();
-		CompletableFuture<Boolean> success = EditorOperationManager.getInstance().runOperation(new AddEntityOperation(level, registryName, name, position));
+		CompletableFuture<Entity> future = EditorOperationManager.getInstance().runOperation(new AddEntityOperation(level, registryName, name, position));
 		
-		success.thenAccept(bool -> {
-			if (!bool) {
-				uiController.setWarningText("Unable to spawn entity! See console for details.");
+		future.whenComplete((ent, e) -> {
+			if (e != null) {
+				uiController.setWarningText("Unable to spawn entity. " + e.getMessage() + " See console for details.");
+				LogManager.getLogger().error("Unable to spawn entity.", e);
 			}
 		});
 
-		return success;
+
+		return future;
 	}
 
 	@Override

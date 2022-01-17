@@ -7,6 +7,8 @@ import org.joml.Vector3d;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
 import org.scaffoldeditor.editormc.transformations.TransformManifest;
 import org.scaffoldeditor.editormc.transformations.ViewportTransformation;
+
+import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
@@ -182,6 +184,11 @@ public class Viewport {
 	}
 
 	public void setActiveTool(ViewportTool activeTool) {
+		if (!Platform.isFxApplicationThread()) {
+			Platform.runLater(() -> setActiveTool(activeTool));
+			return;
+		}
+
 		if (this.activeTool != null) {
 			this.activeTool.onDeactivate();
 		}

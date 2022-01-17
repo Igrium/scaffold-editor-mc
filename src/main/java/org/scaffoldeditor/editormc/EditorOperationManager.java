@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.logging.log4j.LogManager;
+import org.scaffoldeditor.editormc.ui.controllers.ProgressWindow;
 import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.level.entity.Entity;
 import org.scaffoldeditor.scaffold.level.stack.StackItem;
@@ -12,10 +14,12 @@ import org.scaffoldeditor.scaffold.operation.Operation;
 import org.scaffoldeditor.scaffold.operation.PasteEntitiesOperation;
 import org.scaffoldeditor.scaffold.util.ClipboardManager;
 
+import javafx.application.Platform;
+
 /**
  * Handles many of the non-administrative functions of the editor. All of these
  * methods <i>could</i> exist in {@link ScaffoldEditor}, but that class is
- * already congested enough.
+ * congested enough already.
  */
 public class EditorOperationManager {
     /**
@@ -40,15 +44,15 @@ public class EditorOperationManager {
 	 * @return Success.
      * @throws IllegalStateException If no level is loaded.
 	 */
-	public CompletableFuture<Boolean> runOperation(Operation operation) {
+	public <T> CompletableFuture<T> runOperation(Operation<T> operation) {
         Level level = editor.getLevel();
 		if (level == null) {
 			throw new IllegalStateException("Operations can only be run when there is a level loaded.");
 		}
 
-		return editor.getLevel().getOperationManager().execute(operation).thenApply(success -> {
+		return editor.getLevel().getOperationManager().execute(operation).thenApply(val -> {
 			updateViewport();
-			return success;
+			return val;
 		});
 	}
 
@@ -70,7 +74,7 @@ public class EditorOperationManager {
 	/**
 	 * Cut the current selection to the clipboard
 	 */
-	public CompletableFuture<Boolean> cutSelection() {
+	public CompletableFuture<Void> cutSelection() {
 		copySelection();
         Level level = editor.getLevel();
 		return runOperation(new DeleteEntityOperation(level, editor.getSelectedEntities()));
@@ -79,7 +83,7 @@ public class EditorOperationManager {
 	/**
 	 * Paste the current clipboard into the level.
 	 */
-	public CompletableFuture<Boolean> paste() {
+	public CompletableFuture<List<StackItem>> paste() {
         assertLevel();
 		return runOperation(new PasteEntitiesOperation(editor.getLevel(), editor.getUI().getOutliner().getSelectedGroup()));
 	}
@@ -97,6 +101,33 @@ public class EditorOperationManager {
 		return editor.getLevel().getOperationManager().redo().thenRun(this::updateViewport);
 	}
 
+	/**
+	 * Show the progress UI and recompile the block world. Must be called on the JavaFX thread!
+	 * @return A future that completes when the recompile is finished.
+	 */
+	public CompletableFuture<Void> compileLevel() {
+		assertLevel();
+		CompletableFuture<Void> future = new CompletableFuture<>();
+		Platform.runLater(() -> {
+			ProgressWindow window = ProgressWindow.open(editor.getUI().getStage(), "Compiling blocks...");
+			editor.getProject().execute(() -> {
+				try {
+					editor.getLevel().compileBlockWorld(false, window.getProgressListener());
+					future.complete(null);
+				} catch (Throwable e) {
+					LogManager.getLogger().error("Error compiling world", e);
+					future.completeExceptionally(e);
+				}
+			});
+
+			future.thenAccept(val -> {
+				Platform.runLater(() -> window.close());
+			});
+		});
+		
+		return future;
+	}
+
     private void updateViewport() {
         Level level = editor.getLevel();
         level.updateRenderEntities();
@@ -104,7 +135,7 @@ public class EditorOperationManager {
     }
 
     private void assertLevel() {
-        assertLevel("This action can only be performed with a level loaded.");
+        assertLevel("This action can only be performed with a level loaded.");		
     }
 
     private void assertLevel(String message) {
