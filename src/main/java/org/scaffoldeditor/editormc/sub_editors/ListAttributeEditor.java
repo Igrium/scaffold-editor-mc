@@ -9,10 +9,10 @@ import java.util.Optional;
 
 import org.scaffoldeditor.editormc.ui.attribute_types.ChangeAttributeEvent;
 import org.scaffoldeditor.editormc.ui.attribute_types.RenderAttributeRegistry;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.AttributeRegistry;
-import org.scaffoldeditor.scaffold.level.entity.attribute.ListAttribute;
+import org.scaffoldeditor.scaffold.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.entity.attribute.AttributeRegistry;
+import org.scaffoldeditor.scaffold.entity.attribute.ListAttribute;
 import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
 import org.scaffoldeditor.scaffold.util.event.EventListener;
 

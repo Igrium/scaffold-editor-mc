@@ -2,7 +2,7 @@ package org.scaffoldeditor.editormc.ui.attribute_types;
 
 import java.util.function.Consumer;
 
-import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.entity.attribute.Attribute;
 
 import javafx.scene.control.Button;
 import javafx.stage.Window;

@@ -9,9 +9,9 @@ import org.scaffoldeditor.editormc.ui.EntityEditor;
 import org.scaffoldeditor.scaffold.io.AssetLoader;
 import org.scaffoldeditor.scaffold.io.AssetLoaderRegistry;
 import org.scaffoldeditor.scaffold.io.AssetManager;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.level.entity.attribute.AssetAttribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.attribute.AssetAttribute;
+import org.scaffoldeditor.scaffold.entity.attribute.Attribute;
 
 import javafx.scene.Node;
 import javafx.scene.control.Alert;

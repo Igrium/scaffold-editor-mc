@@ -18,7 +18,7 @@ import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.editormc.ui.Viewport;
 import org.scaffoldeditor.editormc.util.RaycastUtils;
 import org.scaffoldeditor.nbt.util.SingleTypePair;
-import org.scaffoldeditor.scaffold.level.entity.BrushEntity;
+import org.scaffoldeditor.scaffold.entity.BrushEntity;
 import org.scaffoldeditor.scaffold.math.MathUtils;
 import org.scaffoldeditor.scaffold.operation.ResizeBrushesOperation;
 

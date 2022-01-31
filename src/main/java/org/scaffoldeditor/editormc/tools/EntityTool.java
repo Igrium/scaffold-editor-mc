@@ -14,8 +14,8 @@ import org.scaffoldeditor.editormc.ui.controllers.EntityToolPropertiesController
 import org.scaffoldeditor.editormc.ui.controllers.CompileProgressUI;
 import org.scaffoldeditor.editormc.util.RaycastUtils;
 import org.scaffoldeditor.scaffold.level.Level;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.level.entity.EntityRegistry;
+import org.scaffoldeditor.scaffold.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.EntityRegistry;
 import org.scaffoldeditor.scaffold.operation.AddEntityOperation;
 
 import javafx.fxml.FXMLLoader;

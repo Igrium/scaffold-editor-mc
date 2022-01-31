@@ -1,6 +1,6 @@
 package org.scaffoldeditor.editormc.ui.attribute_types;
 
-import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.entity.attribute.Attribute;
 
 import javafx.event.Event;
 import javafx.event.EventType;

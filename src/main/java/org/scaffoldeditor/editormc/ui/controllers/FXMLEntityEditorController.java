@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.Entity;
 import org.scaffoldeditor.scaffold.level.io.Output;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

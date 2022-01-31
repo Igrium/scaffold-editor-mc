@@ -2,9 +2,9 @@ package org.scaffoldeditor.editormc.ui.attribute_types;
 
 import org.joml.Vector3d;
 import org.scaffoldeditor.editormc.ui.EntityEditor;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.VectorAttribute;
+import org.scaffoldeditor.scaffold.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.entity.attribute.VectorAttribute;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;

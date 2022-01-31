@@ -9,7 +9,7 @@ import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.EditorServer;
 import org.scaffoldeditor.editormc.engine.world.EditorServerWorld;
 import org.scaffoldeditor.scaffold.level.Level;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.Entity;
 import org.scaffoldeditor.scaffold.level.render.BillboardRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.BlockRenderEntity;
 import org.scaffoldeditor.scaffold.level.render.BrushRenderEntity;

@@ -8,7 +8,7 @@ import org.scaffoldeditor.editormc.ScaffoldEditor.UpdateSelectionEvent;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.engine.gizmos.TranslationGizmo;
 import org.scaffoldeditor.editormc.ui.Viewport;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.Entity;
 import org.scaffoldeditor.scaffold.util.event.EventListener;
 
 import javafx.scene.image.Image;

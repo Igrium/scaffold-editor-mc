@@ -1,7 +1,7 @@
 package org.scaffoldeditor.editormc.ui.controllers;
 
 import org.scaffoldeditor.editormc.ScaffoldEditor;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.Entity;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;

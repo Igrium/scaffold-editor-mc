@@ -1,9 +1,9 @@
 package org.scaffoldeditor.editormc.ui.attribute_types;
 
 import org.scaffoldeditor.editormc.ui.EntityEditor;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.EnumAttribute;
+import org.scaffoldeditor.scaffold.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.entity.attribute.EnumAttribute;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

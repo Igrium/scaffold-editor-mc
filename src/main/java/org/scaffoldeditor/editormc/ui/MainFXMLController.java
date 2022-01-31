@@ -12,7 +12,7 @@ import org.scaffoldeditor.editormc.sub_editors.LevelPropertiesEditor;
 import org.scaffoldeditor.editormc.tools.Toolbar;
 import org.scaffoldeditor.editormc.ui.controllers.ViewportHeader;
 import org.scaffoldeditor.scaffold.level.Level;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.Entity;
 import org.scaffoldeditor.scaffold.operation.AddGroupOperation;
 import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
 

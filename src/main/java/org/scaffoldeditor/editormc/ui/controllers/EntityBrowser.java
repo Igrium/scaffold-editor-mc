@@ -3,7 +3,7 @@ package org.scaffoldeditor.editormc.ui.controllers;
 import java.io.IOException;
 import java.util.Collections;
 import org.jetbrains.annotations.Nullable;
-import org.scaffoldeditor.scaffold.level.entity.EntityRegistry;
+import org.scaffoldeditor.scaffold.entity.EntityRegistry;
 import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
 import org.scaffoldeditor.scaffold.util.event.EventListener;
 

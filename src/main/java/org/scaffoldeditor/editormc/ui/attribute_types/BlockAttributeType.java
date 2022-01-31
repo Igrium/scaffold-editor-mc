@@ -2,9 +2,9 @@ package org.scaffoldeditor.editormc.ui.attribute_types;
 
 import org.scaffoldeditor.editormc.sub_editors.BlockEditor;
 import org.scaffoldeditor.editormc.ui.EntityEditor;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.BlockAttribute;
+import org.scaffoldeditor.scaffold.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.entity.attribute.BlockAttribute;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 

@@ -23,7 +23,7 @@ import org.scaffoldeditor.editormc.ui.controllers.Outliner;
 import org.scaffoldeditor.editormc.ui.controllers.MinecraftConsole;
 import org.scaffoldeditor.editormc.ui.controllers.ViewportHeader;
 import org.scaffoldeditor.scaffold.level.Level;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.Entity;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;

@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import org.scaffoldeditor.editormc.sub_editors.ContainerEditor;
 import org.scaffoldeditor.editormc.ui.EntityEditor;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
-import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
-import org.scaffoldeditor.scaffold.level.entity.attribute.ContainerAttribute;
+import org.scaffoldeditor.scaffold.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.entity.attribute.ContainerAttribute;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 

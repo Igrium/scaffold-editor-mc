@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.scaffoldeditor.editormc.ui.controllers.ProgressWindow;
 import org.scaffoldeditor.editormc.util.UIUtils;
 import org.scaffoldeditor.scaffold.level.Level;
-import org.scaffoldeditor.scaffold.level.entity.Entity;
+import org.scaffoldeditor.scaffold.entity.Entity;
 import org.scaffoldeditor.scaffold.level.stack.StackItem;
 import org.scaffoldeditor.scaffold.operation.DeleteEntityOperation;
 import org.scaffoldeditor.scaffold.operation.Operation;

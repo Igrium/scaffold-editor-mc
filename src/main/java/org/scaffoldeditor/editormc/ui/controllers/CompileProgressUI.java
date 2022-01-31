@@ -14,7 +14,7 @@ import org.scaffoldeditor.scaffold.compile.Compiler.CompileEndStatus;
 import org.scaffoldeditor.scaffold.compile.Compiler.CompileProgressListener;
 import org.scaffoldeditor.scaffold.compile.Compiler.CompileResult;
 import org.scaffoldeditor.scaffold.level.Level;
-import org.scaffoldeditor.scaffold.level.entity.attribute.Attribute;
+import org.scaffoldeditor.scaffold.entity.attribute.Attribute;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
