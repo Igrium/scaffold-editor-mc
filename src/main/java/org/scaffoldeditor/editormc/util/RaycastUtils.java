@@ -1,5 +1,10 @@
 package org.scaffoldeditor.editormc.util;
 
+import org.joml.Vector3d;
+import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
+import org.scaffoldeditor.editormc.engine.world.LineRenderDispatcher;
+import org.scaffoldeditor.editormc.engine.world.LineRenderDispatcher.LineRenderer;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
@@ -41,29 +46,31 @@ public class RaycastUtils {
 	 */
 	public static HitResult raycastPixel(int x, int y, int width, int height, double distance, boolean collide) {
 		MinecraftClient client = MinecraftClient.getInstance();
-		Vec3d cameraDirection = client.cameraEntity.getRotationVec(client.getTickDelta());
-		double fov = client.options.fov;
-		double angleSize = fov / height;
+		// Vec3d cameraDirection = client.cameraEntity.getRotationVec(client.getTickDelta());
+		// double fov = client.options.fov;
+		// double angleSize = fov / height;
 
-		Vec3f verticalRotationAxis = new Vec3f(cameraDirection);
-		verticalRotationAxis.cross(Vec3f.POSITIVE_Y);
-		if (!verticalRotationAxis.normalize()) {
-			// The camera is pointed straight up or down. Need to deal with this
-			return new HitResult(cameraDirection) {	
-				@Override
-				public Type getType() {
-					return HitResult.Type.MISS;
-				}
-			};
-		}
+		// Vec3f verticalRotationAxis = new Vec3f(cameraDirection);
+		// verticalRotationAxis.cross(Vec3f.POSITIVE_Y);
+		// if (!verticalRotationAxis.normalize()) {
+		// 	// The camera is pointed straight up or down. Need to deal with this
+		// 	return new HitResult(cameraDirection) {	
+		// 		@Override
+		// 		public Type getType() {
+		// 			return HitResult.Type.MISS;
+		// 		}
+		// 	};
+		// }
 
-		Vec3f horizontalRotationAxis = new Vec3f(cameraDirection);
-		horizontalRotationAxis.cross(verticalRotationAxis);
+		// Vec3f horizontalRotationAxis = new Vec3f(cameraDirection);
+		// horizontalRotationAxis.cross(verticalRotationAxis);
 
-		Vec3d direction = map((float) angleSize, cameraDirection, horizontalRotationAxis, verticalRotationAxis, x, y,
-				width, height);
-		
-		return raycastInDirection(client.getCameraEntity(), client.getTickDelta(), direction, distance, collide);
+		// Vec3d direction = map((float) angleSize, cameraDirection, horizontalRotationAxis, verticalRotationAxis, x, y,
+		// 		width, height);
+		Vector3d dir = Raycast.getRaycastDirection((double) x / (double) width, (double) y / (double) height);
+
+		return raycastInDirection(client.getCameraEntity(), client.getTickDelta(), new Vec3d(dir.x(), dir.y(), dir.z()),
+				distance, collide);
 	}
 
 	private static Vec3d map(float anglePerPixel, Vec3d center, Vec3f horizontalRotationAxis,
@@ -82,6 +89,12 @@ public class RaycastUtils {
 			double distance, boolean collide) {
 		if (entity == null || entity.getEntityWorld() == null) {
 			return null;
+		}
+
+		// DEBUG
+		{
+			Vec3d pos = entity.getCameraPosVec(tickDelta);
+			ScaffoldEditorMod.getInstance().getLineRenderDispatcher().lines.add(new LineRenderer(pos, pos.add(direction.multiply(distance))));
 		}
 		
 		if (!collide) {
