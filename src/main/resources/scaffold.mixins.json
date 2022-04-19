@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "MinecraftServerAccessor",
-    "MixinServerTickScheduler"
+    "MixinServerTickScheduler",
+    "Matrix4fAccessor"
   ],
   "client": [
     "MixinMinecraftClient",
@@ -14,7 +15,8 @@
     "MixinClientPlayNetworkHandler",
     "MixinTitleScreen",
     "MixinGameRenderer",
-    "HudAccessor"
+    "HudAccessor",
+    "GameRendererAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

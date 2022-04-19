@@ -6,6 +6,7 @@ import org.joml.Matrix4d;
 import org.joml.Matrix4fc;
 import org.joml.Quaterniond;
 import org.joml.Quaternionf;
+import org.scaffoldeditor.editormc.engine.mixins.Matrix4fAccessor;
 
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
@@ -13,15 +14,12 @@ import net.minecraft.util.math.Quaternion;
 public class MathConverter {
 
     public static Matrix4d convertMatrix(Matrix4f source) {
-        FloatBuffer buf = FloatBuffer.allocate(16);
-        source.writeRowMajor(buf);
-        buf.rewind();
-
+        Matrix4fAccessor mat = (Matrix4fAccessor)(Object) source;
         return new Matrix4d(
-            buf.get(), buf.get(), buf.get(), buf.get(),
-            buf.get(), buf.get(), buf.get(), buf.get(),
-            buf.get(), buf.get(), buf.get(), buf.get(),
-            buf.get(), buf.get(), buf.get(), buf.get()
+            mat.getA00(), mat.getA01(), mat.getA02(), mat.getA03(),
+            mat.getA10(), mat.getA11(), mat.getA12(), mat.getA13(),
+            mat.getA20(), mat.getA21(), mat.getA22(), mat.getA23(),
+            mat.getA30(), mat.getA31(), mat.getA32(), mat.getA33()
         );
     }
 
