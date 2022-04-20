@@ -1,9 +1,10 @@
 .root {
     -fx-accent: #526679;
     -fx-focus-color: -fx-accent;
-    -fx-base: #373e43;
+    -fx-base: #212121;
     -fx-control-inner-background: derive(-fx-base, 35%);
     -fx-control-inner-background-alt: -fx-control-inner-background;
+    -fx-selection-bar-non-focused: -fx-accent;
 }
 
 .label {
