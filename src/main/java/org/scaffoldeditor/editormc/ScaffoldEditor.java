@@ -24,6 +24,7 @@ import org.lwjgl.glfw.GLFW;
 import org.scaffoldeditor.editormc.engine.EditorServer;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.engine.world.EditorServerWorld;
+import org.scaffoldeditor.editormc.render.MCRenderEntityManager;
 import org.scaffoldeditor.editormc.render_entities.RenderEntityManager;
 import org.scaffoldeditor.editormc.scaffold_interface.WorldInterface;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
@@ -110,6 +111,7 @@ public class ScaffoldEditor {
 
 		RenderAttributeRegistry.initDefaults();
 		renderEntityManager = new RenderEntityManager(this);
+		org.scaffoldeditor.scaffold.render.RenderEntityManager.setInstance(new MCRenderEntityManager(client.world));
 		ScaffoldEditorMod.getInstance().isInEditor = true;
 
 	}
