@@ -68,7 +68,7 @@ public class SelectTool implements ViewportTool {
 		} else if (hitResult.getType() == Type.ENTITY) {
 			EntityHitResult entHit = (EntityHitResult) hitResult;
 			net.minecraft.entity.Entity ent = entHit.getEntity();
-			Entity owner = editor.getRenderEntityManager().findOwner(ent);
+			Entity owner = editor.getRenderEntityManager().findScaffoldOwner(ent);
 			if (owner != null) {
 				editor.getSelectedEntities().add(owner);
 			}

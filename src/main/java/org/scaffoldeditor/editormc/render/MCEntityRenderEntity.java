@@ -4,15 +4,19 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.joml.Vector3dc;
+import org.scaffoldeditor.editormc.ScaffoldEditor;
+import org.scaffoldeditor.editormc.engine.world.EditorServerWorld;
 import org.scaffoldeditor.editormc.scaffold_interface.NBTConverter;
 import org.scaffoldeditor.nbt.util.MCEntity;
 import org.scaffoldeditor.scaffold.render.EntityRenderEntity;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Entity.RemovalReason;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.world.World;
 
 public class MCEntityRenderEntity extends MCRenderEntity implements EntityRenderEntity {
 
@@ -23,17 +27,21 @@ public class MCEntityRenderEntity extends MCRenderEntity implements EntityRender
     float yaw;
 
     private Vector3dc position;
-    private World world;
+    private MinecraftClient client;
 
     public MCEntityRenderEntity(MCRenderEntityManager manager) {
         super(manager);
-        world = manager.getWorld();
+        client = MinecraftClient.getInstance();
         enable();
     }
 
+    @Override
+    public void render(float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {}
+
     protected void respawn() {
-        if (!world.getServer().isOnThread()) {
-            world.getServer().execute(this::respawn);
+        if (client.getServer() == null) return;
+        if (!client.getServer().isOnThread()) {
+            client.getServer().execute(this::respawn);
             return;
         }
 
@@ -50,13 +58,17 @@ public class MCEntityRenderEntity extends MCRenderEntity implements EntityRender
             entType = EntityType.MARKER;
         }
         
+        EditorServerWorld world = ScaffoldEditor.getInstance().getServer().getEditorWorld();
         mcEntity = entType.create(world);
+        mcEntity.updatePositionAndAngles(position.x(), position.y(), position.z(), yaw, pitch);
         world.spawnEntity(mcEntity);
     }
 
     protected void despawn() {
-        if (!world.getServer().isOnThread()) {
-            world.getServer().execute(this::despawn);
+        if (client.getServer() == null) return;
+
+        if (!client.getServer().isOnThread()) {
+            client.getServer().execute(this::despawn);
             return;
         }
         if (mcEntity != null) {
@@ -66,8 +78,9 @@ public class MCEntityRenderEntity extends MCRenderEntity implements EntityRender
     }
 
     protected void update() {
-        if (!world.getServer().isOnThread()) {
-            world.getServer().execute(this::update);
+        if (client.getServer() == null) return;
+        if (!client.getServer().isOnThread()) {
+            client.getServer().execute(this::update);
             return;
         }
 
@@ -90,14 +103,20 @@ public class MCEntityRenderEntity extends MCRenderEntity implements EntityRender
         mcEntity.updatePositionAndAngles(position.x(), position.y(), position.z(), yaw, pitch);
     }
 
-    @Override
     public void disable() {
+        super.disable();
         despawn();
     }
 
-    @Override
     public void enable() {
+        super.enable();
         update();
+    }
+
+    @Override
+    public void kill() {
+        super.kill();
+        despawn();
     }
 
     @Override
@@ -128,6 +147,7 @@ public class MCEntityRenderEntity extends MCRenderEntity implements EntityRender
     
     public void setYaw(float yaw) {
         this.yaw = yaw;
+        update();
     }
 
     public float getPitch() {
@@ -136,6 +156,12 @@ public class MCEntityRenderEntity extends MCRenderEntity implements EntityRender
 
     public void setPitch(float pitch) {
         this.pitch = pitch;
+        update();
+    }
+
+    @Override
+    public boolean ownsEntity(Entity entity) {
+        return entity == this.mcEntity;
     }
     
 }
