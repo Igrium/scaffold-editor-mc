@@ -55,9 +55,9 @@ public class Translation {
 	private HitResult performRaycast(int x, int y) {
 		Pane pane = viewport.getParent();
 		if (castMode) {
-			return RaycastUtils.raycastPixel(x, y, (int) pane.getWidth(), (int) pane.getHeight(), 500, true);
+			return RaycastUtils.raycastPixel(x, y, (int) pane.getWidth(), (int) pane.getHeight(), true);
 		} else {
-			return RaycastUtils.raycastPixel(x, y, (int) pane.getWidth(), (int) pane.getHeight(), distance, false);
+			return RaycastUtils.raycastPixel(x, y, (int) pane.getWidth(), (int) pane.getHeight(), false);
 		}
 	}
 	

@@ -1,32 +1,30 @@
 package org.scaffoldeditor.editormc.util;
 
-import org.joml.Matrix4d;
-import org.joml.Quaterniond;
 import org.joml.Vector3d;
-import org.scaffoldeditor.editormc.engine.mixins.GameRendererAccessor;
-import org.scaffoldeditor.editormc.scaffold_interface.MathConverter;
 
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vector4f;
 import net.minecraft.world.RaycastContext;
 
 // Derived from (well, basically copied from) https://fabricmc.net/wiki/tutorial:pixel_raycast
 public class RaycastUtils {
 	
-	/**
-	 * Raycast a specific pixel on the screen.
-	 * @param x Pixel X.
-	 * @param y Pixel Y
-	 * @param width Width of the viewport.
-	 * @param height Height of the viewport.
-	 * @param distance Maximum distance of the raycast.
-	 * @return Hit result.
-	 */
-	public static HitResult raycastPixel(int x, int y, int width, int height, double distance) {
-		return raycastPixel(x, y, width, height, distance, true);
+	private static Matrix4f cameraProjection;
+	
+	public static Matrix4f getCameraProjection() {
+		return cameraProjection;
+	}
+
+	public static void register() {
+		WorldRenderEvents.AFTER_SETUP.register(context -> {
+			cameraProjection = context.projectionMatrix().copy();
+		});
 	}
 
 	/**
@@ -39,18 +37,22 @@ public class RaycastUtils {
 	 * @param collide Whether to collide with stuff.
 	 * @return Hit result.
 	 */
-	public static HitResult raycastPixel(int x, int y, int width, int height, double distance, boolean collide) {
-		return raycastPixel((double) x / (double) width, (double) y / (double) height, distance);
+	public static HitResult raycastPixel(int x, int y, int width, int height, boolean collide) {
+		return raycastPixel(x, y, width, height);
 	}
 		
 	/**
 	 * Raycast a specific pixel on the screen.
-	 * @param x Pixel x, <code>0 - 1</code>
-	 * @param y Pixel y, <code>0 - 1</code>
+	 * 
+	 * @param x        Pixel X.
+	 * @param y        Pixel Y.
+	 * @param width    Width of the viewport.
+	 * @param height   Height of the viewport.
 	 * @param distance Maximum distance of the raycast.
+	 * @param collide  Whether to collide with stuff.
 	 * @return Hit result.
 	 */
-	public static HitResult raycastPixel(double x, double y, double distance) {
+	public static HitResult raycastPixel(float x, float y, float width, float height) {
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		// Vector3d dir = Raycast.getRaycastDirection((double) x / (double) width, (double) y / (double) height);
@@ -59,10 +61,10 @@ public class RaycastUtils {
 		// 		distance, collide);
 
 		Vec3d start = client.gameRenderer.getCamera().getPos();
-		Vector3d end1 = raycastViewport(client.gameRenderer.getCamera(), x, y, 100);
+		Vector3d end1 = raycastViewport(client.gameRenderer.getCamera(), x, y, width, height);
 		Vec3d end = new Vec3d(end1.x, end1.y, end1.z);
 
-		// // DEBUG
+		// DEBUG
 		// {
 		// 	ScaffoldEditorMod.getInstance().getLineRenderDispatcher().lines.add(new LineRenderer(start, end));
 		// }
@@ -71,41 +73,28 @@ public class RaycastUtils {
 	}
 
 	/**
-	 * Using the given camera, determine the world location of a specific point in screen space.
+	 * Using the given camera, determine the world location of a specific point in
+	 * screen space.
+	 * 
 	 * @param camera The camera to use.
-	 * @param x Screenspace X position, from <code>0 - 1</code>
-	 * @param y Screenspace Y position, from <code>0 - 1</code>
-	 * @param distance Z distance to use.
+	 * @param x      X coordinate on-screen.
+	 * @param y      Y coordinate on-screen.
+	 * @param width  Width of the viewport.
+	 * @param height Height of the viewport.
 	 * @return A point in 3D space that falls under the 2D screenspace point.
 	 */
-	public static Vector3d raycastViewport(Camera camera, double x, double y, float distance) {
-		MinecraftClient client = MinecraftClient.getInstance();
-        float aspect = (float) client.getFramebuffer().textureWidth / (float) client.getFramebuffer().textureHeight;
-        double fov = ((GameRendererAccessor) client.gameRenderer).calcFov(camera, 0, true);
-        fov = Math.toRadians(fov);
+	public static Vector3d raycastViewport(Camera camera, float x, float y, float width, float height) {
+		Vector4f screenspace = new Vector4f(2 * x / width - 1, 2 * y / height - 1, -1, 1);
 
-        Vector3d cameraPos = new Vector3d(camera.getPos().getX(), camera.getPos().getY(), camera.getPos().getZ());
+		Matrix4f cameraProjection = getCameraProjection().copy();
+		cameraProjection.invert();
 
-        Matrix4d projection = new Matrix4d();
-        projection.perspective(fov, aspect, .5f, 100);
-        
-        Quaterniond rotation = MathConverter.convertQuaternion(camera.getRotation(), new Quaterniond());
-        rotation.invert();
-        Matrix4d worldToCamera = new Matrix4d().rotate(rotation);
-        worldToCamera.translate(cameraPos.mul(-1, new Vector3d()));
+		screenspace.transform(cameraProjection);
+		screenspace.multiply(-10000); // Bandaid on ray that's broken for some reason.
+		screenspace.rotate(camera.getRotation());
+		screenspace.add((float) camera.getPos().x, (float) camera.getPos().y, (float) camera.getPos().z, 0);
 
-        projection.mul(worldToCamera);
-        projection.invert();
-
-        Vector3d vec = new Vector3d(x * 2 - 1, y * 2 - 1, -1); // Clip plane is between -1 and 1
-        projection.transformPosition(vec);
-        
-        vec.sub(cameraPos);
-        vec.mul(-1);
-        vec.mul(distance);
-        vec.add(cameraPos);
-        
-        return vec;
+        return new Vector3d(screenspace.getX(), screenspace.getY(), screenspace.getZ());
     }
 
 	private static HitResult raycast(Entity entity, Vec3d startPos, Vec3d endPos, boolean includeFluids) {

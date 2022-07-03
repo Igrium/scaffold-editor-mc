@@ -55,7 +55,7 @@ public class SelectTool implements ViewportTool {
 		int x = (int) e.getX();
 		int y = (int) e.getY();
 		
-		HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height, 100);
+		HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height);
 		
 		if (hitResult.getType() == Type.MISS) {
 		} else if (hitResult.getType() == Type.BLOCK) {
