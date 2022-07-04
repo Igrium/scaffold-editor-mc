@@ -96,7 +96,7 @@ public class MCRenderEntityManager extends RenderEntityManager<MCRenderEntity> {
      * @param entity Minecraft entity to check.
      * @return Owning render entity, or <code>null</code> if there is none.
      */
-    public MCRenderEntity findOwner(net.minecraft.entity.Entity entity) {
+    public synchronized MCRenderEntity findOwner(net.minecraft.entity.Entity entity) {
         for (MCRenderEntity rEnt : pool.keySet()) {
             if (rEnt.ownsEntity(entity)) return rEnt;
         }

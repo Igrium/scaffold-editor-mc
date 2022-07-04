@@ -1,5 +1,7 @@
 package org.scaffoldeditor.editormc.tools;
 
+import java.util.Optional;
+
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.editormc.ui.Viewport;
@@ -15,6 +17,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.hit.HitResult.Type;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class SelectTool implements ViewportTool {
 	
@@ -54,25 +57,31 @@ public class SelectTool implements ViewportTool {
 		
 		int x = (int) e.getX();
 		int y = (int) e.getY();
+
+		Optional<Entity> optional = RaycastUtils.raycastPixelScaffold(x, y, width, height);
+
+		optional.ifPresent(ent -> {
+			editor.getSelectedEntities().add(ent);
+		});
 		
-		HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height);
+		// HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height);
 		
-		if (hitResult.getType() == Type.MISS) {
-		} else if (hitResult.getType() == Type.BLOCK) {
-			BlockHitResult blockHit = (BlockHitResult) hitResult;
-			BlockPos pos = blockHit.getBlockPos();
-			Object owner = editor.getLevel().getBlockWorld().getBlockOwner(pos.getX(), pos.getY(), pos.getZ());
-			if (owner instanceof Entity) {
-				editor.getSelectedEntities().add((Entity) owner);
-			}
-		} else if (hitResult.getType() == Type.ENTITY) {
-			EntityHitResult entHit = (EntityHitResult) hitResult;
-			net.minecraft.entity.Entity ent = entHit.getEntity();
-			Entity owner = editor.getRenderEntityManager().findScaffoldOwner(ent);
-			if (owner != null) {
-				editor.getSelectedEntities().add(owner);
-			}
-		}
+		// if (hitResult.getType() == Type.MISS) {
+		// } else if (hitResult.getType() == Type.BLOCK) {
+		// 	BlockHitResult blockHit = (BlockHitResult) hitResult;
+		// 	BlockPos pos = blockHit.getBlockPos();
+		// 	Object owner = editor.getLevel().getBlockWorld().getBlockOwner(pos.getX(), pos.getY(), pos.getZ());
+		// 	if (owner instanceof Entity) {
+		// 		editor.getSelectedEntities().add((Entity) owner);
+		// 	}
+		// } else if (hitResult.getType() == Type.ENTITY) {
+		// 	EntityHitResult entHit = (EntityHitResult) hitResult;
+		// 	net.minecraft.entity.Entity ent = entHit.getEntity();
+		// 	Entity owner = editor.getRenderEntityManager().findScaffoldOwner(ent);
+		// 	if (owner != null) {
+		// 		editor.getSelectedEntities().add(owner);
+		// 	}
+		// }
 		editor.updateSelection();
 	}
 

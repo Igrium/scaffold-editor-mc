@@ -12,6 +12,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Vector4f;
@@ -26,6 +27,8 @@ public class MCBillboardRenderEntity extends MCRenderEntity implements Billboard
     private String texture = "";
     private float scale = 1f;
 
+    private Box bbox = calculateBounds();
+
     @Override
     public Vector3dc getPosition() {
         return position;
@@ -34,6 +37,7 @@ public class MCBillboardRenderEntity extends MCRenderEntity implements Billboard
     @Override
     public synchronized void setPosition(Vector3dc pos) {
         this.position = pos;
+        bbox = calculateBounds();
     }
 
     @Override
@@ -57,6 +61,18 @@ public class MCBillboardRenderEntity extends MCRenderEntity implements Billboard
             throw new IllegalArgumentException("Scale must be at least 0.");
         }
         this.scale = scale;
+        bbox = calculateBounds();
+    }
+
+    private Box calculateBounds() {
+        float radius = this.scale / 2f;
+        return new Box(position.x() - radius, position.y() - radius, position.z() - radius, position.x() + radius,
+                position.y() + radius, position.z() + radius);
+    }
+
+    @Override
+    public Box getBoundingBox() {
+        return bbox;
     }
 
     @Override

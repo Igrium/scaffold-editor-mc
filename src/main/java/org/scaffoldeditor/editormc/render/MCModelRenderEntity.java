@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc.render;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaterniond;
 import org.joml.Quaterniondc;
 import org.joml.Vector3d;
@@ -14,6 +15,7 @@ import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Box;
 
 public class MCModelRenderEntity extends MCRenderEntity implements ModelRenderEntity {
     private Vector3dc position = new Vector3d();
@@ -54,6 +56,12 @@ public class MCModelRenderEntity extends MCRenderEntity implements ModelRenderEn
     @Override
     public synchronized void setModel(String model) {
         this.model = model;
+    }
+
+    @Override
+    public @Nullable Box getBoundingBox() {
+        return new Box(position.x() - .5f, position.y() - .5f, position.z() - .5f, position.x() + .5f,
+                position.y() + .5f, position.z() + .5f);
     }
 
     @Override

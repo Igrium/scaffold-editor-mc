@@ -3,6 +3,7 @@ package org.scaffoldeditor.editormc.render;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3dc;
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.engine.world.EditorServerWorld;
@@ -17,6 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Entity.RemovalReason;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.Box;
 
 public class MCEntityRenderEntity extends MCRenderEntity implements EntityRenderEntity {
 
@@ -101,6 +103,11 @@ public class MCEntityRenderEntity extends MCRenderEntity implements EntityRender
 
         mcEntity.readNbt(newNBT);
         mcEntity.updatePositionAndAngles(position.x(), position.y(), position.z(), yaw, pitch);
+    }
+
+    @Override
+    public @Nullable Box getBoundingBox() {
+        return mcEntity.getBoundingBox();
     }
 
     public void disable() {

@@ -1,12 +1,24 @@
 package org.scaffoldeditor.editormc.util;
 
-import org.joml.Vector3d;
+import java.util.Optional;
+
+import org.joml.Vector3dc;
+import org.scaffoldeditor.editormc.ScaffoldEditor;
+import org.scaffoldeditor.editormc.render.MCRenderEntityManager;
+import org.scaffoldeditor.editormc.render.RenderEntityRaycastUtil;
+import org.scaffoldeditor.editormc.render.RenderEntityRaycastUtil.RenderEntityHitResult;
+import org.scaffoldeditor.scaffold.entity.Entity;
+import org.scaffoldeditor.scaffold.level.Level;
+import org.scaffoldeditor.scaffold.render.RenderEntityManager;
+
+import com.ibm.icu.util.StringTrieBuilder.Option;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
-import net.minecraft.entity.Entity;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vector4f;
@@ -37,6 +49,7 @@ public class RaycastUtils {
 	 * @param collide Whether to collide with stuff.
 	 * @return Hit result.
 	 */
+	@Deprecated
 	public static HitResult raycastPixel(int x, int y, int width, int height, boolean collide) {
 		return raycastPixel(x, y, width, height);
 	}
@@ -48,8 +61,6 @@ public class RaycastUtils {
 	 * @param y        Pixel Y.
 	 * @param width    Width of the viewport.
 	 * @param height   Height of the viewport.
-	 * @param distance Maximum distance of the raycast.
-	 * @param collide  Whether to collide with stuff.
 	 * @return Hit result.
 	 */
 	public static HitResult raycastPixel(float x, float y, float width, float height) {
@@ -61,15 +72,33 @@ public class RaycastUtils {
 		// 		distance, collide);
 
 		Vec3d start = client.gameRenderer.getCamera().getPos();
-		Vector3d end1 = raycastViewport(client.gameRenderer.getCamera(), x, y, width, height);
-		Vec3d end = new Vec3d(end1.x, end1.y, end1.z);
+		Vec3d end = raycastViewport(client.gameRenderer.getCamera(), x, y, width, height);
 
 		// DEBUG
 		// {
 		// 	ScaffoldEditorMod.getInstance().getLineRenderDispatcher().lines.add(new LineRenderer(start, end));
 		// }
 
-		return raycast(client.getCameraEntity(), start, end, false);
+		return raycastWorld(client.getCameraEntity(), start, end, false);
+	}
+
+	/**
+	 * Raycast a specific pixel on the screen and return the scaffold entity found
+	 * under it.
+	 * 
+	 * @param x      Pixel X.
+	 * @param y      Pixel Y.
+	 * @param width  Width of the viewport.
+	 * @param height Height of the viewport.
+	 * @return The entity found.
+	 */
+	public static Optional<Entity> raycastPixelScaffold(float x, float y, float width, float height) {
+		MinecraftClient client = MinecraftClient.getInstance();
+
+		Vec3d start = client.gameRenderer.getCamera().getPos();
+		Vec3d end = raycastViewport(client.gameRenderer.getCamera(), x, y, width, height);
+
+		return raycastScaffoldEntities(start, end);
 	}
 
 	/**
@@ -83,7 +112,7 @@ public class RaycastUtils {
 	 * @param height Height of the viewport.
 	 * @return A point in 3D space that falls under the 2D screenspace point.
 	 */
-	public static Vector3d raycastViewport(Camera camera, float x, float y, float width, float height) {
+	public static Vec3d raycastViewport(Camera camera, float x, float y, float width, float height) {
 		Vector4f screenspace = new Vector4f(2 * x / width - 1, 2 * y / height - 1, -1, 1);
 
 		Matrix4f cameraProjection = getCameraProjection().copy();
@@ -94,10 +123,64 @@ public class RaycastUtils {
 		screenspace.rotate(camera.getRotation());
 		screenspace.add((float) camera.getPos().x, (float) camera.getPos().y, (float) camera.getPos().z, 0);
 
-        return new Vector3d(screenspace.getX(), screenspace.getY(), screenspace.getZ());
+        return new Vec3d(screenspace.getX(), screenspace.getY(), screenspace.getZ());
     }
 
-	private static HitResult raycast(Entity entity, Vec3d startPos, Vec3d endPos, boolean includeFluids) {
+	/**
+	 * Perform a raycast into the world and return the first Scaffold entity hit.
+	 * 
+	 * @param start Raycast start point.
+	 * @param end   Raycast end point.
+	 * @return The Scaffold entity hit.
+	 */
+	public static Optional<Entity> raycastScaffoldEntities(Vec3d start, Vec3d end) {
+		MCRenderEntityManager manager = (MCRenderEntityManager) RenderEntityManager.getInstance();
+		MinecraftClient client = MinecraftClient.getInstance();
+		Level level = ScaffoldEditor.getInstance().getLevel();
+
+		RenderEntityHitResult entHit = RenderEntityRaycastUtil.raycast(manager, start, end, null);
+		BlockHitResult blockHit = raycastWorld(client.getCameraEntity(), start, end, false);
+
+		boolean useBlock;
+
+		if (entHit == null) {
+			useBlock = true;
+		} else if (blockHit == null) {
+			useBlock = false;
+		} else {
+			if (start.distanceTo(entHit.getPos()) <= start.distanceTo(blockHit.getPos())) {
+				useBlock = false;
+			} else {
+				useBlock = true;
+			}
+		}
+
+		if (useBlock) {
+			if (blockHit == null) return Optional.empty();
+			
+			BlockPos pos = blockHit.getBlockPos();
+			Entity owner = (Entity) level.getBlockWorld().getBlockOwner(pos.getX(), pos.getY(), pos.getZ());
+			return Optional.ofNullable(owner);
+		} else {
+			if (entHit == null) return Optional.empty();
+			return Optional.ofNullable(manager.getOwner(entHit.getRenderEntity()));
+		}
+		
+	}
+
+	/**
+	 * Perform a raycast into the world and return the first Scaffold entity hit.
+	 * Proxy that uses Joml vectors instead of MC vectors.
+	 * 
+	 * @param start Raycast start point.
+	 * @param end   Raycast end point.
+	 * @return The Scaffold entity hit.
+	 */
+	public static Optional<Entity> raycastScaffoldEntities(Vector3dc start, Vector3dc end) {
+		return raycastScaffoldEntities(new Vec3d(start.x(), start.y(), start.z()), new Vec3d(end.x(), end.y(), end.z()));
+	}
+
+	private static BlockHitResult raycastWorld(net.minecraft.entity.Entity entity, Vec3d startPos, Vec3d endPos, boolean includeFluids) {
 		return entity.world.raycast(new RaycastContext(startPos, endPos, RaycastContext.ShapeType.OUTLINE,
 				includeFluids ? RaycastContext.FluidHandling.ANY : RaycastContext.FluidHandling.NONE, entity));
 	}

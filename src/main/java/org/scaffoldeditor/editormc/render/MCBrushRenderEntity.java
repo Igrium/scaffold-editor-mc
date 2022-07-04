@@ -16,6 +16,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Box;
 
 public class MCBrushRenderEntity extends MCRenderEntity implements BrushRenderEntity {
 
@@ -55,6 +56,11 @@ public class MCBrushRenderEntity extends MCRenderEntity implements BrushRenderEn
     @Override
     public synchronized void setTexture(String texture) {
         this.texture = texture;
+    }
+
+    @Override
+    public Box getBoundingBox() {
+        return new Box(startPos.x(), startPos.y(), startPos.z(), endPos.x(), endPos.y(), endPos.z());
     }
 
     @Override

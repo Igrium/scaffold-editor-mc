@@ -1,5 +1,6 @@
 package org.scaffoldeditor.editormc.render;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 import org.joml.Vector3dc;
 import org.joml.Vector4f;
@@ -11,6 +12,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
 public class MCLineRenderEntity extends MCRenderEntity implements LineRenderEntity {
@@ -51,6 +53,11 @@ public class MCLineRenderEntity extends MCRenderEntity implements LineRenderEnti
     @Override
     public synchronized void setColor(Vector4fc color) {
         this.color = color;
+    }
+
+    @Override
+    public @Nullable Box getBoundingBox() {
+        return null;
     }
 
     @Override
