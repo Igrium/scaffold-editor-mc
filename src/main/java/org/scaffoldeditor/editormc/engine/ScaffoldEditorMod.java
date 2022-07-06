@@ -12,7 +12,6 @@ import org.scaffoldeditor.editormc.engine.world.BlockRenderDispatcher;
 import org.scaffoldeditor.editormc.engine.world.LineRenderDispatcher;
 import org.scaffoldeditor.editormc.engine.world.ScaffoldRenderEvents;
 import org.scaffoldeditor.editormc.render.RenderEntityDispatcher;
-import org.scaffoldeditor.editormc.util.RaycastUtils;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -61,7 +60,7 @@ public class ScaffoldEditorMod implements ClientModInitializer {
 		});
 				
 		ScaffoldRenderEvents.register();
-		RaycastUtils.register();
+		RenderUtils.register();
 
 		blockRenderDispatcher = new BlockRenderDispatcher(client);
 		blockRenderDispatcher.register();

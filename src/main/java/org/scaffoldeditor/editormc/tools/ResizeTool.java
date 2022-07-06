@@ -107,6 +107,7 @@ public class ResizeTool implements ViewportTool {
 	
 	protected Vector3d logicalStart = new Vector3d(0, 0, 0);
 	protected Vector3d logicalEnd = new Vector3d(0, 0, 0);
+	private MinecraftClient client = MinecraftClient.getInstance();
 	
 	public ResizeTool(ScaffoldUI ui) {
 		this.editor = ui.getEditor();
@@ -234,7 +235,7 @@ public class ResizeTool implements ViewportTool {
 			movingBrushes.add(new MovingBrush(ent, start, end));
 		}
 		
-		translation = new Translation(viewport, logicalEnd);
+		translation = new Translation(viewport, client.gameRenderer.getCamera(), logicalEnd);
 	}
 	
 	public void applyTranslation() {
