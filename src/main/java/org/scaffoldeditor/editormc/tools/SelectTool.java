@@ -42,7 +42,7 @@ public class SelectTool implements ViewportTool {
 		}
 		
 		ScaffoldEditor editor = ScaffoldUI.getInstance().getEditor();
-		if (!e.isShiftDown()) { // TODO: test for shift key
+		if (!e.isShiftDown()) {
 			editor.getSelectedEntities().clear();
 		}
 		
