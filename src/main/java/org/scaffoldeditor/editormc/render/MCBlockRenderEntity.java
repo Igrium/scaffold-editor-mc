@@ -22,8 +22,8 @@ public class MCBlockRenderEntity extends MCRenderEntity implements BlockRenderEn
     }
 
     private Vector3dc pos = new Vector3d();
-    private Quaterniondc rot;
-    private Quaternion mcRot;
+    private Quaterniondc rot = new Quaterniond();
+    private Quaternion mcRot = new Quaternion(0, 0, 0, 1);
 
     private BlockCollection blocks;
 

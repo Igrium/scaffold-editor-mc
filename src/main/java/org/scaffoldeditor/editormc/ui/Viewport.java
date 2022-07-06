@@ -273,10 +273,10 @@ public class Viewport {
 	}
 
 	public int getWidth() {
-		return (int) parent.getWidth();
+		return (int) getParent().getWidth();
 	}
 
 	public int getHeight() {
-		return (int) parent.getHeight();
+		return (int) getParent().getHeight();
 	}
 }

@@ -102,8 +102,8 @@ public class MainFXMLController {
 		});
 		mainPanel.addEventHandler(KeyEvent.KEY_TYPED, ui.viewport::handleKeyTyped);
 		
-		mainPanel.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
-			ScaffoldUI.getInstance().viewport.handleMouseMoved((int) e.getX(), (int) e.getY());
+		viewportPane.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
+			ui.viewport.handleMouseMoved((int) e.getX(), (int) e.getY());
 		});
 		
 		viewportPane.addEventHandler(MouseEvent.MOUSE_DRAGGED, ui.viewport::handleMouseDragged);

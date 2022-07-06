@@ -46,8 +46,8 @@ public class SelectTool implements ViewportTool {
 			editor.getSelectedEntities().clear();
 		}
 		
-		int width = (int) viewport.getParent().getWidth();
-		int height = (int) viewport.getParent().getHeight();
+		int width = (int) viewport.getWidth();
+		int height = (int) viewport.getHeight();
 		
 		int x = (int) e.getX();
 		int y = (int) e.getY();
