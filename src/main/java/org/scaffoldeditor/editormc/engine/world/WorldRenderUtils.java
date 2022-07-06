@@ -4,6 +4,7 @@ import java.util.Random;
 
 import org.joml.Vector3ic;
 import org.scaffoldeditor.editormc.scaffold_interface.BlockConverter;
+import org.scaffoldeditor.nbt.block.Block;
 import org.scaffoldeditor.nbt.block.BlockCollection;
 
 import net.minecraft.block.BlockRenderType;
@@ -32,6 +33,8 @@ public class WorldRenderUtils {
 		Random random = new Random();
 		
 		for (Vector3ic pos : blocks) {
+			Block block = blocks.blockAt(pos);
+			if (block == null) continue;
 			renderWorld.setBlockState(scaffoldVec2MC(pos), BlockConverter.scaffoldToMinecraft(blocks.blockAt(pos)));
 		}
 		

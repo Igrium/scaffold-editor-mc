@@ -1,5 +1,7 @@
 package org.scaffoldeditor.editormc.tools;
 
+import java.util.Optional;
+
 import org.scaffoldeditor.editormc.ScaffoldEditor;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.editormc.ui.Viewport;
@@ -10,11 +12,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.hit.HitResult.Type;
-import net.minecraft.util.math.BlockPos;
 
 public class SelectTool implements ViewportTool {
 	
@@ -45,34 +42,22 @@ public class SelectTool implements ViewportTool {
 		}
 		
 		ScaffoldEditor editor = ScaffoldUI.getInstance().getEditor();
-		if (!e.isShiftDown()) { // TODO: test for shift key
+		if (!e.isShiftDown()) {
 			editor.getSelectedEntities().clear();
 		}
 		
-		int width = (int) viewport.getParent().getWidth();
-		int height = (int) viewport.getParent().getHeight();
+		int width = (int) viewport.getWidth();
+		int height = (int) viewport.getHeight();
 		
 		int x = (int) e.getX();
 		int y = (int) e.getY();
+
+		Optional<Entity> optional = RaycastUtils.raycastPixelSelection(x, y, width, height);
+
+		optional.ifPresent(ent -> {
+			editor.getSelectedEntities().add(ent);
+		});
 		
-		HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height, 100);
-		
-		if (hitResult.getType() == Type.MISS) {
-		} else if (hitResult.getType() == Type.BLOCK) {
-			BlockHitResult blockHit = (BlockHitResult) hitResult;
-			BlockPos pos = blockHit.getBlockPos();
-			Object owner = editor.getLevel().getBlockWorld().getBlockOwner(pos.getX(), pos.getY(), pos.getZ());
-			if (owner instanceof Entity) {
-				editor.getSelectedEntities().add((Entity) owner);
-			}
-		} else if (hitResult.getType() == Type.ENTITY) {
-			EntityHitResult entHit = (EntityHitResult) hitResult;
-			net.minecraft.entity.Entity ent = entHit.getEntity();
-			Entity owner = editor.getRenderEntityManager().findOwner(ent);
-			if (owner != null) {
-				editor.getSelectedEntities().add(owner);
-			}
-		}
 		editor.updateSelection();
 	}
 

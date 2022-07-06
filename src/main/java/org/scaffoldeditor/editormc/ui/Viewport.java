@@ -271,4 +271,12 @@ public class Viewport {
 	public int getMouseY() {
 		return mouseY;
 	}
+
+	public int getWidth() {
+		return (int) getParent().getWidth();
+	}
+
+	public int getHeight() {
+		return (int) getParent().getHeight();
+	}
 }

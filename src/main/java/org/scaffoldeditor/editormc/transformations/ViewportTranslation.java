@@ -13,16 +13,19 @@ import org.scaffoldeditor.scaffold.operation.MoveEntitiesOperation;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import net.minecraft.client.MinecraftClient;
 
 public class ViewportTranslation implements ViewportTransformation {
 	
 	private ScaffoldUI ui;
 	private Map<Entity, Vector3dc> entities;
-	private Vector3dc target = new Vector3d();
+	private Vector3d currentCenter = new Vector3d();
 	private Translation translation;
+	private MinecraftClient client;
 	
 	public ViewportTranslation(ScaffoldUI ui) {
 		this.ui = ui;
+		this.client = MinecraftClient.getInstance();
 	}
 	
 	@Override
@@ -36,12 +39,12 @@ public class ViewportTranslation implements ViewportTransformation {
 				
 		if (ui.getViewportHeader().snapToGrid()) startPos.floor();
 		
-		target = startPos;
+		currentCenter = startPos;
 		entities = new HashMap<>();
 		for (Entity ent : selected) {
 			entities.put(ent, ent.getPosition().sub(startPos, new Vector3d()));
 		}
-		translation = new Translation(ui.getViewport(), startPos);
+		translation = new Translation(ui.getViewport(), client.gameRenderer.getCamera(), startPos);
 	}
 	
 	@Override
@@ -49,11 +52,10 @@ public class ViewportTranslation implements ViewportTransformation {
 		ViewportTransformation.super.onMouseMoved(x, y);
 		if (translation == null) return;
 		
-		Vector3d subject = translation.getTranslation(x, y);
-		target = subject;
-		if (ui.getViewportHeader().snapToGrid()) subject.floor();
+		currentCenter = translation.getTranslation(x, y);
+		if (ui.getViewportHeader().snapToGrid()) currentCenter.floor();
 		for (Entity ent : entities.keySet()) {
-			ent.setPreviewPosition(target.add(entities.get(ent), new Vector3d()));
+			ent.setPreviewPosition(currentCenter.add(entities.get(ent), new Vector3d()));
 		}
 	}
 	
@@ -82,7 +84,7 @@ public class ViewportTranslation implements ViewportTransformation {
 				translation.setLock("Z");
 			}
 		} else if (event.getCode() == KeyCode.CONTROL) {
-			translation.castMode = false;
+			translation.setCastMode(false);
 		}
 	}
 	
@@ -92,7 +94,7 @@ public class ViewportTranslation implements ViewportTransformation {
 		if (translation == null) return;
 		
 		if (event.getCode() == KeyCode.CONTROL) {
-			translation.castMode = true;
+			translation.setCastMode(true);
 		}
 	}
 
@@ -108,7 +110,7 @@ public class ViewportTranslation implements ViewportTransformation {
 	public void apply() {
 		Map<Entity, Vector3dc> targets = new HashMap<>();
 		entities.keySet().stream().forEach(ent -> {
-			targets.put(ent, target.add(entities.get(ent), new Vector3d()));
+			targets.put(ent, currentCenter.add(entities.get(ent), new Vector3d()));
 			ent.disableTransformPreview();
 		});
 		

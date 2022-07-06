@@ -2,6 +2,7 @@ package org.scaffoldeditor.editormc.engine;
 
 import java.util.Random;
 
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.model.BakedModel;
@@ -12,6 +13,23 @@ import net.minecraft.util.math.Vec3d;
 
 public final class RenderUtils {
 	private RenderUtils() {}
+	
+	private static Matrix4f cameraProjection;
+
+	public static void register() {
+		WorldRenderEvents.AFTER_SETUP.register(context -> {
+			cameraProjection = context.projectionMatrix().copy();
+		});
+	}
+
+	/**
+	 * Get the camera projection matrix as it was on the last frame rendered.
+	 * 
+	 * @return Camera projection matrix.
+	 */
+	public static Matrix4f getCameraProjection() {
+		return cameraProjection;
+	}
 	
 	public static void renderBakedModel(BakedModel model, MatrixStack matrices, VertexConsumer consumer) {
 		renderBakedModel(model, matrices, consumer, 1, 1, 1, 255);

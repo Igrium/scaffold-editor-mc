@@ -70,7 +70,7 @@ public class EntityTool implements ViewportTool {
 			int x = (int) event.getX();
 			int y = (int) event.getY();
 			
-			HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height, 100);		
+			HitResult hitResult = RaycastUtils.raycastPixel(x, y, width, height);		
 			if (hitResult.getType() == HitResult.Type.MISS) return;		
 			Vec3d pos = hitResult.getPos();
 			spawn(new Vector3d(pos.x, pos.y, pos.z), uiController.shouldSnapToBlock())

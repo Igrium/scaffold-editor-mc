@@ -24,7 +24,7 @@ import org.lwjgl.glfw.GLFW;
 import org.scaffoldeditor.editormc.engine.EditorServer;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
 import org.scaffoldeditor.editormc.engine.world.EditorServerWorld;
-import org.scaffoldeditor.editormc.render_entities.RenderEntityManager;
+import org.scaffoldeditor.editormc.render.MCRenderEntityManager;
 import org.scaffoldeditor.editormc.scaffold_interface.WorldInterface;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 import org.scaffoldeditor.editormc.ui.attribute_types.RenderAttributeRegistry;
@@ -34,6 +34,7 @@ import org.scaffoldeditor.nbt.block.WorldMath.SectionCoordinate;
 import org.scaffoldeditor.scaffold.core.Project;
 import org.scaffoldeditor.scaffold.core.ServiceProvider;
 import org.scaffoldeditor.scaffold.level.Level;
+import org.scaffoldeditor.scaffold.render.RenderEntityManager;
 import org.scaffoldeditor.scaffold.entity.Entity;
 import org.scaffoldeditor.scaffold.util.event.EventDispatcher;
 import org.scaffoldeditor.scaffold.util.event.EventListener;
@@ -65,9 +66,9 @@ public class ScaffoldEditor {
 	private final Set<Entity> selectedEntities = new HashSet<>();
 	private final EventDispatcher<UpdateSelectionEvent> updateSelectionDispatcher = new EventDispatcher<>();
 	public String worldpath_cache;
+	private MCRenderEntityManager renderEntityManager;
 	private boolean pauseCache = true;
 	private JSONObject cache = new JSONObject();
-	private RenderEntityManager renderEntityManager;
 	private ServiceProvider serviceProvider;
 
 	public ScaffoldEditor() {
@@ -109,7 +110,8 @@ public class ScaffoldEditor {
 		ui = ScaffoldUI.open(this);
 
 		RenderAttributeRegistry.initDefaults();
-		renderEntityManager = new RenderEntityManager(this);
+		renderEntityManager = new MCRenderEntityManager();
+		RenderEntityManager.setInstance(renderEntityManager);
 		ScaffoldEditorMod.getInstance().isInEditor = true;
 
 	}
@@ -197,8 +199,9 @@ public class ScaffoldEditor {
 			level.onUpdateEntityStack(() -> {
 				ui.updateEntityList();
 			});
-			renderEntityManager.init();
+			
 			ui.updateEntityList();
+			
 			loadLevel(true);
 			level.updateRenderEntities();
 
@@ -291,7 +294,7 @@ public class ScaffoldEditor {
 		this.project = project;
 	}
 
-	public RenderEntityManager getRenderEntityManager() {
+	public MCRenderEntityManager getRenderEntityManager() {
 		return renderEntityManager;
 	}
 
@@ -338,8 +341,8 @@ public class ScaffoldEditor {
 				Level level;
 				level = Level.loadFile(project, file);
 
-				setLevel(level);
 				level.setName(FilenameUtils.getBaseName(file.getName()));
+				setLevel(level);
 	
 				JSONArray cameraPos = getLevelCache().optJSONArray("cameraPos");
 				if (cameraPos != null) {
