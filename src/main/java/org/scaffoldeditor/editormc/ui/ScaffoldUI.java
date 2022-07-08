@@ -19,11 +19,12 @@ import org.scaffoldeditor.editormc.tools.SelectTool;
 import org.scaffoldeditor.editormc.tools.Toolbar;
 import org.scaffoldeditor.editormc.tools.ViewportTool;
 import org.scaffoldeditor.editormc.ui.controllers.FXMLCompileController;
-import org.scaffoldeditor.editormc.ui.controllers.Outliner;
 import org.scaffoldeditor.editormc.ui.controllers.MinecraftConsole;
+import org.scaffoldeditor.editormc.ui.controllers.Outliner;
 import org.scaffoldeditor.editormc.ui.controllers.ViewportHeader;
-import org.scaffoldeditor.scaffold.level.Level;
 import org.scaffoldeditor.scaffold.entity.Entity;
+import org.scaffoldeditor.scaffold.level.Level;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -33,8 +34,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
@@ -91,7 +90,7 @@ public class ScaffoldUI extends Application {
 			
 			System.setProperty("java.awt.headless", "false");
 			stage.show();
-			controller.init();
+			controller.init(this);
 			
 			toolbar = new Toolbar();
 			toolbar.addTool(new SelectTool(viewport), "select");
@@ -101,10 +100,7 @@ public class ScaffoldUI extends Application {
 			toolbar.setTool("select");
 			controller.setToolbar(toolbar);
 			
-			outliner = Outliner.load(this);
-			VBox.setVgrow(outliner.getRoot(), Priority.ALWAYS);
-			controller.getOutlinerBox().getChildren().add(outliner.getRoot());
-			
+			outliner = controller.getOutliner();
 			controller.getViewportHeader().init(editor);
 			
 			isExiting = false;

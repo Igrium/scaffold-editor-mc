@@ -7,7 +7,6 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -19,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="564.0" prefWidth="938.0" stylesheets="@css/scaffold.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.scaffoldeditor.editormc.ui.MainFXMLController">
+<VBox prefHeight="564.0" prefWidth="938.0" stylesheets="@css/scaffold.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.scaffoldeditor.editormc.ui.MainFXMLController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -153,21 +152,7 @@
             </HBox>
          </top>
          <right>
-            <VBox fx:id="outlinerBox" BorderPane.alignment="CENTER">
-               <children>
-                  <HBox spacing="5.0">
-                     <children>
-                        <ImageView focusTraversable="true" onMouseClicked="#newGroup">
-                           <image>
-                              <Image url="@images/new_group.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                  </HBox>
-               </children></VBox>
+            <fx:include fx:id="outliner" source="outliner.fxml" />
          </right>
       </BorderPane>
   </children>
