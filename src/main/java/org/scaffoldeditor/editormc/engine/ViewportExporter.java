@@ -25,7 +25,7 @@ public class ViewportExporter {
 	 * Must be called from the render thread.
 	 */
 	public static void export() {
-		if (!RenderSystem.isOnRenderThread() || !ScaffoldEditorMod.getInstance().isInEditor) {
+		if (!RenderSystem.isOnRenderThread() || !ScaffoldEditorMod.getInstance().isInEditor()) {
 			return;
 		};
 		

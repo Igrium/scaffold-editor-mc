@@ -22,7 +22,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.lwjgl.glfw.GLFW;
 import org.scaffoldeditor.editormc.engine.EditorServer;
+import org.scaffoldeditor.editormc.engine.FakeSession;
 import org.scaffoldeditor.editormc.engine.ScaffoldEditorMod;
+import org.scaffoldeditor.editormc.engine.ScaffoldServerLoader;
 import org.scaffoldeditor.editormc.engine.world.EditorServerWorld;
 import org.scaffoldeditor.editormc.render.MCRenderEntityManager;
 import org.scaffoldeditor.editormc.scaffold_interface.WorldInterface;
@@ -43,473 +45,488 @@ import javafx.application.Platform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.world.gen.WorldPresets;
 
 public class ScaffoldEditor {
-	public static class UpdateSelectionEvent {
-		public final Set<Entity> newSelection;
+    public static class UpdateSelectionEvent {
+        public final Set<Entity> newSelection;
 
-		public UpdateSelectionEvent(Set<Entity> newSelection) {
-			this.newSelection = newSelection;
-		}
-	}
+        public UpdateSelectionEvent(Set<Entity> newSelection) {
+            this.newSelection = newSelection;
+        }
+    }
 
-	public static final String CACHE_FILE_NAME = "editorcache.json";
+    public static final String CACHE_FILE_NAME = "editorcache.json";
 
-	public final EditorOperationManager operationManager = new EditorOperationManager(this);
+    public final EditorOperationManager operationManager = new EditorOperationManager(this);
 
-	private Level level;
-	protected MinecraftClient client = MinecraftClient.getInstance();
-	protected EditorServer server;
-	protected ScaffoldUI ui;
-	private Project project;
-	protected File levelFile;
-	private final Set<Entity> selectedEntities = new HashSet<>();
-	private final EventDispatcher<UpdateSelectionEvent> updateSelectionDispatcher = new EventDispatcher<>();
-	public String worldpath_cache;
-	private MCRenderEntityManager renderEntityManager;
-	private boolean pauseCache = true;
-	private JSONObject cache = new JSONObject();
-	private ServiceProvider serviceProvider;
+    private Level level;
+    protected MinecraftClient client = MinecraftClient.getInstance();
+    protected EditorServer server;
+    protected ScaffoldUI ui;
+    private Project project;
+    protected File levelFile;
+    private final Set<Entity> selectedEntities = new HashSet<>();
+    private final EventDispatcher<UpdateSelectionEvent> updateSelectionDispatcher = new EventDispatcher<>();
+    public String worldpath_cache;
+    private MCRenderEntityManager renderEntityManager;
+    private boolean pauseCache = true;
+    private JSONObject cache = new JSONObject();
+    private ServiceProvider serviceProvider;
 
-	public ScaffoldEditor() {
+    public ScaffoldEditor() {
 
-	}
+    }
 
-	public static ScaffoldEditor getInstance() {
-		return ScaffoldEditorMod.getInstance().getEditor();
-	}
+    public static ScaffoldEditor getInstance() {
+        return ScaffoldEditorMod.getInstance().getEditor();
+    }
 
-	/**
-	 * Get the service provider on which level operations should be performed.
-	 */
-	public ServiceProvider getServiceProvider() {
-		return serviceProvider;
-	}
+    /**
+     * Get the service provider on which level operations should be performed.
+     */
+    public ServiceProvider getServiceProvider() {
+        return serviceProvider;
+    }
 
-	/**
-	 * Launch the scaffold editor. Should be called when Minecraft is NOT ingame.
-	 */
-	public void start(@Nullable Level level) {
-		if (client.world != null) {
-			throw new IllegalStateException("Scaffold Editor can only be launched when not ingame");
-		}
+    /**
+     * Launch the scaffold editor. Should be called when Minecraft is NOT ingame.
+     */
+    public void start(@Nullable Level level) {
+        if (client.world != null) {
+            throw new IllegalStateException("Scaffold Editor can only be launched when not ingame");
+        }
 
-		LogManager.getLogger().info("Starting Scaffold Service...");
-		serviceProvider = new ServiceProvider("Scaffold Thread");
+        LogManager.getLogger().info("Starting Scaffold Service...");
+        serviceProvider = new ServiceProvider("Scaffold Thread");
 
-		pauseCache = client.options.pauseOnLostFocus;
-		client.options.pauseOnLostFocus = false;
-		
-		client.startIntegratedServer("");
-		server = (EditorServer) client.getServer();
+        pauseCache = client.options.pauseOnLostFocus;
+        client.options.pauseOnLostFocus = false;
 
-		if (level != null) {
-			setLevel(level);
-		}
+        ScaffoldServerLoader loader = new ScaffoldServerLoader(client);
+        loader.start();
+        server = (EditorServer) client.getServer();
 
-		ui = ScaffoldUI.open(this);
+        // DynamicRegistryManager.Immutable dynRegMan = DynamicRegistryManager.createAndLoad().toImmutable();
+        // // try {
+        // // 	FakeSession session = new FakeSession(client.getLevelStorage(), dynRegMan);
+        // // } catch (IOException e) {
+        // // 	throw new RuntimeException("Unable to create Scaffold session.", e);
+        // // }
 
-		RenderAttributeRegistry.initDefaults();
-		renderEntityManager = new MCRenderEntityManager();
-		RenderEntityManager.setInstance(renderEntityManager);
-		ScaffoldEditorMod.getInstance().isInEditor = true;
+        // client.createIntegratedServerLoader().createAndStart("", FakeSession.EDITOR_LEVEL_INFO, dynRegMan, WorldPresets.createDefaultOptions(dynRegMan));
 
-	}
+        // // client.startIntegratedServer("", session, session.createSaveHandler());
+        // server = (EditorServer) client.getServer();
 
-	/**
-	 * Gracefully exit from the editor.
-	 */
-	public void exit() {
-		if (level != null && level.hasUnsavedChanges()) {
-			if (!ui.showUnsavedDialog())
-				return;
-		}
+        if (level != null) {
+            setLevel(level);
+        }
 
-		client.execute(() -> {
-			client.world.disconnect();
-			client.disconnect();
-			client.openScreen(null);
-		});
-	}
+        ui = ScaffoldUI.open(this);
 
-	/**
-	 * Called when the server disconnects or any other time Scaffold has to exit due
-	 * to reasons outside its control.
-	 */
-	public void forceExit() {
-		ui.exit();
-		ScaffoldEditorMod.getInstance().isInEditor = false;
-		onClose();
-	}
+        RenderAttributeRegistry.initDefaults();
+        renderEntityManager = new MCRenderEntityManager();
+        RenderEntityManager.setInstance(renderEntityManager);
+        ScaffoldEditorMod.getInstance().setInEditor(true);
 
-	protected void onClose() {
-		client.options.pauseOnLostFocus = pauseCache;
-		try {
-			saveCache();
-		} catch (IOException e) {
-			LogManager.getLogger().error(e);
-		}
-		if (project != null)
-			project.close();
-		project = null;
-		client.execute(() -> {
-			// Reset framebuffer
-			Window window = client.getWindow();
-			int[] width = new int[1];
-			int[] height = new int[1];
-			GLFW.glfwGetFramebufferSize(window.getHandle(), width, height);
-			LogManager.getLogger().info("Framebuffer size: " + width[0] + ", " + height[0]);
-			window.setFramebufferWidth(width[0]);
-			window.setFramebufferHeight(height[0]);
+    }
 
-			client.onResolutionChanged();
-		});
-		renderEntityManager.clear();
-		try {
-			serviceProvider.close();
-		} catch (Exception e) {
-			LogManager.getLogger().error("Exception closing scaffold service provicer", e);
-		}
-	}
+    /**
+     * Gracefully exit from the editor.
+     */
+    public void exit() {
+        if (level != null && level.hasUnsavedChanges()) {
+            if (!ui.showUnsavedDialog())
+                return;
+        }
 
-	public void setLevel(Level level) {
-		if (level != null) {
-			this.level = level;
-			level.getOperationManager().setServiceProvider(getServiceProvider());
-			this.setProject(level.getProject());
-			renderEntityManager.clear();
+        client.execute(() -> {
+            client.world.disconnect();
+            client.disconnect();
+            client.setScreen(null);
+        });
+    }
 
-			level.onWorldUpdate(e -> {
-				if (e.updatedSections.isEmpty()) {
-					loadLevel(false);
-				} else {
-					EditorServerWorld world = server.getEditorWorld();
-					for (SectionCoordinate c : e.updatedSections) {
-						try {
-							WorldInterface.loadScaffoldSection(
-									level.getBlockWorld().getChunks().get(new ChunkCoordinate(c.x(), c.z())).sections[c.y()],
-									world, c);
-						} catch (NullPointerException ex) {
-							world.clearSection(c);
-						}
-					}
-				}
-			});
+    /**
+     * Called when the server disconnects or any other time Scaffold has to exit due
+     * to reasons outside its control.
+     */
+    public void forceExit() {
+        ui.exit();
+        ScaffoldEditorMod.getInstance().setInEditor(false);
+        onClose();
+    }
 
-			level.onUpdateEntityStack(() -> {
-				ui.updateEntityList();
-			});
-			
-			ui.updateEntityList();
-			
-			loadLevel(true);
-			level.updateRenderEntities();
+    protected void onClose() {
+        client.options.pauseOnLostFocus = pauseCache;
+        try {
+            saveCache();
+        } catch (IOException e) {
+            LogManager.getLogger().error(e);
+        }
+        if (project != null)
+            project.close();
+        project = null;
+        client.execute(() -> {
+            // Reset framebuffer
+            Window window = client.getWindow();
+            int[] width = new int[1];
+            int[] height = new int[1];
+            GLFW.glfwGetFramebufferSize(window.getHandle(), width, height);
+            LogManager.getLogger().info("Framebuffer size: " + width[0] + ", " + height[0]);
+            window.setFramebufferWidth(width[0]);
+            window.setFramebufferHeight(height[0]);
 
-		}
-		ui.reloadRecentFiles();
-		try {
-			saveCache();
-		} catch (IOException e) {
-			LogManager.getLogger().error(e);
-		}
-	}
+            client.onResolutionChanged();
+        });
+        renderEntityManager.clear();
+        try {
+            serviceProvider.close();
+        } catch (Exception e) {
+            LogManager.getLogger().error("Exception closing scaffold service provicer", e);
+        }
+    }
 
-	public Level getLevel() {
-		return level;
-	}
+    public void setLevel(Level level) {
+        if (level != null) {
+            this.level = level;
+            level.getOperationManager().setServiceProvider(getServiceProvider());
+            this.setProject(level.getProject());
+            renderEntityManager.clear();
 
-	/**
-	 * Create a new level and open it. Only works if the project is not null.
-	 */
-	public void newLevel() {
-		if (project == null) {
-			throw new IllegalStateException("Project cannot be null");
-		}
-		;
-		levelFile = null;
-		Level level = new Level(getProject());
-		setLevel(level);
-	}
+            level.onWorldUpdate(e -> {
+                if (e.updatedSections.isEmpty()) {
+                    loadLevel(false);
+                } else {
+                    EditorServerWorld world = server.getEditorWorld();
+                    for (SectionCoordinate c : e.updatedSections) {
+                        try {
+                            WorldInterface.loadScaffoldSection(
+                                    level.getBlockWorld().getChunks().get(new ChunkCoordinate(c.x(), c.z())).sections[c.y()],
+                                    world, c);
+                        } catch (NullPointerException ex) {
+                            world.clearSection(c);
+                        }
+                    }
+                }
+            });
 
-	protected void loadLevel(boolean compile) {
-		if (level == null) {
-			return;
-		}
-		
-		if (compile) {
-			operationManager.compileLevel();
-		} else {
-			// World automatically loads on compile
-			EditorServerWorld world = server.getEditorWorld();
-			WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
-		}
+            level.onUpdateEntityStack(() -> {
+                ui.updateEntityList();
+            });
+            
+            ui.updateEntityList();
+            
+            loadLevel(true);
+            level.updateRenderEntities();
 
-	}
+        }
+        ui.reloadRecentFiles();
+        try {
+            saveCache();
+        } catch (IOException e) {
+            LogManager.getLogger().error(e);
+        }
+    }
 
-	public EditorServer getServer() {
-		return server;
-	}
+    public Level getLevel() {
+        return level;
+    }
 
-	public ScaffoldUI getUI() {
-		return ui;
-	}
+    /**
+     * Create a new level and open it. Only works if the project is not null.
+     */
+    public void newLevel() {
+        if (project == null) {
+            throw new IllegalStateException("Project cannot be null");
+        }
+        ;
+        levelFile = null;
+        Level level = new Level(getProject());
+        setLevel(level);
+    }
 
-	/**
-	 * Get the set of selected entities.
-	 * 
-	 * @return Selected entities. Make sure to call <code>updateSelection()</code>
-	 *         after modifying.
-	 */
-	public Set<Entity> getSelectedEntities() {
-		return selectedEntities;
-	}
+    protected void loadLevel(boolean compile) {
+        if (level == null) {
+            return;
+        }
+        
+        if (compile) {
+            operationManager.compileLevel();
+        } else {
+            // World automatically loads on compile
+            EditorServerWorld world = server.getEditorWorld();
+            WorldInterface.loadScaffoldWorld(level.getBlockWorld(), world);
+        }
 
-	public void selectEntity(Entity entity) {
-		selectedEntities.add(entity);
-		updateSelection();
-	}
+    }
 
-	public void deselectEntity(Entity entity) {
-		selectedEntities.remove(entity);
-		updateSelection();
-	}
+    public EditorServer getServer() {
+        return server;
+    }
 
-	public void updateSelection() {
-		updateSelectionDispatcher.fire(new UpdateSelectionEvent(selectedEntities));
-	}
+    public ScaffoldUI getUI() {
+        return ui;
+    }
 
-	public void onUpdateSelection(EventListener<UpdateSelectionEvent> listener) {
-		updateSelectionDispatcher.addListener(listener);
-	}
+    /**
+     * Get the set of selected entities.
+     * 
+     * @return Selected entities. Make sure to call <code>updateSelection()</code>
+     *         after modifying.
+     */
+    public Set<Entity> getSelectedEntities() {
+        return selectedEntities;
+    }
 
-	public void removeOnUpdateSelection(EventListener<UpdateSelectionEvent> listener) {
-		updateSelectionDispatcher.removeListener(listener);
-	}
+    public void selectEntity(Entity entity) {
+        selectedEntities.add(entity);
+        updateSelection();
+    }
 
-	public Project getProject() {
-		return project;
-	}
+    public void deselectEntity(Entity entity) {
+        selectedEntities.remove(entity);
+        updateSelection();
+    }
 
-	public void setProject(Project project) {
-		this.project = project;
-	}
+    public void updateSelection() {
+        updateSelectionDispatcher.fire(new UpdateSelectionEvent(selectedEntities));
+    }
 
-	public MCRenderEntityManager getRenderEntityManager() {
-		return renderEntityManager;
-	}
+    public void onUpdateSelection(EventListener<UpdateSelectionEvent> listener) {
+        updateSelectionDispatcher.addListener(listener);
+    }
 
-	/**
-	 * Open a project, or create one if it doesn't exist.
-	 * 
-	 * @param folder Project folder.
-	 * @return Opened project.
-	 * @throws IOException If an IO exception occurs while creating the project.
-	 */
-	public Project openProject(Path folder) throws IOException {
-		LogManager.getLogger().info("Opening project: " + folder.toString());
-		if (!folder.toFile().isDirectory()) {
-			LogManager.getLogger().error(folder.toString() + " is not a directory!");
-			return null;
-		}
+    public void removeOnUpdateSelection(EventListener<UpdateSelectionEvent> listener) {
+        updateSelectionDispatcher.removeListener(listener);
+    }
 
-		if (folder.resolve("gameInfo.json").toFile().isFile()) {
-			this.project = Project.loadProject(folder.toString());
-		} else {
-			this.project = Project.init(folder.toString(), folder.getFileName().toString());
-		}
-		loadCache();
-		ui.reloadRecentFiles();
-		return project;
-	}
+    public Project getProject() {
+        return project;
+    }
 
-	/**
-	 * Open a level file.
-	 * 
-	 * @param file File to load.
-	 * @return Loaded level.
-	 */
-	public CompletableFuture<Level> openLevelFile(File file) {
-		if (level != null && level.hasUnsavedChanges()) {
-			if (!ui.showUnsavedDialog())
-				return null;
-		}
-		File oldLevel = levelFile;
-		levelFile = file;
-		CompletableFuture<Level> future = new CompletableFuture<Level>();
-		serviceProvider.execute(() -> {
-			try {
-				Level level;
-				level = Level.loadFile(project, file);
+    public void setProject(Project project) {
+        this.project = project;
+    }
 
-				level.setName(FilenameUtils.getBaseName(file.getName()));
-				setLevel(level);
-	
-				JSONArray cameraPos = getLevelCache().optJSONArray("cameraPos");
-				if (cameraPos != null) {
-					double x = cameraPos.getDouble(0);
-					double y = cameraPos.getDouble(1);
-					double z = cameraPos.getDouble(2);
-	
-					getServer().execute(() -> {
-						getServer().teleportPlayers(x, y, z);
-					});
-				}
-				future.complete(level);
+    public MCRenderEntityManager getRenderEntityManager() {
+        return renderEntityManager;
+    }
 
-			} catch (Throwable e) {
-				Platform.runLater(() -> {
-					levelFile = oldLevel;
-					future.completeExceptionally(e);
-				});
-			}
-			
-		});
+    /**
+     * Open a project, or create one if it doesn't exist.
+     * 
+     * @param folder Project folder.
+     * @return Opened project.
+     * @throws IOException If an IO exception occurs while creating the project.
+     */
+    public Project openProject(Path folder) throws IOException {
+        LogManager.getLogger().info("Opening project: " + folder.toString());
+        if (!folder.toFile().isDirectory()) {
+            LogManager.getLogger().error(folder.toString() + " is not a directory!");
+            return null;
+        }
 
-		future.whenComplete((level, e) -> {
-			if (e != null) {
-				UIUtils.showError("Error loading level.", e);
-				LogManager.getLogger().error("Error loading level.", e);
-			}
-		});
+        if (folder.resolve("gameInfo.json").toFile().isFile()) {
+            this.project = Project.loadProject(folder.toString());
+        } else {
+            this.project = Project.init(folder.toString(), folder.getFileName().toString());
+        }
+        loadCache();
+        ui.reloadRecentFiles();
+        return project;
+    }
 
-		ui.reloadRecentFiles();
-		{
-			List<Object> recentLevels = cache.has("recentLevels") ? cache.getJSONArray("recentLevels").toList()
-					: new ArrayList<>();
-			String filename = project.assetManager().relativise(file);
-			if (recentLevels.contains(filename)) {
-				recentLevels.remove(filename);
-			}
-			recentLevels.add(0, filename);
-			cache.put("recentLevels", recentLevels);
-		}
-		
-		return future;
-	}
+    /**
+     * Open a level file.
+     * 
+     * @param file File to load.
+     * @return Loaded level.
+     */
+    public CompletableFuture<Level> openLevelFile(File file) {
+        if (level != null && level.hasUnsavedChanges()) {
+            if (!ui.showUnsavedDialog())
+                return null;
+        }
+        File oldLevel = levelFile;
+        levelFile = file;
+        CompletableFuture<Level> future = new CompletableFuture<Level>();
+        serviceProvider.execute(() -> {
+            try {
+                Level level;
+                level = Level.loadFile(project, file);
 
-	public void save() {
-		if (level != null) {
-			if (levelFile == null) {
-				throw new IllegalStateException(
-						"Attempted to save a level that doesn't have a corrisponding file. Use saveAs() instead.");
-			}
+                level.setName(FilenameUtils.getBaseName(file.getName()));
+                setLevel(level);
+    
+                JSONArray cameraPos = getLevelCache().optJSONArray("cameraPos");
+                if (cameraPos != null) {
+                    double x = cameraPos.getDouble(0);
+                    double y = cameraPos.getDouble(1);
+                    double z = cameraPos.getDouble(2);
+    
+                    getServer().execute(() -> {
+                        getServer().teleportPlayers(x, y, z);
+                    });
+                }
+                future.complete(level);
 
-			serviceProvider.execute(() -> {
-				try {
-					level.saveFile(levelFile);
-				} catch (IOException e) {
-					UIUtils.showError("Error saving level", e);
-				}
-			});
-		}
-		try {
-			saveCache();
-		} catch (IOException e) {
-			LogManager.getLogger().error("Error saving cache ", e);
-			UIUtils.showError("Error saving cache.", e);
-		}
-	}
+            } catch (Throwable e) {
+                Platform.runLater(() -> {
+                    levelFile = oldLevel;
+                    future.completeExceptionally(e);
+                });
+            }
+            
+        });
 
-	public void saveAs(File newFile) {
-		levelFile = newFile;
-		level.setName(FilenameUtils.getBaseName(newFile.getName()));
-		save();
-		ui.reloadRecentFiles();
-		{
-			List<Object> recentLevels = cache.has("recentLevels") ? cache.getJSONArray("recentLevels").toList()
-					: new ArrayList<>();
-			String filename = project.assetManager().relativise(newFile);
-			if (recentLevels.contains(filename)) {
-				recentLevels.remove(filename);
-			}
-			recentLevels.add(0, filename);
-			cache.put("recentLevels", recentLevels);
-		}
-	}
+        future.whenComplete((level, e) -> {
+            if (e != null) {
+                UIUtils.showError("Error loading level.", e);
+                LogManager.getLogger().error("Error loading level.", e);
+            }
+        });
 
-	/**
-	 * Get the file the level was last saved to.
-	 * 
-	 * @return The file, or {@code null} if it was never saved.
-	 */
-	public File getLevelFile() {
-		return levelFile;
-	}
+        ui.reloadRecentFiles();
+        {
+            List<Object> recentLevels = cache.has("recentLevels") ? cache.getJSONArray("recentLevels").toList()
+                    : new ArrayList<>();
+            String filename = project.assetManager().relativise(file);
+            if (recentLevels.contains(filename)) {
+                recentLevels.remove(filename);
+            }
+            recentLevels.add(0, filename);
+            cache.put("recentLevels", recentLevels);
+        }
+        
+        return future;
+    }
 
-	/**
-	 * Get the primary JSON object used for caching values used by the high-level
-	 * editor (recently opened, etc)
-	 * 
-	 * @return JSONObject representing the file at
-	 *         <code>.scaffold/editorcache.json</code>
-	 */
-	public JSONObject getCache() {
-		return cache;
-	}
+    public void save() {
+        if (level != null) {
+            if (levelFile == null) {
+                throw new IllegalStateException(
+                        "Attempted to save a level that doesn't have a corrisponding file. Use saveAs() instead.");
+            }
 
-	/**
-	 * Get the JSON object used for caching values specific to this level.
-	 * 
-	 * @return A child object of {@link #getCache()}.
-	 */
-	public JSONObject getLevelCache() {
-		if (level == null)
-			return null;
+            serviceProvider.execute(() -> {
+                try {
+                    level.saveFile(levelFile);
+                } catch (IOException e) {
+                    UIUtils.showError("Error saving level", e);
+                }
+            });
+        }
+        try {
+            saveCache();
+        } catch (IOException e) {
+            LogManager.getLogger().error("Error saving cache ", e);
+            UIUtils.showError("Error saving cache.", e);
+        }
+    }
 
-		if (!cache.has("levels")) {
-			cache.put("levels", new JSONObject());
-		}
+    public void saveAs(File newFile) {
+        levelFile = newFile;
+        level.setName(FilenameUtils.getBaseName(newFile.getName()));
+        save();
+        ui.reloadRecentFiles();
+        {
+            List<Object> recentLevels = cache.has("recentLevels") ? cache.getJSONArray("recentLevels").toList()
+                    : new ArrayList<>();
+            String filename = project.assetManager().relativise(newFile);
+            if (recentLevels.contains(filename)) {
+                recentLevels.remove(filename);
+            }
+            recentLevels.add(0, filename);
+            cache.put("recentLevels", recentLevels);
+        }
+    }
 
-		JSONObject levels = cache.getJSONObject("levels");
+    /**
+     * Get the file the level was last saved to.
+     * 
+     * @return The file, or {@code null} if it was never saved.
+     */
+    public File getLevelFile() {
+        return levelFile;
+    }
 
-		if (!levels.has(level.getName())) {
-			levels.put(level.getName(), new JSONObject());
-		}
-		return levels.getJSONObject(level.getName());
-	}
+    /**
+     * Get the primary JSON object used for caching values used by the high-level
+     * editor (recently opened, etc)
+     * 
+     * @return JSONObject representing the file at
+     *         <code>.scaffold/editorcache.json</code>
+     */
+    public JSONObject getCache() {
+        return cache;
+    }
 
-	public void loadCache() {
-		if (project != null) {
-			File file = project.getCacheFolder().resolve(CACHE_FILE_NAME).toFile();
-			if (file.isFile()) {
-				try {
-					cache = new JSONObject(new JSONTokener(new FileInputStream(file)));
-				} catch (JSONException | FileNotFoundException e) {
-					LogManager.getLogger().error(e);
-					cache = new JSONObject();
-				}
-			} else {
-				cache = new JSONObject();
-			}
-		}
-	}
+    /**
+     * Get the JSON object used for caching values specific to this level.
+     * 
+     * @return A child object of {@link #getCache()}.
+     */
+    public JSONObject getLevelCache() {
+        if (level == null)
+            return null;
 
-	public void saveCache() throws IOException {
-		if (project != null) {
-			if (level != null) {
-				JSONObject levelCache = getLevelCache();
-				Vec3d pos = client.player.getPos();
-				levelCache.put("cameraPos", List.of(pos.x, pos.y, pos.z));
-			}
+        if (!cache.has("levels")) {
+            cache.put("levels", new JSONObject());
+        }
 
-			File file = project.getCacheFolder().resolve(CACHE_FILE_NAME).toFile();
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-			writer.write(getCache().toString());
-			writer.close();
-		}
-	}
+        JSONObject levels = cache.getJSONObject("levels");
 
-	/**
-	 * Close the editor and open a Minecraft world ingame.
-	 * 
-	 * @param worldName World to load.
-	 */
-	public void openWorld(String worldName) {
-		LogManager.getLogger().info("Shutting down editor and opening world: " + worldName);
-		client.execute(() -> {
-			client.world.disconnect();
-			client.disconnect();
-			client.startIntegratedServer(worldName);
-		});
-	}
+        if (!levels.has(level.getName())) {
+            levels.put(level.getName(), new JSONObject());
+        }
+        return levels.getJSONObject(level.getName());
+    }
+
+    public void loadCache() {
+        if (project != null) {
+            File file = project.getCacheFolder().resolve(CACHE_FILE_NAME).toFile();
+            if (file.isFile()) {
+                try {
+                    cache = new JSONObject(new JSONTokener(new FileInputStream(file)));
+                } catch (JSONException | FileNotFoundException e) {
+                    LogManager.getLogger().error(e);
+                    cache = new JSONObject();
+                }
+            } else {
+                cache = new JSONObject();
+            }
+        }
+    }
+
+    public void saveCache() throws IOException {
+        if (project != null) {
+            if (level != null) {
+                JSONObject levelCache = getLevelCache();
+                Vec3d pos = client.player.getPos();
+                levelCache.put("cameraPos", List.of(pos.x, pos.y, pos.z));
+            }
+
+            File file = project.getCacheFolder().resolve(CACHE_FILE_NAME).toFile();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write(getCache().toString());
+            writer.close();
+        }
+    }
+
+    /**
+     * Close the editor and open a Minecraft world ingame.
+     * 
+     * @param worldName World to load.
+     */
+    public void openWorld(String worldName) {
+        LogManager.getLogger().info("Shutting down editor and opening world: " + worldName);
+        client.execute(() -> {
+            client.world.disconnect();
+            client.disconnect();
+            client.createIntegratedServerLoader().start(client.currentScreen, worldName);
+        });
+    }
 }

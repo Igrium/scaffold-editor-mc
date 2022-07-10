@@ -170,7 +170,7 @@ public final class Config {
 		String expression = generateXPathExpression(path);
 		
 		try {
-			var obj = xPath.evaluate(expression, document, XPathConstants.NODE);
+			Object obj = xPath.evaluate(expression, document, XPathConstants.NODE);
 			if (obj == null) return null;
 			return (Element) obj;
 		} catch (XPathExpressionException e) {

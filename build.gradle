@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.8-SNAPSHOT'
+	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
 	id 'org.openjfx.javafxplugin' version '0.0.10'
 }
@@ -45,7 +45,6 @@ if (currentOS.isWindows()) {
     platform = 'mac'
 }
 
-def javaFX_version = '17-ea+13'
 
 dependencies {
 	// To change the versions see the gradle.properties file
@@ -61,11 +60,11 @@ dependencies {
 	implementation(include("com.github.Querz:NBT:6.1"))
 	implementation(include("org.json:json:20190722")) // Scaffold core uses org.json, not gson.
 
-	implementation(include("org.openjfx:javafx-base:${javaFX_version}:${platform}"))
-	implementation(include("org.openjfx:javafx-controls:${javaFX_version}:${platform}"))
-	implementation(include("org.openjfx:javafx-graphics:${javaFX_version}:${platform}"))
-	implementation(include("org.openjfx:javafx-fxml:${javaFX_version}:${platform}"))
-	implementation(include("org.openjfx:javafx-web:${javaFX_version}:${platform}"))
+	implementation(include("org.openjfx:javafx-base:${project.javaFX_version}:${platform}"))
+	implementation(include("org.openjfx:javafx-controls:${project.javaFX_version}:${platform}"))
+	implementation(include("org.openjfx:javafx-graphics:${project.javaFX_version}:${platform}"))
+	implementation(include("org.openjfx:javafx-fxml:${project.javaFX_version}:${platform}"))
+	implementation(include("org.openjfx:javafx-web:${project.javaFX_version}:${platform}"))
 	implementation(include("com.sandec:mdfx:0.2.4"))
 	implementation(include("es.nitaur.markdown:txtmark:0.16"))
 
@@ -109,9 +108,9 @@ jar {
 	}
 }
 
-minecraft {
-	accessWidener = file("src/main/resources/scaffold.accesswidener")
-}
+// loom {
+// 	accessWidenerPath = file("src/main/resources/scaffold.accesswidener")
+// }
 
 // configure the maven publication
 publishing {

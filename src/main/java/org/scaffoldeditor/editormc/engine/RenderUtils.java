@@ -1,7 +1,5 @@
 package org.scaffoldeditor.editormc.engine;
 
-import java.util.Random;
-
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumer;
@@ -10,6 +8,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 
 public final class RenderUtils {
 	private RenderUtils() {}
@@ -36,14 +35,14 @@ public final class RenderUtils {
 	}
 	
 	public static void renderBakedModel(BakedModel model, MatrixStack matrices, VertexConsumer consumer, float red, float green, float blue, int light) {
-		model.getQuads(null, null, new Random()).forEach(quad -> {
+		model.getQuads(null, null, Random.create()).forEach(quad -> {
 			consumer.quad(matrices.peek(), quad, red, green, blue, light, OverlayTexture.DEFAULT_UV);
 		});
 	}
 	
 	public static void renderLine(MatrixStack matrices, VertexConsumer consumer, Vec3d start, Vec3d end, float red, float green, float blue, float alpha) {
-		Matrix4f model = matrices.peek().getModel();
-		Matrix3f normal = matrices.peek().getNormal();
+		Matrix4f model = matrices.peek().getPositionMatrix();
+		Matrix3f normal = matrices.peek().getNormalMatrix();
 		Vec3d diff = end.subtract(start);
 		
 		consumer.vertex(model, (float) start.x, (float) start.y, (float) start.z).color(red, green, blue, alpha)

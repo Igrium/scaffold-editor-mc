@@ -2,7 +2,7 @@ package org.scaffoldeditor.editormc.engine.entity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.model.ModelData;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.model.ModelPartBuilder;
@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 public class BrushEntityRenderer extends EntityRenderer<BrushEntity> {
 	
 	public static void register() {
-		EntityRendererRegistry.INSTANCE.register(BrushEntity.TYPE, BrushEntityRenderer::new);
+		EntityRendererRegistry.register(BrushEntity.TYPE, BrushEntityRenderer::new);
 	}
 		
 	protected BrushEntityRenderer(Context ctx) {

@@ -22,13 +22,21 @@ import net.minecraft.client.util.Window;
 public class ScaffoldEditorMod implements ClientModInitializer {
 	
 	private static ScaffoldEditorMod instance;
-	public boolean isInEditor = false;
+	private boolean isInEditor = false;
 	private MinecraftClient client;
 	private BlockRenderDispatcher blockRenderDispatcher;
 	private LineRenderDispatcher lineRenderDispatcher;
 	private RenderEntityDispatcher renderEntityDispatcher;
 	private GizmoManager gizmoManager;
 	protected ScaffoldEditor editor;
+
+	public boolean isInEditor() {
+		return isInEditor;
+	}
+
+	public void setInEditor(boolean isInEditor) {
+		this.isInEditor = isInEditor;
+	}
 
 	public void onInitializeClient() {
 		client = MinecraftClient.getInstance();

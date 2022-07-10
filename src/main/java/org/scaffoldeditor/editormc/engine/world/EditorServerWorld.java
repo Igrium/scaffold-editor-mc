@@ -20,14 +20,22 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.Spawner;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.dimension.DimensionOptions;
+
 import net.minecraft.world.level.ServerWorldProperties;
 import net.minecraft.world.level.storage.LevelStorage.Session;
+import net.minecraft.world.spawner.Spawner;
 
 public class EditorServerWorld extends ServerWorld {
 	
+	public EditorServerWorld(MinecraftServer server, Executor workerExecutor, Session session,
+			ServerWorldProperties properties, RegistryKey<World> worldKey, DimensionOptions dimensionOptions,
+			WorldGenerationProgressListener worldGenerationProgressListener, boolean debugWorld, long seed,
+			List<Spawner> spawners, boolean shouldTickTime) {
+		super(server, workerExecutor, session, properties, worldKey, dimensionOptions, worldGenerationProgressListener,
+				debugWorld, seed, spawners, shouldTickTime);
+	}
+
 	/**
 	 * Keeps track of the chunks that may have blocks in them.
 	 */
@@ -105,12 +113,12 @@ public class EditorServerWorld extends ServerWorld {
 		occupiedSections.remove(pos);
 	}
 
-	public EditorServerWorld(MinecraftServer server, Executor workerExecutor, Session session,
-			ServerWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType,
-			WorldGenerationProgressListener worldGenerationProgressListener, ChunkGenerator chunkGenerator,
-			boolean debugWorld, long l, List<Spawner> list, boolean bl) {
-		super(server, workerExecutor, session, properties, registryKey, dimensionType, worldGenerationProgressListener,
-				chunkGenerator, debugWorld, l, list, bl);
-	}
+	// public EditorServerWorld(MinecraftServer server, Executor workerExecutor, Session session,
+	// 		ServerWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType,
+	// 		WorldGenerationProgressListener worldGenerationProgressListener, ChunkGenerator chunkGenerator,
+	// 		boolean debugWorld, long l, List<Spawner> list, boolean bl) {
+	// 	super(server, workerExecutor, session, properties, registryKey, dimensionType, worldGenerationProgressListener,
+	// 			chunkGenerator, debugWorld, l, list, bl);
+	// }
 
 }

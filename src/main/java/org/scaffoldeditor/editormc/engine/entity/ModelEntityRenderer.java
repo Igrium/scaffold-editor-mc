@@ -2,7 +2,7 @@ package org.scaffoldeditor.editormc.engine.entity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.OverlayTexture;
@@ -20,7 +20,7 @@ import net.minecraft.util.Identifier;
 public class ModelEntityRenderer extends EntityRenderer<ModelEntity> {
 	
 	public static void register() {
-		EntityRendererRegistry.INSTANCE.register(ModelEntity.TYPE, (context) -> {
+		EntityRendererRegistry.register(ModelEntity.TYPE, (context) -> {
 			return new ModelEntityRenderer(context);
 		});
 	}

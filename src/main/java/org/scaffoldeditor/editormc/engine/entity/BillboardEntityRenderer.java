@@ -2,7 +2,7 @@ package org.scaffoldeditor.editormc.engine.entity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.OverlayTexture;
@@ -22,7 +22,7 @@ import net.minecraft.util.math.Vector4f;
 public class BillboardEntityRenderer extends EntityRenderer<BillboardEntity> {
 	
 	public static void register() {
-		EntityRendererRegistry.INSTANCE.register(BillboardEntity.TYPE, BillboardEntityRenderer::new);
+		EntityRendererRegistry.register(BillboardEntity.TYPE, BillboardEntityRenderer::new);
 	}
 
 	protected BillboardEntityRenderer(Context ctx) {
@@ -45,7 +45,7 @@ public class BillboardEntityRenderer extends EntityRenderer<BillboardEntity> {
 		
 		
 		MatrixStack.Entry entry = matrices.peek();
-		Matrix4f model = entry.getModel();
+		Matrix4f model = entry.getPositionMatrix();
 		
 		for (int i = 0; i < 4; i++) {
 			Vec3f vert = verts[i];

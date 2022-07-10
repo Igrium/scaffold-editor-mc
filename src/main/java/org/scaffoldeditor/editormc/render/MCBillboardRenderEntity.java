@@ -88,7 +88,7 @@ public class MCBillboardRenderEntity extends MCRenderEntity implements Billboard
         Vec3f[] verts = new Vec3f[] { new Vec3f(-1, -1, 0), new Vec3f(-1, 1, 0), new Vec3f(1, 1, 0),
                 new Vec3f(1, -1, 0) };
 
-        Matrix4f model = matrices.peek().getModel();
+        Matrix4f model = matrices.peek().getPositionMatrix();
 
         for (int i = 0; i < 4; i++) {
             Vec3f vert = verts[i];

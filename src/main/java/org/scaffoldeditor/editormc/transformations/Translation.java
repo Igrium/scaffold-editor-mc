@@ -6,7 +6,6 @@ import org.joml.Vector3dc;
 import org.scaffoldeditor.editormc.scaffold_interface.MathConverter;
 import org.scaffoldeditor.editormc.ui.Viewport;
 import org.scaffoldeditor.editormc.util.RaycastUtils;
-
 import net.minecraft.client.render.Camera;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;

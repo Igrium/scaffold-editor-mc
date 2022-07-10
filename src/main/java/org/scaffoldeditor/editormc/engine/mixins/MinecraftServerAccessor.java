@@ -5,8 +5,6 @@ import java.util.concurrent.Executor;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-
-import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.registry.RegistryKey;
@@ -20,7 +18,7 @@ public interface MinecraftServerAccessor {
 	@Accessor("worlds")
 	public Map<RegistryKey<World>, ServerWorld> getWorldMap();
 	
-	@Accessor("serverResourceManager")
-	public ServerResourceManager getServerResourceManager();
+	// @Accessor("serverResourceManager")
+	// public DataPackContents getServerResourceManager();
 	
 }

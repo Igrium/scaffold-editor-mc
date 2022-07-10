@@ -90,7 +90,7 @@ public class PrimaryViewport implements EngineViewport {
     }
 
     public void writeImage() {
-        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        RenderSystem.assertOnRenderThread();
 
         if (buffer == null || image == null) {
             setResolution(getWidth(), getHeight());

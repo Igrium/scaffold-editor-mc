@@ -1,7 +1,5 @@
 package org.scaffoldeditor.editormc.engine.world;
 
-import java.util.Random;
-
 import org.joml.Vector3ic;
 import org.scaffoldeditor.editormc.scaffold_interface.BlockConverter;
 import org.scaffoldeditor.nbt.block.Block;
@@ -17,11 +15,11 @@ import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 
 public class WorldRenderUtils {
 	private static PlacementSimulationWorld renderWorld;
-	
-	
+		
 	public static synchronized void buildBlockMesh(BlockCollection blocks, MatrixStack matrixStack, VertexConsumer vertexConsumer) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (renderWorld == null || renderWorld.getWorld() != client.world) {
@@ -30,7 +28,7 @@ public class WorldRenderUtils {
 		
 		BlockRenderManager dispatcher = client.getBlockRenderManager();
 		BlockModelRenderer renderer = dispatcher.getModelRenderer();
-		Random random = new Random();
+		Random random = Random.create();
 		
 		for (Vector3ic pos : blocks) {
 			Block block = blocks.blockAt(pos);

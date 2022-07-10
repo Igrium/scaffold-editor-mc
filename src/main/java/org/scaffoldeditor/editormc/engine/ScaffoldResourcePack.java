@@ -82,14 +82,14 @@ public class ScaffoldResourcePack implements ResourcePack {
 	}
 
 	@Override
-	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, int maxDepth,
-			Predicate<String> pathFilter) {
+	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix,
+			Predicate<Identifier> pathFilter) {
 		Set<Identifier> set = new HashSet<>();
 		if (type == ResourceType.CLIENT_RESOURCES) {
 			for (Path path : assetManager.searchDirectories) {
 				if (!path.resolve("assets").toFile().isDirectory()) continue;
 				try {
-					Files.walk(path.resolve("assets"), maxDepth, FileVisitOption.FOLLOW_LINKS).forEach(file -> {
+					Files.walk(path.resolve("assets"), FileVisitOption.FOLLOW_LINKS).forEach(file -> {
 						set.add(getIdentifier(file.toString()));
 					});
 					

@@ -2,6 +2,7 @@ package org.scaffoldeditor.editormc.tools;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.scaffoldeditor.editormc.tools.Toolbar.ToolEntry;
 import org.scaffoldeditor.editormc.ui.ScaffoldUI;
 
 import javafx.geometry.Insets;

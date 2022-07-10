@@ -3,8 +3,6 @@ package org.scaffoldeditor.editormc.ui.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import org.scaffoldeditor.editormc.engine.mixins.HudAccessor;
 import org.scaffoldeditor.editormc.ui.controllers.CompileProgressUI.MessageType;
@@ -27,6 +25,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ClientChatListener;
+import net.minecraft.network.message.MessageSender;
 
 public final class MinecraftConsole {
 	@FXML
@@ -47,8 +46,8 @@ public final class MinecraftConsole {
 	private ClientChatListener listener = new ClientChatListener() {
 		
 		@Override
-		public void onChatMessage(net.minecraft.network.MessageType messageType, net.minecraft.text.Text message,
-				UUID sender) {
+		public void onChatMessage(net.minecraft.network.message.MessageType messageType, net.minecraft.text.Text message,
+				MessageSender sender) {
 			addMessage(message.getString(), MessageType.LOG);
 		}
 	};
@@ -63,18 +62,16 @@ public final class MinecraftConsole {
 	 */
 	public void init(MinecraftClient client) {
 		this.client = client;
-		Map<net.minecraft.network.MessageType, List<ClientChatListener>> listeners = ((HudAccessor) client.inGameHud).getChatListeners();
+		List<ClientChatListener> listeners = ((HudAccessor) client.inGameHud).getChatListeners();
 		
-		listeners.get(net.minecraft.network.MessageType.CHAT).add(listener);
-		listeners.get(net.minecraft.network.MessageType.SYSTEM).add(listener);
+		listeners.add(listener);
 		
 //		client.inGameHud.
 	}
 	
 	public void close() {
-		Map<net.minecraft.network.MessageType, List<ClientChatListener>> listeners = ((HudAccessor) client.inGameHud).getChatListeners();
-		listeners.get(net.minecraft.network.MessageType.CHAT).remove(listener);
-		listeners.get(net.minecraft.network.MessageType.SYSTEM).remove(listener);
+		List<ClientChatListener> listeners = ((HudAccessor) client.inGameHud).getChatListeners();
+		listeners.remove(listener);
 	}
 	
 	public void addMessage(String message, MessageType type) {

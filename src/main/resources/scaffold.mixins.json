@@ -5,8 +5,8 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "MinecraftServerAccessor",
-    "MixinServerTickScheduler",
-    "Matrix4fAccessor"
+    "Matrix4fAccessor",
+    "WorldAccessor"
   ],
   "client": [
     "MixinMinecraftClient",

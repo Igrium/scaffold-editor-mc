@@ -10,7 +10,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 @Mixin(TitleScreen.class)
 public class MixinTitleScreen extends Screen {
@@ -21,7 +20,7 @@ public class MixinTitleScreen extends Screen {
 
 	@Inject(method = "init()V", at = @At("RETURN"))
 	protected void init(CallbackInfo ci) { 
-		addDrawableChild(new ButtonWidget(0, 0, 98, 20, new TranslatableText("menu.scaffoldeditor"), (button) -> {
+		addDrawableChild(new ButtonWidget(0, 0, 98, 20, Text.translatable("menu.scaffoldeditor"), (button) -> {
 			ScaffoldEditorMod.getInstance().launchEditor();
 		}));
 	}
